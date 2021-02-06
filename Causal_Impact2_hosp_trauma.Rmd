@@ -68,7 +68,9 @@ p.comment {
 ```
 ```{r setup0, include=FALSE}
 rm(list=ls());gc()
-load(paste0(getwd(),"/","Procesos hasta 4.RData"))
+unlink('Causal_Impact2_hosp_trauma_cache', recursive = TRUE)
+
+load(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
 #xaringan::inf_mr()
 
 if(isTRUE(getOption('knitr.in.progress'))==T){
@@ -177,446 +179,8 @@ registerDoParallel(cl)
 Sys.setlocale(category = "LC_ALL", locale = "english")
 ```
 
-```{r datasets_cons0, echo=T, cache= T, paged.print=TRUE, warning=F}
-tsdata3 <- read.csv("tsdata3.csv")
-
-#tsdata3 %>% glimpse()  # hosp_resp_ hosp_circ_ hosp_trauma_ hosp_total_
-tsdata3_corr<-
-tsdata3 %>% 
-  dplyr::mutate(date2=readr::parse_datetime(date, "%Y-%m-%d")) %>% 
-  dplyr::mutate(fech_week=format(date2,'%V')) %>%
-  dplyr::arrange(id,fech_week)%>%
-  
-  dplyr::mutate(hosp_resp_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_all))%>%
-  dplyr::mutate(hosp_resp_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_15a64))%>% 
-  dplyr::mutate(hosp_resp_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_65a))%>%
-  
-  dplyr::mutate(hosp_circ_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_all))%>%  
-  dplyr::mutate(hosp_circ_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_15a64))%>% 
-  dplyr::mutate(hosp_circ_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_65a))%>%
-  
-  dplyr::mutate(hosp_trauma_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_all))%>%   
-    dplyr::mutate(hosp_trauma_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_15a64))%>%
-  dplyr::mutate(hosp_trauma_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_65a))%>%
-  
-  dplyr::mutate(hosp_total_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_all))%>%   dplyr::mutate(hosp_total_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_15a64))%>%   
-  dplyr::mutate(hosp_total_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_65a))%>%
-  
-  dplyr::group_by(id,year) %>% 
- ### REPLACE WITH THE MEAN 
-    dplyr::mutate(hosp_resp_all= zoo::na.aggregate(hosp_resp_all,FUN=median))%>% 
-  dplyr::mutate(hosp_resp_15a64= zoo::na.aggregate(hosp_resp_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
-  dplyr::mutate(hosp_resp_65a= zoo::na.aggregate(hosp_resp_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
-  
-    dplyr::mutate(hosp_circ_all= zoo::na.aggregate(hosp_circ_all,FUN=median))%>% 
-  dplyr::mutate(hosp_circ_15a64= zoo::na.aggregate(hosp_circ_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
-  dplyr::mutate(hosp_circ_65a= zoo::na.aggregate(hosp_circ_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
-  
-    dplyr::mutate(hosp_trauma_all= zoo::na.aggregate(hosp_trauma_all,FUN=median))%>% 
-  dplyr::mutate(hosp_trauma_15a64= zoo::na.aggregate(hosp_trauma_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
-  dplyr::mutate(hosp_trauma_65a= zoo::na.aggregate(hosp_trauma_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
-  
-    dplyr::mutate(hosp_total_all= zoo::na.aggregate(hosp_total_all,FUN=median))%>% 
-  dplyr::mutate(hosp_total_15a64= zoo::na.aggregate(hosp_total_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
-  dplyr::mutate(hosp_total_65a= zoo::na.aggregate(hosp_total_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
-  dplyr::ungroup() %>% 
-  dplyr::select(-date2,-fech_week)
-
-tsdata3_corr_cons <- tsdata3_corr %>%
-  dplyr::group_by(date) %>%
-  dplyr::summarise(
-    year = unique(year),
-    month = unique(month),
-    day = unique(day),
-    cons_total_all = sum(cons_total_all),
-    cons_total_15a64 = sum(cons_total_15a64),
-    cons_total_65a = sum(cons_total_65a),
-    cons_resp_all = sum(cons_resp_all),
-    cons_resp_15a64 = sum(cons_resp_15a64),
-    cons_resp_65a = sum(cons_resp_65a),
-    cons_circ_all = sum(cons_circ_all),
-    cons_circ_15a64 = sum(cons_circ_15a64),
-    cons_circ_65a = sum(cons_circ_65a),
-    cons_diarrea_all = sum(cons_diarrea_all),
-    cons_diarrea_15a64 = sum(cons_diarrea_15a64),
-    cons_diarrea_65a = sum(cons_diarrea_65a),
-    cons_trauma_all = sum(cons_trauma_all),
-    cons_trauma_15a64 = sum(cons_trauma_15a64),
-    cons_trauma_65a = sum(cons_trauma_65a),
-    hosp_total_all = sum(hosp_total_all),
-    hosp_total_15a64 = sum(hosp_total_15a64),
-    hosp_total_65a = sum(hosp_total_65a),
-    hosp_resp_all = sum(hosp_resp_all),
-    hosp_resp_15a64 = sum(hosp_resp_15a64),
-    hosp_resp_65a = sum(hosp_resp_65a),
-    hosp_circ_all = sum(hosp_circ_all),
-    hosp_circ_15a64 = sum(hosp_circ_15a64),
-    hosp_circ_65a = sum(hosp_circ_65a),
-    hosp_trauma_all = sum(hosp_trauma_all),
-    hosp_trauma_15a64 = sum(hosp_trauma_15a64),
-    hosp_trauma_65a = sum(hosp_trauma_65a)
-  )
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
-no_muestra=1
-if(no_muestra==0){
- tsdata3_corr %>% 
-   dplyr::filter(year==2018) %>% 
-  dplyr::mutate(date2=readr::parse_datetime(date, "%Y-%m-%d")) %>% 
-  dplyr::mutate(fech_week=format(date2,'%V')) %>%
-    dplyr::mutate(id=factor(id, labels= c("Complejo Hospitalario San Jose (09-100)", 
-                                          "Hospital de Urgencia Asistencia Publica (11-195)", 
-                                          "Hospital Del Salvador de Santiago (12-100)"))) %>% 
-     pivot_longer(cols=cons_total_all:hosp_trauma_65a, names_to = "variable", values_to = "count") %>% 
-    dplyr::filter(variable  %in% c("hosp_total_15a64","hosp_resp_15a64","hosp_circ_15a64","hosp_trauma_15a64")) %>% 
-    dplyr::filter(count==0) %>%
-    dplyr::group_by(id,fech_week,variable) %>% 
-    dplyr::summarise(n = as.numeric(n()), start=min(date2)) %>% 
-   dplyr::ungroup() %>% 
-    ggplot2::ggplot(aes(x = fech_week, y = n, color=variable,group=variable)) +
-    geom_point(size=1.5) +
-    geom_line(alpha=.5) +
-    facet_wrap(id~.,ncol=1)+
-    #ylim()+
-    sjPlot::theme_sjplot2() +
-    ggtitle("Table 3. Dataset of Information of 2018, Cases with 0 hospitalizations (from 15 to 64 years)\nby Cause and Institution, after Interpolation of cases with the median")+
-    scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
-    labs(y="No. of Days in the week with 0 counts",
-         x="Years & Weeks") + 
-    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
-}
-```
-
-# Dataset Compile
-
-In first place, we downloaded the data and defined the datasets.
-
-```{r datasets_cons1, echo=T, cache= T, paged.print=TRUE, warning=F}
-########## Read Data from CSV File ########
-#setwd("G:/My Drive/Research Data")
-data.control <- read.csv("tsdata3_cons.csv")
-data.control_corr <- tsdata3_corr_cons
-data.tx <- read.csv("tsdata_19_3_cons.csv")
-data_no_corr <- rbind(data.control, data.tx)
-data <- rbind(data.control_corr, data.tx)
-data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
-
-########## Create Dummy Variables ########
-#aquí agrupó las instituciones
-## Dummy Variables for Age Group ##
-data15a64 <- data %>%
-  group_by(date) %>%
-  summarise(
-    year = year,
-    month = month,
-    day = day,
-    cons_total = cons_total_15a64,
-    cons_resp = cons_resp_15a64,
-    cons_circ = cons_circ_15a64,
-    cons_diarrea = cons_diarrea_15a64,
-    cons_trauma = cons_trauma_15a64,
-    hosp_total = hosp_total_15a64,
-    hosp_resp = hosp_resp_15a64,
-    hosp_circ = hosp_circ_15a64,
-    hosp_trauma = hosp_trauma_15a64,
-    age = "15-64"
-  )
-
-data65a <- data %>%
-  group_by(date) %>%
-  summarise(
-    year = year,
-    month = month,
-    day = day,
-    cons_total = cons_total_65a,
-    cons_resp = cons_resp_65a,
-    cons_circ = cons_circ_65a,
-    cons_diarrea = cons_diarrea_65a,
-    cons_trauma = cons_trauma_65a,
-    hosp_total = hosp_total_65a,
-    hosp_resp = hosp_resp_65a,
-    hosp_circ = hosp_circ_65a,
-    hosp_trauma = hosp_trauma_65a,
-    age = "65+"
-  )
-
-data <- rbind(data15a64, data65a)
-data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
-data$age <- as.factor(data$age)
-
-## Other Dummy Variables ##
-data$exptime <- ifelse(data$month >=8, 1, 0)
-data$txtime <- ifelse(data$month >= 10 & data$day >= 18 | data$month >= 11, 1, 0)
-data$tx <- ifelse(data$year == "2019", 1, 0)
-data$did <- data$txtime * data$tx
-
-data$time <- 0
-data$time[data$exptime == 1] <- seq(by = 1, from = 1, to = 153)
-data$post <- 0
-data$post[data$did == 1] <- seq(by = 1, to = 87) #no me funciona length(data$post[data$did == 1])= 150 
-Sys.setlocale(category = "LC_ALL", locale = "english")
-#por qué no me funciona: data15a64%>% dplyr::filter(date>="2019-10-18")%>% dplyr::summarise(min=min(time),max=max(time),diff=max-min)
-```
-
-```{r datasets_cons2, echo=T, cache= T, paged.print=TRUE, warning=F}
-invisible(c("lo tuve que sacar"))
-
-#data <- data[data$date != "2016-02-29", ]
-
-data$yearday <- strftime(as.Date(data$date), format = "%j")
-data$yearday <- as.numeric(data$yearday)
-#data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] <- data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] - 1
-#glimpse(data)
-Sys.setlocale(category = "LC_ALL", locale = "english")
-data$weekday <- weekdays(as.Date(data$date))
-data$weekday <- ordered(data$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
-
-data$sig <- ifelse(data$month == 10 & data$day == 6 | data$month == 10 & data$day == 18 | data$month == 10 & data$day == 25, 1, 0)
-data$week <-lubridate::week(data$date)
-data$isoweek <-lubridate::isoweek(lubridate::ymd(data$date))
-
-#lubridate::floor_date(isoweek(data$date, "%Y-%m-%d"), unit="week")
-
-## Dummy Variable for Dependent Variable of Choice Prior Day Value ##
-data$prevtrc[data$age == "15-64"] <- c(NA, data$cons_trauma[data$age == "15-64"][-1825])
-data$prevtrc[data$age == "65+"] <- c(NA, data$cons_trauma[data$age == "65+"][-1825])
-data$prevrec[data$age == "15-64"] <- c(NA, data$cons_resp[data$age == "15-64"][-1825])
-data$prevrec[data$age == "65+"] <- c(NA, data$cons_resp[data$age == "65+"][-1825])
-data$prevtrh[data$age == "15-64"] <- c(NA, data$hosp_trauma[data$age == "15-64"][-1825])
-data$prevtrh[data$age == "65+"] <- c(NA, data$hosp_trauma[data$age == "65+"][-1825])
-data$prevreh[data$age == "15-64"] <- c(NA, data$hosp_resp[data$age == "15-64"][-1825])
-data$prevreh[data$age == "65+"] <- c(NA, data$hosp_resp[data$age == "65+"][-1825])
-
-########## Create Dummy Variables ########
-#aquí agrupó las instituciones
-## Dummy Variables for Age Group ##
-data15a64_wk <- data %>%
-  dplyr::filter(as.character(age)=="15-64")%>%
-  dplyr::group_by(year_week) %>%
-  summarise(
-    year = year,
-    month = month,
-    day = day,
-    date= date,
-    cons_total = sum(cons_total,na.rm=T),
-    cons_resp = sum(cons_resp,na.rm=T),
-    cons_circ = sum(cons_circ,na.rm=T),
-    cons_diarrea = sum(cons_diarrea,na.rm=T),
-    cons_trauma = sum(cons_trauma,na.rm=T),
-    hosp_total = sum(hosp_total,na.rm=T),
-    hosp_resp = sum(hosp_resp,na.rm=T),
-    hosp_circ = sum(hosp_circ,na.rm=T),
-    hosp_trauma = sum(hosp_trauma,na.rm=T),
-    sig= sig,
-    weekday= weekday,
-    yearday= yearday,
-    prevtrc= sum(prevtrc,na.rm=T),
-    prevrec= sum(prevrec,na.rm=T),
-    prevtrh= sum(prevtrh,na.rm=T),
-    prevreh= sum(prevreh,na.rm=T),
-    week=week,
-    isoweek=isoweek
-    )%>%
-  slice(1)%>%
-  ungroup()
-
-data65a_wk <- data %>%
-  dplyr::filter(as.character(age)=="65+")%>%
-  dplyr::group_by(year_week)%>%
-  summarise(
-    year = year,
-    month = month,
-    day = day,
-    date= date,
-    cons_total = sum(cons_total,na.rm=T),
-    cons_resp = sum(cons_resp,na.rm=T),
-    cons_circ = sum(cons_circ,na.rm=T),
-    cons_diarrea = sum(cons_diarrea,na.rm=T),
-    cons_trauma = sum(cons_trauma,na.rm=T),
-    hosp_total = sum(hosp_total,na.rm=T),
-    hosp_resp = sum(hosp_resp,na.rm=T),
-    hosp_circ = sum(hosp_circ,na.rm=T),
-    hosp_trauma = sum(hosp_trauma,na.rm=T),
-    sig= sig,
-    weekday= weekday,
-    yearday= yearday,
-    prevtrc= sum(prevtrc,na.rm=T),
-    prevrec= sum(prevrec,na.rm=T),
-    prevtrh= sum(prevtrh,na.rm=T),
-    prevreh= sum(prevreh,na.rm=T),
-    week=week,
-    isoweek=isoweek
-  )%>%
-  slice(1)%>%
-  ungroup()
-
-data15a64_wk$difftrc <- data15a64_wk$cons_total - data15a64_wk$cons_trauma
-data15a64_wk$difftrh <- data15a64_wk$hosp_total - data15a64_wk$hosp_trauma
-data15a64_wk$diffrec <- data15a64_wk$cons_total - data15a64_wk$cons_resp
-data15a64_wk$diffreh <- data15a64_wk$hosp_total - data15a64_wk$hosp_resp
-
-data15a64_wk$offset <- data15a64_wk$cons_total + data15a64_wk$hosp_total
-
-data65a_wk$difftrc <- data65a_wk$cons_total - data65a_wk$cons_trauma
-data65a_wk$difftrh <- data65a_wk$hosp_total - data65a_wk$hosp_trauma
-data65a_wk$diffrec <- data65a_wk$cons_total - data65a_wk$cons_resp
-data65a_wk$diffreh <- data65a_wk$hosp_total - data65a_wk$hosp_resp
-
-data65a_wk$offset <- data65a_wk$cons_total + data65a_wk$hosp_total
-
-#data$tx <- ifelse(data$year == "2019", 1, 0)
-#data$did <- data$txtime * data$tx
-data15a64_wk$txtime <- ifelse(data15a64_wk$year == 2019 & data15a64_wk$isoweek>42, 1, 0)
-data15a64_wk$txtime2 <- ifelse(data15a64_wk$year == 2019 & data15a64_wk$isoweek>41, 1, 0)
-data15a64_wk$tx <- ifelse(data15a64_wk$year == 2019, 1, 0)
-data15a64_wk$did <- data15a64_wk$txtime * data15a64_wk$tx
-
-data65a_wk$txtime <- ifelse(data65a_wk$year == 2019 & data65a_wk$isoweek>42, 1, 0)
-data65a_wk$txtime2 <- ifelse(data65a_wk$year == 2019 & data65a_wk$isoweek>41, 1, 0)
-data65a_wk$tx <- ifelse(data65a_wk$year == 2019, 1, 0)
-data65a_wk$did <- data65a_wk$txtime * data65a_wk$tx
-#2019-W42
-
-# ISO 8601. If the week (starting on Monday) containing 1 January has four or more days in the new year, then it is considered week 1. You can double-check this in any of the iso 8601 week calculators online. 
-#(lubridate) states: Weeks is the number of complete seven day periods that have occured between the date and January 1st, plus one
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-
-########## Dataset Formation for Experiment Time Frame ########
-## Dataset During Experiment Time Only ##
-#data <- data[data$exptime == 1, ]
-```
-
-```{r tab1_exp_comp,dpi = 96, message=F, waring=F,error=T,eval=T}
-#agrego el día viernes
-
-#txtime= Período de tratamiento. ¿No será mejor darle un lag de 3 días?
-#time= 1 a 153 partió desde el 1 de agosto 2015
-#yearday= n° de días por año
-#weekday= nombre en ENG ("Monday")
-#txtime= período de tratamiento
-#tx= 2019
-#did= txtime*tx
-#sig= ¿Qué es el '6-1',el 18-10 y el 25-10?
-
-attr(data15a64_wk$year_week, "label") <- "Year-Week (ISO 8601) (chr)"
-attr(data15a64_wk$isoweek, "label") <- "Week Number (ISO 8601) (num)"
-attr(data15a64_wk$year, "label") <- "Year"
-attr(data15a64_wk$month, "label") <- "Month"
-attr(data15a64_wk$day, "label") <- "Day"
-
-attr(data15a64_wk$cons_total, "label") <- "Total Consultations"
-attr(data15a64_wk$cons_resp, "label") <- "Respiratory Consultations"
-attr(data15a64_wk$cons_circ, "label") <- "Circulatory Consultations"
-attr(data15a64_wk$cons_diarrea, "label") <- "Diarrhea Consultations"
-attr(data15a64_wk$cons_trauma, "label") <- "Trauma Consultations"
-
-attr(data15a64_wk$hosp_total, "label") <- "Total Hospitalizations"
-attr(data15a64_wk$hosp_resp, "label") <- "Respiratory Hospitalizations"
-attr(data15a64_wk$hosp_circ, "label") <- "Circulatory Hospitalizations"
-attr(data15a64_wk$hosp_trauma, "label") <- "Trauma Hospitalizations"
-
-#attr(data$age, "label") <- "Age (factor)"
-#attr(data$exptime, "label") <- "From August 8th to December 31th"
-#attr(data15a64_wk) <- "Treatment Period"
-attr(data15a64_wk$tx, "label") <- "Post-treatment Period (Only 2019)"
-attr(data15a64_wk$did, "label") <- "Post-Treatment Period * Treatment"
-#attr(data15a64_wk$time, "label") <- "August 1st to December 31th, by Year"
-attr(data15a64_wk$txtime2, "label") <- "Post-intervention Period (After but incluiding 2019-10-18 W42)"
-attr(data15a64_wk$txtime, "label") <- "Post-intervention Period (After 2019-10-18 W42)"
-attr(data15a64_wk$yearday, "label") <- "Day of the year (numeric)"
-attr(data15a64_wk$weekday, "label") <- "Weekday"
-attr(data$week, "label") <- "Week number by Year (Lubridate criteria)"  #no está presente
-
-attr(data15a64_wk$sig, "label") <- "October 6th; October 18th; October 25th"
-
-attr(data15a64_wk$prevtrc, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Consultations"
-attr(data15a64_wk$prevrec, "label") <-  "Dependent Variable of Choice Prior Day Value of the Total Respiratory Consultations"
-attr(data15a64_wk$prevtrh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Hospitalizations"
-attr(data15a64_wk$prevreh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Respiratory Hospitalizations"
-
-attr(data15a64_wk$difftrc, "label") <- "Difference Between Total Consultations and the Total Trauma Consultations"
-attr(data15a64_wk$difftrh, "label") <- "Difference Between Total Hospitalizations and the Total Trauma Hospitalizations"
-attr(data15a64_wk$diffrec, "label") <-  "Difference Between Total Consultations and the Total Respiratory Consultations"
-attr(data15a64_wk$diffreh, "label") <- "Difference Between Total Hospitalizations and the Total Respiratory Hospitalizations"
-attr(data15a64_wk$offset, "label") <- "Sum of the total consultations and total hospitalizations"
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#TO SEE HOW DATA BEHAVE
-#data%>% dplyr::filter(sig==1)%>% dplyr::select(date)
-
-#data%>% dplyr::filter(time>0)%>% group_by(year)%>% summarise(min(as.Date(date)),max(as.Date(date)))
-#data%>% dplyr::filter(post>0)%>% group_by(year)%>% summarise(min(as.Date(date)),max(as.Date(date)))
-#data%>% dplyr::filter(yearday>0)%>% group_by(year)%>% summarise(min(as.Date(date)),max(as.Date(date)),n())
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-library(compareGroups)
-#pvals <- compareGroups::getResults(table, "p.overall")
-table2 <- compareGroups::compareGroups(did ~ cons_total+ cons_resp+ cons_circ+ cons_diarrea+ cons_trauma+ hosp_total+ hosp_resp+ hosp_circ+ hosp_trauma+ difftrc+ difftrh+ diffrec+ diffreh+ offset+ tx+ txtime+ txtime2+ yearday+ weekday+ sig, #27
-                       #method=rep(3,18),#rep(2,6),3,rep(2,2),rep(3,9)),
-                       method = c(cons_total=NA, cons_resp=NA, cons_circ=NA, cons_diarrea=NA, cons_trauma=NA, hosp_total=NA, 
-                                  hosp_resp=NA, hosp_circ=NA, hosp_trauma=NA, difftrc=NA, difftrh=NA, diffrec=NA, diffreh=NA,
-                                  offset=NA, tx=3, txtime=3, txtime2=3, yearday=3, weekday=3, sig=3), #time=NA, post=3,  exptime+   prevtrc=NA, prevrec=NA, prevtrh=NA, prevreh=NA, 
-                      data = data15a64_wk,
-                      include.miss = T,
-                      var.equal=T)
-                      #,
-                      #subset = age == "15-64")
-#p.adjust(pvals, method = "BH")
-restab <- createTable(table2, show.n = TRUE, show.p.overall = T)
- compareGroups::export2md(restab, first.strip = T, show.all = T,hide.no = "no",header.labels = c(`0`= "Pre- Oct 18, 2020", `1`="Post Oct 18, 2020"), size=9,col.names= c("Variables", "Pre- Oct 18, 2020","Post Oct 18, 2020", "P-values", "N"),format="html",position="center",caption= "Table 1. Summary descriptives table, between selected post-period treatments (=1) and pre-period (=0)")%>%#,p.overall = "p-value"
-  kableExtra::add_footnote(paste0("Note. Total cases (",nrow(data),")"), notation = "none")%>%
-  kableExtra::scroll_box(width = "100%", height = "375px")
-```
-
-<br>
-
-We subsetted the interval of consultations and hospitalizations of patients between 15 and 64.
-
-<br>
-
 # Exploration of Time Series of Trauma Hospitalizations
 
-<br>
-
-We defined the subsetted datasets of users between the abovementioned ages.
-
-<br>
-
-```{r setting_prev_a, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
-######1. Ejemplo 1 #####
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
-
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
-
-#PARÁMETROS INGRESADOS A LOS MODELOS POR THOMAS
-#cons_trauma ~ offset(log(offset)) + year + as.Date(date) + month + day + weekday + yearday + prevtrc + difftrc + hosp_trauma,
-#hosp_trauma ~ offset(log(offset)) + year + as.Date(date) + month + day + weekday + yearday + prevtrh + difftrh + cons_trauma,
-#data15a64[data15a64$tx == 0 & data15a64$txtime == 0, ]
-#glm(hosp_trauma ~ hosp_circ + year + month + day + weekday + yearday + prevtrh, family = quasipoisson(), data15a64[data15a64$tx == 0 & data15a64$txtime == 1,])
-#glm(hosp_trauma ~ hosp_circ + year + month + day + weekday + yearday + prevtrh, family = poisson(), data15a64[data15a64$tx == 0 & data15a64$txtime == 1,])
-#lm(hosp_trauma ~ hosp_circ + year + month + day + weekday + yearday + prevtrh, data15a64[data15a64$tx == 0 & data15a64$txtime == 1,])
-
-#Genero una columna conteo por fila
-data15a64_rn<- data15a64_wk%>% dplyr::mutate(rn=row_number())
-data65a_rn<-  data15a64_wk%>% dplyr::mutate(rn=row_number())
-
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
-
-rn_summ_data15a64<-
-data15a64_rn%>%
-    dplyr::filter(did==1)%>%
-    dplyr::summarise(min=min(rn),max=max(rn),diff=max-min)
-post.period <- c(as.numeric(rn_summ_data15a64["min"]), as.numeric(rn_summ_data15a64["max"]))
-```
-
-<br>
 
 We explored the weekly trends in each year.
 
@@ -1027,6 +591,175 @@ tsData52.4%>% tbats()
 
 tsData_m%>% tbats()%>% forecast()%>% autoplot()
 ```
+
+
+# TBATS
+
+This models let us include multiple seasonalities. Their initials stand for T (trigonometric regressors for multiple seasonalities), B (box-cox transformations that correct for the effect of normality in data), A (inclusion of autorregresive  and moving-average errors), T (trend) y S (seasonality). This model automatically identifies the parameters that reduces. However, we pre-defined a monthly and annual seasonality, in order to capture monthly and annual seasonal patterns.
+
+<br>
+
+The test set were defined 11 weeks before the intervention period (week of October 21th, 2019). The training set had information of each outcome from 2015 to the first semester of 2019. **We expect that these models would give us information about the structure of the time series that will be used in the Bayesian Time-Series Analysis.
+
+<br>
+
+```{r setting_prev_g_tbats_multiple_time_seasonality, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+pre_period_response_hosp_trauma <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"hosp_trauma"]))
+pre_period_response_hosp_resp <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"hosp_resp"]))
+pre_period_response_cons_resp <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"cons_resp"]))
+pre_period_response_cons_trauma <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"cons_trauma"]))
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+pre_period_response_hosp_trauma_train<-as.numeric(unlist(data15a64_rn[1:241,"hosp_trauma"]))%>% 
+                        ts()
+pre_period_response_hosp_trauma_val<-as.numeric(unlist(data15a64_rn[242:252,"hosp_trauma"]))%>% 
+                        ts(start=242)
+
+pre_period_response_hosp_resp_train<-as.numeric(unlist(data15a64_rn[1:241,"hosp_resp"]))%>% 
+                        ts()
+pre_period_response_hosp_resp_val<-as.numeric(unlist(data15a64_rn[242:252,"hosp_resp"]))%>% 
+                         ts(start=242)
+
+pre_period_response_cons_resp_train<-as.numeric(unlist(data15a64_rn[1:241,"cons_resp"]))%>% 
+                        ts()
+pre_period_response_cons_resp_val<-as.numeric(unlist(data15a64_rn[242:252,"cons_resp"]))%>% 
+                         ts(start=242)
+
+pre_period_response_cons_trauma_train<-as.numeric(unlist(data15a64_rn[1:241,"cons_trauma"]))%>% 
+                        ts()
+pre_period_response_cons_trauma_val<-as.numeric(unlist(data15a64_rn[242:252,"cons_trauma"])) %>% 
+                        ts(start=242) 
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+set.seed(2125)
+fit_trainset_tbats_hosp_trauma <- tbats(pre_period_response_hosp_trauma_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_hosp_resp <- tbats(pre_period_response_hosp_resp_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_cons_trauma <- tbats(pre_period_response_cons_trauma_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_cons_resp <- tbats(pre_period_response_cons_resp_train,seasonal.periods= c(52,4),biasadj=T)
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#Trigonometric terms for seasonality
+#1	Box-Cox transformation parameter, for heterogeneity
+#{0,0}	ARMA error for short-term dynamics
+#-	Damping parameter -> Trend
+#{\<51.18,14>}	Seasonal period, Fourier terms
+
+#Las opciones tomadas: 1(no transformación), la segunda es el error ARMA (1,1),p=1, q=1, - significa que no hay damping o trend, después vienen los periodos estacionales (no hay), y no hay serialized terms seleccionados; puede que estas dos estén en 2 grupos <> <> porque haya más estacionalidad 
+#
+# The TBATS incorporates a state space model that is a generalization of those underpinning exponential smoothing. It also allows for automatic Box-Cox transformation and ARMA errors, it provides a very flexible way of accounting for seasonality and trends. The parameters include a box-cox transformation parameter, ARMA errors, damping. The seasonality and trend is easily handled in this model through the fourier transformations and smoothening parameters, which can be further tuned. Due to limited data however, the accuracy on test set in terms of Mean Absolute Percentage Error can vary from the metric given in this report, however when forecasting for longer periods, we see very smooth trends. After making the forecasting model, the expense percentage predicted for May 2016 is 3.52%.
+```
+
+<br>
+
+First, we applied the TBATS model on Trauma Hospitalizations.
+
+<br>
+
+```{r setting_tbats_hosp_trauma, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 1. TBATS Model of Truama Hospitalizations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_hosp_trauma, h=11) %>%  autoplot()+ autolayer(pre_period_response_hosp_trauma_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"date"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+#Sure, you can apply a Box-Cox Transformation, e.g. lambda = 0 (Log-Transform), on the time series before fitting the model. After which you need the apply the inverse Box-Cox transformation on predictions. In that way you ensure that the forecasts and confidence intervals are positive
+
+#RESIDUALS
+#forecast::ggtsdisplay(residuals(fit_trainset_tbats_hosp_trauma), lag.max=52, main='HoltWinters Exponenetial smoothing Residuals')
+```
+<br>
+
+The model suggested a box-cox transformation of lambda=`r sprintf("%1.2f",as.numeric(fit_trainset_tbats_hosp_trauma$lambda))`, that can be rounded to the squared root of Y (√(Y)).  However, it may very well be the case that the resulting transformation of the data is not appropriate to our case. Additionally, the model did not identify ARMA errors and trends (damping).
+
+<!--- 0= suggest a log transformation --->
+
+<br>
+
+Next, we applied the TBATS model on Respiratory Hospitalizations. 
+
+<br>
+
+```{r setting_tbats_hosp_resp, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 2. TBATS Model of Respiratory Hospitalizations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_hosp_resp, h=11) %>%  autoplot()+ autolayer(pre_period_response_hosp_resp_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"date"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The resulting model suggested a log transformation (Lambda= `r sprintf("%1.2f",as.numeric(fit_trainset_tbats_hosp_resp$lambda))`), but did not identify ARMA errors nor trends, but seasonal components. 
+
+<br>
+
+Also we applied the TBATS model on Trauma Consultations. 
+
+
+<br>
+
+```{r setting_tbats_cons_trauma, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T,  fig.align="center",fig.cap="Figure 3. TBATS Model of Trauma Consultations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_cons_trauma, h=11) %>%  autoplot()+ autolayer(pre_period_response_cons_trauma_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"date"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The model identified no box-cox transformations, no ARMA errors, a trend of `r round(fit_trainset_tbats_cons_trauma$damping.parameter,1)` but no seasonal periods. However, a visual inspection may not let us to conclude that there was an upward trend on the series.
+
+<br>
+
+```{r setting_tbats_cons_resp, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T,  fig.align="center",fig.cap="Figure 3. TBATS Model of Respiratory Consultations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_cons_resp, h=11) %>%  autoplot()+ autolayer(pre_period_response_cons_resp_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"date"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The resulting model suggested a box-cox transformation of lambda=`r sprintf("%1.2f",as.numeric(fit_trainset_tbats_cons_resp$lambda))`, that can be rounded to 1 (no transformation needed). Also, it identified no ARMA errors, no dumping parameters, but confirmed the monthly and annual seasonal components.
+
+<br>
+
+One disadvantage of this model is that does not allow to include covariates as control time-series. Additionally, despite that some outcomes did not show any seasonal trends, we decided to incorporate them anyways because of groundedIn backgrounds that add support for their inclusion.
+
+<br>
 
 # Bayesian Structural Time-Series
 
@@ -1627,7 +1360,7 @@ plot(impact3c3ar)
 #Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
 ```
 
-### Studentized Distributed Noise (more restrictive)
+#### Studentized Distributed Noise (more restrictive)
 
 <br>
 
@@ -2500,342 +2233,6 @@ d2 <- data.frame(
     as.numeric(AirPassengers),
     as.Date(time(AirPassengers)))
 names(d2) <- c("Fitted", "Actual", "Date")
-```
-
-# Interrupted Time Series Analysis
-
-We estimated the difference in post treatment and pre-treatment periods while controlling for covariates and a lagged dependent variable through a Type-2 Sum Squares ANCOVA Lagged Dependent Variable model. The model also accounts for baseline levels and trends present in the data, allowing us to attribute significant changes to the interruption. The F-statistics were calculated using a bootstrap model of `r print(clus_iter/2)` replications.
-
-<br>
-
-::: {style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%"}
-```{r itsa1, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.show="hide"}
-#tsData_gastos$trend
-#Using the inputted variables, a Type-2 Sum Squares ANCOVA Lagged Dependent Variable model is fitted which estimates the difference in means between interrupted and non-interrupted time periods, while accounting for the lag of the dependent variable and any further specified covariates.
-#Typically such analyses use Auto-regressive Integrated Moving Average (ARIMA) models to handle the serial dependence of the residuals of a linear model, which is estimated either as part of the ARIMA process or through a standard linear regression modeling process [9,17]. All such time series methods enable the effect of the event to be separated from general trends and serial dependencies in time, thereby enabling valid statistical inferences to be made about whether an intervention has had an effect on a time series.
-   #it uses Type-2 Sum Squares ANCOVA Lagged Dependent Variable model
-   #ITSA model da cuenta de observaciones autocorrelacionadas e impactos dinámicos mediante una regresión de deltas en rezagados. Una vez que se incorporan en el modelo, se controlan. 
-#residual autocorrelation assumptions
-#TSA allows the model to account for baseline levels and trends present in the data therefore allowing us to attribute significant changes to the interruption
-#RDestimate(all~agecell,data=metro_region,cutpoint = 21)
-
-#Ver con CHANGEPOINT
-##http://www.lancs.ac.uk/~killick/Pub/KillickEckley2011.pdf
-data15a64_rn2_its<-
-data15a64_rn2 %>% 
-  dplyr::mutate(did=factor(did))
-
-itsa_metro_region_quar<-
-        its.analysis::itsa.model(time = "rn", depvar = "hosp_trauma",data=data15a64_rn2,
-                                 interrupt_var = "did", covariates = c("hosp_circ", "hosp_resp","difftrc"), 
-                                 alpha = 0.05,no.plots = FALSE, bootstrap = TRUE, Reps = clus_iter/2, print = TRUE) 
-
-print(itsa_metro_region_quar)
-
-#This function runs and reports post-estimation tests on fits from the itsa.model function, and generates four plots.
-#Main tests are whether two key ANCOVA assumptions are met, and an additional autocorrelation test for the time series framework.
-#The Shaprio-Wilks test examines the residuals from the fitted model for abnormality. A p-value less than alpha indicates abnormal residuals.
-#The Levene’s Test makes sure that there are equal variances between the treated groups. A p-value less than alpha indicates heterogeneous variances.
-#A QQ-Norm and Boxplot are generated with the test results overlaid (respectively), with a Residualv Fitted and Autocorrelation Function Plot also generated.
-#The results of bootstrap estimations in itsa.model will be plotted, unless argument is switched to FALSE.
-#Default is to generate plots and summary table, but plots may be overridden using no.plots argument.
-#Default alpha value for post-estimation statistics is 0.05, test results will suggest potential presence of problems at higher values (and also at higher levels relative to a user-inputted alpha), but user discretion is needed (examined in tandam with the Residuals v Fitted plot).
-```
-:::
-
-<br>
-
-```{r itsa_plot,echo=T,fig.align='center', fig.pos='H', eval=T, message=FALSE, warning=F, fig.align='center', fig.cap= "Figure 12. Interrupted Time-Series Analysis of Trauma Hospitalizations in Inervention Period (2019-10-18)", error=T}
-ggplot_itsa<-itsa_metro_region_quar$itsa.plot
-
-print(ggplot_itsa)
-```
-
-<br>
-
-There were significant differences in the average trauma hospitalizations (F=`r round(itsa_metro_region_quar$booted.ints$'Mean F-value',2)[1]`, p=`r round(itsa_metro_region_quar$booted.ints$'P-value',3)[1]`). The differences explained `r scales::percent(itsa_metro_region_quar$adjr_sq)` of the variances. Must note that there were no autocorrelation evidence, but there were abnormal residuals (p= `r itsa_metro_region_quar$shapiro.test`). Tukey HSD test showed significant (log) differences `r paste0("(diff=",round(itsa_metro_region_quar$tukey.result$'x$interrupt_var'[1],2),",p=",sprintf("%4.4f",itsa_metro_region_quar$tukey.result$'x$interrupt_var'[4]),")")` between pre-period (`r paste0("M=",sprintf("%4.2f",itsa_metro_region_quar$group.means[1,3]),", SD=",sprintf("%4.2f",itsa_metro_region_quar$group.means[1,4]))`) and post-intervention period (`r paste0("M=",sprintf("%4.2f",itsa_metro_region_quar$group.means[2,3]),", SD=",sprintf("%4.2f",itsa_metro_region_quar$group.means[2,4]))`).
-
-<br>
-
-# Synthetic Control
-
-Next, we compared the data of trauma hospitalizations in 2019, to the hospitalizations of years from 2015 to 2018, estimating a counterfactual based on the weeks previous to the event (from week 1 to 42).
-
-<br>
-
-```{r exp_plot_lines_log_synth, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=15,eval=T, fig.align='center', fig.cap= "Figure 13. Linear trends of Weekly Hospital Traumatizations by Years (Median and IQRs)"}
-ggplotly_series<-
-data15a64_rn2%>%
-  #dplyr::mutate(text=paste0())
- # dplyr::group_by(year,yearweek)%>%
-  #dplyr::summarise(median=median(hosp_trauma,na.rm=T))%>%
-ggplot(text=test) + #median
-  #geom_point() + 
-  #geom_line() +
-  #geom_jitter(aes(y = hosp_trauma,x = isoweek, color = year),width = 0.5, alpha = 0.3)+
-  facet_wrap(~year, ncol = 1,strip.position="right") + 
-  theme_bw() + 
-  theme(strip.background  = element_blank(),
-        strip.text = element_text(face="bold", size=7))+
-  ylab("Counts") + 
-  xlab("Date") + 
-  theme(strip.text.x = element_text(size = 8, face = "bold"),
-        axis.text.y = element_blank(),
-        legend.position = "none",
-        plot.caption=element_text(hjust = 0))+
-  geom_smooth(aes(y = hosp_trauma,x = isoweek, color = year),stat = 'summary', color = 'red', fill = 'red', alpha = 0.2, 
-                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
-  geom_smooth(aes(y = hosp_circ,x = isoweek, color = year),stat = 'summary', color = 'darkblue', fill = 'navyblue', alpha = 0.2, 
-                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
-  geom_smooth(aes(y = hosp_resp,x = isoweek, color = year),stat = 'summary', color = 'violet', fill = 'violet', alpha = 0.2, 
-                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
-  geom_smooth(aes(y = difftrc,x = isoweek, color = year),stat = 'summary', color = 'darkgreen', fill = 'green', alpha = 0.2, 
-                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
-    #  geom_smooth(aes(y = hosp_total,x = yearweek, color = year),stat = 'summary', color = 'gray80', fill = 'gray80', alpha = 0.2, 
-   #             fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
-  labs(caption="Note. Year 2015 & 2016 had a length of 53 weeks.Red= Trauma Hospitalizations; Blue= Circulatory System Hospitalizations;\n Violet= Respiratory System Hospitalizations; Green= Diff. Between Trauma and Total Consultations")+
-  xlab("Week")+
-  scale_x_continuous(
-  breaks = seq(from = 1, to = 53, by =4)#,
-#  label = c("two", "four", "six")
-)
-ggplotly(ggplotly_series)%>% 
- layout(annotations = 
- list(x = .5, y = -0.035, text = "Note. Year 2015 & 2016 had a length of 53 weeks.Red= Trauma Hospitalizations; Blue= Circulatory System Hospitalizations;\n Violet= Respiratory System Hospitalizations; Green= Diff. Between Trauma and Total Consultations", 
-      showarrow = F, xref='paper', yref='paper', 
-      #xanchor='center', yanchor='auto', xshift=0, yshift=-0,
-      font=list(size=7, color="darkblue"))
- )
-```
-
-<br>
-
-We observed that linear trends shows very different behaviors. However, circulatory hospitalizations seems to show resemblances in the trends with trauma hospitalizations.
-
-<br>
-
-```{r exp_plot_lines_log_synth_std_diff, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=10,eval=T, fig.align='center', fig.cap= "Figure 14. Linear trends of Std. Differences of Variables, Between 2015-2018 vs. 2019, Before Week 43"}
-scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
-ggplotly_trends<-data15a64_rn2%>%
-   dplyr::filter(isoweek<43) %>%
-  #escalar los datos por todos l
-  dplyr::group_by(isoweek) %>% 
-  dplyr::mutate_at(.vars=vars(hosp_trauma, hosp_circ, hosp_resp, difftrc), 
-                   .funs = funs(`zw`=scale2(.)))%>%
-  dplyr::select(year,hosp_trauma_zw, hosp_circ_zw, hosp_resp_zw, difftrc_zw) %>% 
-  dplyr::ungroup()%>%
-  dplyr::mutate(treat.var=ifelse(year==2019,1,0))%>%
-  dplyr::group_by(treat.var,isoweek)%>%
-  dplyr::summarise_at(.vars=vars(hosp_trauma_zw, hosp_circ_zw, hosp_resp_zw, difftrc_zw),
-                      .funs = funs(mean = mean(.,na.rm=T)))%>%
-  dplyr::ungroup()%>%
-  tidyr::pivot_longer(cols = ends_with("_mean"),names_to="variable", values_to="value",values_drop_na = F)%>%
-  dplyr::group_by(isoweek, variable)%>%
-  dplyr::mutate(difference = max(value) - min(value))%>%
-  dplyr::filter(treat.var==0)%>%
- # dplyr::mutate(sig=if_else(variable %in% c("T21_AnyOpioid_zw_mean", "T21_PercRecHighDosage_zw_mean", "T57_Total_zw_mean"),0,1,0))%>%
-#  dplyr::mutate(sig=factor(sig))%>%
-  dplyr::ungroup()%>%
-   dplyr::rename("Outcome"="variable")%>%
-  ggplot(aes(x=isoweek,y=difference, color=Outcome))+
-  geom_line(size=1)+
-  geom_point(size=2) +
-  labs(y = "Std. Differences", x = "Week Number")+ 
-  sjPlot::theme_sjplot2() +
-  #scale_y_continuous(labels = scales::percent,limits=c(0, .999))+
-  #scale_color_manual(values=brewer.pal(n = 7, name = "Moonrise2"))+ #"Pastel1"
-  scale_color_manual(values=RColorBrewer::brewer.pal(n=4,name="Pastel2"))+ #"Pastel1"
-  #  scale_fill_manual(values = wes_palette(n=7, name="Darjeeling2"))+
-  #facet_grid(sig~., labeller= to_string, switch = "y")+
-  theme(legend.title = element_text(size= 10.5, colour = "black", family="Arial"), legend.position='bottom', 
-        legend.text=element_text(size=10, family="Arial"))+
-  theme(plot.caption = element_text(hjust = 0, face = "italic", family="Arial"))+
-  scale_x_continuous("Quarters & Years",breaks=seq(1,42,by=4))+
-  theme(panel.border = element_blank(),
-        panel.grid.major.y = element_blank(),
-        #panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())+
-  theme(strip.background=element_rect(fill="white"),
-        strip.text.y = element_text(face="bold", family="Arial"))+
-  guides(color = guide_legend(ncol = 2, nrow = 4, byrow = TRUE))
-ggplotly(ggplotly_trends) %>% 
-   layout(legend = list(
-      orientation = "h", y = -0.2
-    )
-  )
-```
-
-<br>
-
-Considering the differences shown in the figure above, we conserved all the covariates in order to generate a synthetic control.
-
-<br>
-
-```{r synth1, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
-#https://uclspp.github.io/PUBL0050/seminar6.html
-library("Synth")
-data15a64_rn3<-data15a64_rn2 %>% 
-  dplyr::filter(isoweek!=53)
-#data15a64_rn3[which(data15a64_rn3$isoweek==53),"did"]<-1
-#table(data15a64_rn2$isoweek,data15a64_rn2$did)
-
-dataprep.out <-
-        dataprep(data15a64_rn3,
-          predictors = c("hosp_circ", "hosp_resp","difftrc"),
-          dependent     = "hosp_trauma",
-          unit.variable = "year",
-          time.variable = "isoweek",
-          treatment.identifier  = 2019,
-          special.predictors = list(
-             list("hosp_trauma", 1, "median"),
-             list("hosp_trauma", 11, "median"),
-             list("hosp_trauma", 21, "median"),
-             list("hosp_trauma", 41, "median")),
-          predictors.op="median",
-          time.predictors.prior = c(1:42),
-          time.optimize.ssr= c(1:42),
-          controls.identifier   = c(2015:2018),
-          time.plot             = c(1:52))
-
-# Run synth
-  synth.out <- synth(dataprep.out,method = "All")
-
-synth2.out <- MSCMT::improveSynth(synth.out,dataprep.out,seed=2125)
-
-print(synth.tables   <- synth.tab(
-        dataprep.res = dataprep.out,
-        synth.res    = synth2.out)
-      )
-
-#https://rpubs.com/danilofreire/synth
-#https://towardsdatascience.com/causal-inference-using-synthetic-control-the-ultimate-guide-a622ad5cf827
-
-synth.tables = synth.tab(dataprep.res = dataprep.out,
-                         synth.res = synth2.out)
-names(synth.tables)
-
-synth.tables$tab.pred
-
-#To calculate the difference between the real trauma hospitalizations in 2019 and the synthetic control as follows:
-gaps = dataprep.out$Y1plot - (dataprep.out$Y0plot %*% synth2.out$solution.w)
-#plot(gaps,type="l")
-```
-
-<br>
-
-```{r synth2, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T, fig.show="hide", fig.cap= "Figure 15. Coefficients of SCM"}
-no_mostrar=1
-if(no_mostrar==0){
-path.plot(synth.res    = synth2.out,
-          dataprep.res = dataprep.out,
-          Ylab         = c("Y"),
-          Xlab         = c("Week of the Year"),
-          Ylim         = c(3, 5),
-          Legend       = c("2019","2015 to 2018"),
-          Legend.position = c("topleft")
-)
-abline(v   = 43,
-       lty = 2)
-}
-gaps.plot(synth.res = synth2.out, dataprep.res = dataprep.out, Ylab = "Trauma Hospitalizations", Xlab= "Week Number")
-```
-
-<br>
-
-```{r synth3, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 16. Comparison of Linear Trends of Trauma Hospitalizations in 2019 vs. Synthetic Counterfactual Based on 2015-2018"}
-
-plot.df = data.frame(dataprep.out$Y0plot%*%synth2.out$solution.w)
-
-years <- as.numeric(row.names(plot.df))
-plot.df = rbind(data.frame(year=years,y=plot.df$w.weight,unit='Synthetic'),
-           data.frame(year=years,y=data15a64_rn3$hosp_trauma[data15a64_rn3$year==2019 & data15a64_rn3$isoweek %in% years],unit='2019')
-)
-ggplot(plot.df,aes(x=year,y=y,color=unit)) + geom_line() + ylab("") + xlab("Week Number") + scale_color_manual(values=c('black','red')) +
-  ggtitle('Trauma Hospitalizations') +
-  theme_sjplot2()+
-  guides(color=guide_legend(title="Series"))+
-  geom_vline(xintercept = 43,linetype="longdash")+
-  labs(caption="Note. Vertical Line, Posterior Week to October 18th")+
-  theme(plot.caption = element_text(hjust = 0, face = "italic", family="Arial"))
-```
-
-<br>
-
-We compared several controls as a placebo test.
-
-<br>
-
-```{r synth4, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
-library(SCtools)
-#https://cran.r-project.org/web/packages/SCtools/SCtools.pdf
-
-placebos<-generate.placebos(
-dataprep.out,
-synth.out,
-Sigf.ipop = 5,
-strategy = "sequential"
-)
-mspe_test(placebos, discard.extreme = FALSE, mspe.limit = 20)
-
-```
-
-```{r synth5_plot_mspe_placebos, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 17. Ratio of MSPE of Placebos"}
-mspe.plot(
-placebos,
-discard.extreme = FALSE,
-mspe.limit = 20,
-plot.hist = FALSE,
-title = NULL,
-xlab = "Post/Pre MSPE ratio",
-ylab = NULL
-)
-```
-
-```{r synth6_plot_placebos, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 18. Comparison of Linear Trends of Placebos"}
-plot_placebos(
-tdf = placebos,
-discard.extreme = FALSE,
-mspe.limit = 20,
-xlab = NULL,
-ylab = NULL,
-title = NULL,
-alpha.placebos = 1,
-)
-```
-
-```{r prepare_codebook, echo=T, error=T,eval=T}
-invisible(c("DataExp"))
-#https://boxuancui.github.io/DataExplorer/
-#DataExplorer::create_report(coronavirus_iso3c_8)
-    
-mostrar="no"
-    if(mostrar=="si"){
-        ExPanDaR::ExPanD(df = codebook_data,
-               export_nb_option = F,  #para proteger la base de datos
-               title= "Exploration of Dataset", 
-               abstract= "Summarised information of the variables. ID: " ,
-               df_name= "", 
-              # df_def= df_def,
-               cs_id = "iso_code",
-               key_phrase = "ags", #proteger la bd
-               store_encrypted= T) 
-    }
-
-      tryCatch(
-                     {
-      save.image(paste0(getwd(),"/","Procesos hasta 5_hosp_trauma.RData"))
-      #rio::export(codebook_data, "C:/Users/andre/Dropbox/Covid-19_2020/Article_SecondManuscript/LT Environmental analysis/Databases/merged_data_post_ago.dta")
-                     },
-                         error = function(e){
-      save.image(paste0(getwd(),"/","Procesos hasta 5_hosp_trauma.RData"))
-      #rio::export(codebook_data, "C:/Users/CISS Fondecyt/Dropbox/Covid-19_2020/Article_SecondManuscript/LT Environmental analysis/Databases/merged_data_post_ago.dta")
-                         }
-                   )
-sessionInfo()
-```
-
-```{r codebook_final, echo=T,error=T,eval=F}
-codebook::codebook(codebook_data)
 ```
 
 # References

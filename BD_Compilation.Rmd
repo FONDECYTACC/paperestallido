@@ -73,6 +73,8 @@ p.comment {
 knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls());gc()
 
+unlink('BD_Compilation_cache', recursive = TRUE)
+
 if(!require(here)){install.packages("here")}
 
 #if(!require(groundhog)){install.packages("groundhog")}
@@ -213,9 +215,14 @@ if(!require(foreign)){install.packages("foreign")}
 if(!require(readr)){install.packages("readr")}
 if(!require(RODBC)){install.packages("RODBC")}
 if(!require(tidyverse)){install.packages("tidyverse")}
-if(!require(lubridate)){install.packages("lubridate")}
-
+if(!require(zoo)){install.packages("zoo")}
+if(!require(tidyr)){install.packages("tidyr")}
+if(!require(sjPlot)){install.packages("sjPlot")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(compareGroups)){install.packages("compareGroups")}
 ```
+
+# Compile Database
 
 ## Unite Databases
 
@@ -1400,8 +1407,8 @@ urg19_3_clean_cons <- urg19_3_clean %>%
   )
 # -------- Sum Hospital ID Cases - tsdata3 --------
 urg_control_3$date <- as.Date(urg_control_3$date)
-
-urg_control_3_cons <- urg_control_3 %>%
+#tsdata3=urg_control_3
+tsdata3 <- urg_control_3 %>%
   dplyr::group_by(date) %>%
   dplyr::summarise(
     year = unique(year),
@@ -1436,10 +1443,446 @@ urg_control_3_cons <- urg_control_3 %>%
     hosp_trauma_65a = sum(hosp_trauma_65a)
   )
 
-save.image(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
 ```
 
-\# Session Info
+### Analyse shocks
+
+```{r exp_plot_lines1, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 1. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution"}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
+
+ urg_control_3 %>% 
+   dplyr::filter(year==2018) %>% 
+  dplyr::mutate(date2=readr::parse_datetime(as.character(date), "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+    dplyr::mutate(id=factor(id, labels= c("Complejo Hospitalario San Jose (09-100)", 
+                                          "Hospital de Urgencia Asistencia Publica (11-195)", 
+                                          "Hospital Del Salvador de Santiago (12-100)"))) %>% 
+     pivot_longer(cols=cons_total_all:hosp_trauma_65a, names_to = "variable", values_to = "count") %>% 
+    dplyr::filter(variable  %in% c("hosp_total_15a64","hosp_resp_15a64","hosp_circ_15a64","hosp_trauma_15a64")) %>% 
+    dplyr::filter(count==0) %>%
+    dplyr::group_by(id,fech_week,variable) %>% 
+    dplyr::summarise(n = as.numeric(n()), start=min(date2)) %>% 
+   dplyr::ungroup() %>% 
+    ggplot2::ggplot(aes(x = fech_week, y = n, color=variable,group=variable)) +
+    geom_point(size=1.5) +
+    geom_line(alpha=.5) +
+    facet_wrap(id~.,ncol=1)+
+    #ylim()+
+    scale_color_manual("Hospitalizations", values=c("red", "blue", "green", "violet"), labels = c("Circulatory", "Respiratory","Total","Trauma")) +
+    sjPlot::theme_sjplot2() +
+    scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
+    labs(y="No. of Days in the week with 0 counts",
+         x="Years & Weeks") + 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+
+```
+
+<br>
+
+Aa seen in Figure 1, HUAP(11-195) had 2 important periods with weeks of 0 hospitlizations. These shocks may confound the posterior results, so we decided to interpolate these numbers with the median of 2018 of every institution.
+
+<br>
+
+```{r datasets_cons0, echo=T, cache= T, paged.print=TRUE, warning=F}
+#tsdata3 <- read.csv("tsdata3.csv")
+
+#tsdata3 %>% glimpse()  # hosp_resp_ hosp_circ_ hosp_trauma_ hosp_total_
+tsdata3_corr<-
+urg_control_3 %>% 
+  dplyr::mutate(date2=readr::parse_datetime(as.character(date), "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+  dplyr::arrange(id,fech_week)%>%
+  
+  dplyr::mutate(hosp_resp_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_all))%>%
+  dplyr::mutate(hosp_resp_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_15a64))%>% 
+  dplyr::mutate(hosp_resp_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_65a))%>%
+  
+  dplyr::mutate(hosp_circ_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_all))%>%  
+  dplyr::mutate(hosp_circ_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_15a64))%>% 
+  dplyr::mutate(hosp_circ_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_65a))%>%
+  
+  dplyr::mutate(hosp_trauma_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_all))%>%   
+    dplyr::mutate(hosp_trauma_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_15a64))%>%
+  dplyr::mutate(hosp_trauma_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_65a))%>%
+  
+  dplyr::mutate(hosp_total_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_all))%>%   dplyr::mutate(hosp_total_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_15a64))%>%   
+  dplyr::mutate(hosp_total_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_65a))%>%
+  
+  dplyr::group_by(id,year) %>% 
+ ### REPLACE WITH THE MEAN 
+    dplyr::mutate(hosp_resp_all= zoo::na.aggregate(hosp_resp_all,FUN=median))%>% 
+  dplyr::mutate(hosp_resp_15a64= zoo::na.aggregate(hosp_resp_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_resp_65a= zoo::na.aggregate(hosp_resp_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_circ_all= zoo::na.aggregate(hosp_circ_all,FUN=median))%>% 
+  dplyr::mutate(hosp_circ_15a64= zoo::na.aggregate(hosp_circ_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_circ_65a= zoo::na.aggregate(hosp_circ_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_trauma_all= zoo::na.aggregate(hosp_trauma_all,FUN=median))%>% 
+  dplyr::mutate(hosp_trauma_15a64= zoo::na.aggregate(hosp_trauma_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_trauma_65a= zoo::na.aggregate(hosp_trauma_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_total_all= zoo::na.aggregate(hosp_total_all,FUN=median))%>% 
+  dplyr::mutate(hosp_total_15a64= zoo::na.aggregate(hosp_total_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_total_65a= zoo::na.aggregate(hosp_total_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  dplyr::ungroup() %>% 
+  dplyr::select(-date2,-fech_week)
+
+tsdata3_corr_cons <- tsdata3_corr %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    year = unique(year),
+    month = unique(month),
+    day = unique(day),
+    cons_total_all = sum(cons_total_all),
+    cons_total_15a64 = sum(cons_total_15a64),
+    cons_total_65a = sum(cons_total_65a),
+    cons_resp_all = sum(cons_resp_all),
+    cons_resp_15a64 = sum(cons_resp_15a64),
+    cons_resp_65a = sum(cons_resp_65a),
+    cons_circ_all = sum(cons_circ_all),
+    cons_circ_15a64 = sum(cons_circ_15a64),
+    cons_circ_65a = sum(cons_circ_65a),
+    cons_diarrea_all = sum(cons_diarrea_all),
+    cons_diarrea_15a64 = sum(cons_diarrea_15a64),
+    cons_diarrea_65a = sum(cons_diarrea_65a),
+    cons_trauma_all = sum(cons_trauma_all),
+    cons_trauma_15a64 = sum(cons_trauma_15a64),
+    cons_trauma_65a = sum(cons_trauma_65a),
+    hosp_total_all = sum(hosp_total_all),
+    hosp_total_15a64 = sum(hosp_total_15a64),
+    hosp_total_65a = sum(hosp_total_65a),
+    hosp_resp_all = sum(hosp_resp_all),
+    hosp_resp_15a64 = sum(hosp_resp_15a64),
+    hosp_resp_65a = sum(hosp_resp_65a),
+    hosp_circ_all = sum(hosp_circ_all),
+    hosp_circ_15a64 = sum(hosp_circ_15a64),
+    hosp_circ_65a = sum(hosp_circ_65a),
+    hosp_trauma_all = sum(hosp_trauma_all),
+    hosp_trauma_15a64 = sum(hosp_trauma_15a64),
+    hosp_trauma_65a = sum(hosp_trauma_65a)
+  )
+```
+
+```{r exp_plot_lines, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 2. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution, After Interpolaiton"}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
+
+ tsdata3_corr %>% 
+   dplyr::filter(year==2018) %>% 
+  dplyr::mutate(date2=readr::parse_datetime(as.character(date), "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+    dplyr::mutate(id=factor(id, labels= c("Complejo Hospitalario San Jose (09-100)", 
+                                          "Hospital de Urgencia Asistencia Publica (11-195)", 
+                                          "Hospital Del Salvador de Santiago (12-100)"))) %>% 
+     pivot_longer(cols=cons_total_all:hosp_trauma_65a, names_to = "variable", values_to = "count") %>% 
+    dplyr::filter(variable  %in% c("hosp_total_15a64","hosp_resp_15a64","hosp_circ_15a64","hosp_trauma_15a64")) %>% 
+    dplyr::filter(count==0) %>%
+    dplyr::group_by(id,fech_week,variable) %>% 
+    dplyr::summarise(n = as.numeric(n()), start=min(date2)) %>% 
+   dplyr::ungroup() %>% 
+    ggplot2::ggplot(aes(x = fech_week, y = n, color=variable,group=variable)) +
+    geom_point(size=1.5) +
+    geom_line(alpha=.5) +
+    facet_wrap(id~.,ncol=1)+
+    #ylim()+
+    scale_color_manual("Hospitalizations", values=c("red", "blue", "green", "violet"), labels = c("Circulatory", "Respiratory","Total","Trauma")) +
+    sjPlot::theme_sjplot2() +
+    scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
+    labs(y="No. of Days in the week with 0 counts",
+         x="Years & Weeks") + 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+```
+<br>
+
+As seen in Figure 2, the interpolation resulted in stabilized counts of hospitaizations in 2018.
+
+<br>
+
+### Group values by week
+
+In first place, we downloaded the data and defined the datasets.
+
+<br>
+
+```{r datasets_cons1, echo=T, cache= T, paged.print=TRUE, warning=F}
+########## Read Data from CSV File ########
+data.control_corr <- tsdata3_corr_cons
+data.tx <- urg19_3_clean_cons
+data <- rbind(data.control_corr, data.tx)
+data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
+remove(data.control)
+remove(data.tx)
+
+########## Create Dummy Variables ########
+#aquí agrupó las instituciones
+## Dummy Variables for Age Group ##
+data15a64 <- data %>%
+  group_by(date) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    cons_total = cons_total_15a64,
+    cons_resp = cons_resp_15a64,
+    cons_circ = cons_circ_15a64,
+    cons_diarrea = cons_diarrea_15a64,
+    cons_trauma = cons_trauma_15a64,
+    hosp_total = hosp_total_15a64,
+    hosp_resp = hosp_resp_15a64,
+    hosp_circ = hosp_circ_15a64,
+    hosp_trauma = hosp_trauma_15a64,
+    age = "15-64"
+  )
+
+data65a <- data %>%
+  group_by(date) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    cons_total = cons_total_65a,
+    cons_resp = cons_resp_65a,
+    cons_circ = cons_circ_65a,
+    cons_diarrea = cons_diarrea_65a,
+    cons_trauma = cons_trauma_65a,
+    hosp_total = hosp_total_65a,
+    hosp_resp = hosp_resp_65a,
+    hosp_circ = hosp_circ_65a,
+    hosp_trauma = hosp_trauma_65a,
+    age = "65+"
+  )
+
+data <- rbind(data15a64, data65a)
+data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
+data$age <- as.factor(data$age)
+remove(data15a64)
+remove(data65a)
+
+## Other Dummy Variables ##
+data$exptime <- ifelse(data$month >=8, 1, 0)
+data$txtime <- ifelse(data$month >= 10 & data$day >= 18 | data$month >= 11, 1, 0)
+data$tx <- ifelse(data$year == "2019", 1, 0)
+data$did <- data$txtime * data$tx
+
+data$time <- 0
+data$time[data$exptime == 1] <- seq(by = 1, from = 1, to = 153)
+data$post <- 0
+data$post[data$did == 1] <- seq(by = 1, to = 87) #no me funciona length(data$post[data$did == 1])= 150 
+Sys.setlocale(category = "LC_ALL", locale = "english")
+#por qué no me funciona: data15a64%>% dplyr::filter(date>="2019-10-18")%>% dplyr::summarise(min=min(time),max=max(time),diff=max-min)
+
+
+#:#:#::#:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:
+#:#:#::#:##:#:#:#:#:
+#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:
+
+invisible(c("lo tuve que sacar"))
+
+#data <- data[data$date != "2016-02-29", ]
+
+data$yearday <- strftime(as.Date(data$date), format = "%j")
+data$yearday <- as.numeric(data$yearday)
+#data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] <- data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] - 1
+#glimpse(data)
+Sys.setlocale(category = "LC_ALL", locale = "english")
+data$weekday <- weekdays(as.Date(data$date))
+data$weekday <- ordered(data$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+data$sig <- ifelse(data$month == 10 & data$day == 6 | data$month == 10 & data$day == 18 | data$month == 10 & data$day == 25, 1, 0)
+data$week <-lubridate::week(data$date)
+data$isoweek <-lubridate::isoweek(lubridate::ymd(data$date))
+
+#lubridate::floor_date(isoweek(data$date, "%Y-%m-%d"), unit="week")
+
+## Dummy Variable for Dependent Variable of Choice Prior Day Value ##
+data$prevtrc[data$age == "15-64"] <- c(NA, data$cons_trauma[data$age == "15-64"][-1825])
+data$prevtrc[data$age == "65+"] <- c(NA, data$cons_trauma[data$age == "65+"][-1825])
+data$prevrec[data$age == "15-64"] <- c(NA, data$cons_resp[data$age == "15-64"][-1825])
+data$prevrec[data$age == "65+"] <- c(NA, data$cons_resp[data$age == "65+"][-1825])
+data$prevtrh[data$age == "15-64"] <- c(NA, data$hosp_trauma[data$age == "15-64"][-1825])
+data$prevtrh[data$age == "65+"] <- c(NA, data$hosp_trauma[data$age == "65+"][-1825])
+data$prevreh[data$age == "15-64"] <- c(NA, data$hosp_resp[data$age == "15-64"][-1825])
+data$prevreh[data$age == "65+"] <- c(NA, data$hosp_resp[data$age == "65+"][-1825])
+
+########## Create Dummy Variables ########
+#aquí agrupó las instituciones
+## Dummy Variables for Age Group ##
+data15a64_wk <- data %>%
+  dplyr::filter(as.character(age)=="15-64")%>%
+  dplyr::group_by(year_week) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    date= date,
+    cons_total = sum(cons_total,na.rm=T),
+    cons_resp = sum(cons_resp,na.rm=T),
+    cons_circ = sum(cons_circ,na.rm=T),
+    cons_diarrea = sum(cons_diarrea,na.rm=T),
+    cons_trauma = sum(cons_trauma,na.rm=T),
+    hosp_total = sum(hosp_total,na.rm=T),
+    hosp_resp = sum(hosp_resp,na.rm=T),
+    hosp_circ = sum(hosp_circ,na.rm=T),
+    hosp_trauma = sum(hosp_trauma,na.rm=T),
+    sig= sig,
+    weekday= weekday,
+    yearday= yearday,
+    prevtrc= sum(prevtrc,na.rm=T),
+    prevrec= sum(prevrec,na.rm=T),
+    prevtrh= sum(prevtrh,na.rm=T),
+    prevreh= sum(prevreh,na.rm=T),
+    week=week,
+    isoweek=isoweek
+    )%>%
+  slice(1)%>%
+  ungroup()
+
+data65a_wk <- data %>%
+  dplyr::filter(as.character(age)=="65+")%>%
+  dplyr::group_by(year_week)%>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    date= date,
+    cons_total = sum(cons_total,na.rm=T),
+    cons_resp = sum(cons_resp,na.rm=T),
+    cons_circ = sum(cons_circ,na.rm=T),
+    cons_diarrea = sum(cons_diarrea,na.rm=T),
+    cons_trauma = sum(cons_trauma,na.rm=T),
+    hosp_total = sum(hosp_total,na.rm=T),
+    hosp_resp = sum(hosp_resp,na.rm=T),
+    hosp_circ = sum(hosp_circ,na.rm=T),
+    hosp_trauma = sum(hosp_trauma,na.rm=T),
+    sig= sig,
+    weekday= weekday,
+    yearday= yearday,
+    prevtrc= sum(prevtrc,na.rm=T),
+    prevrec= sum(prevrec,na.rm=T),
+    prevtrh= sum(prevtrh,na.rm=T),
+    prevreh= sum(prevreh,na.rm=T),
+    week=week,
+    isoweek=isoweek
+  )%>%
+  slice(1)%>%
+  ungroup()
+
+data15a64_wk$difftrc <- data15a64_wk$cons_total - data15a64_wk$cons_trauma
+data15a64_wk$difftrh <- data15a64_wk$hosp_total - data15a64_wk$hosp_trauma
+data15a64_wk$diffrec <- data15a64_wk$cons_total - data15a64_wk$cons_resp
+data15a64_wk$diffreh <- data15a64_wk$hosp_total - data15a64_wk$hosp_resp
+
+data15a64_wk$offset <- data15a64_wk$cons_total + data15a64_wk$hosp_total
+
+data65a_wk$difftrc <- data65a_wk$cons_total - data65a_wk$cons_trauma
+data65a_wk$difftrh <- data65a_wk$hosp_total - data65a_wk$hosp_trauma
+data65a_wk$diffrec <- data65a_wk$cons_total - data65a_wk$cons_resp
+data65a_wk$diffreh <- data65a_wk$hosp_total - data65a_wk$hosp_resp
+
+data65a_wk$offset <- data65a_wk$cons_total + data65a_wk$hosp_total
+
+#data$tx <- ifelse(data$year == "2019", 1, 0)
+#data$did <- data$txtime * data$tx
+data15a64_wk$txtime <- ifelse(data15a64_wk$year == 2019 & data15a64_wk$isoweek>42, 1, 0)
+data15a64_wk$txtime2 <- ifelse(data15a64_wk$year == 2019 & data15a64_wk$isoweek>41, 1, 0)
+data15a64_wk$tx <- ifelse(data15a64_wk$year == 2019, 1, 0)
+data15a64_wk$did <- data15a64_wk$txtime * data15a64_wk$tx
+
+data65a_wk$txtime <- ifelse(data65a_wk$year == 2019 & data65a_wk$isoweek>42, 1, 0)
+data65a_wk$txtime2 <- ifelse(data65a_wk$year == 2019 & data65a_wk$isoweek>41, 1, 0)
+data65a_wk$tx <- ifelse(data65a_wk$year == 2019, 1, 0)
+data65a_wk$did <- data65a_wk$txtime * data65a_wk$tx
+#2019-W42
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+data15a64_rn<- data15a64_wk%>% dplyr::mutate(rn=row_number())
+
+data15a64_rn_ratio<- data15a64_rn %>% 
+  dplyr::mutate(rate=(hosp_trauma/cons_trauma)*1000) %>% 
+  dplyr::mutate(ratio=hosp_trauma/cons_trauma) %>% 
+  dplyr::mutate(ratio_circ=hosp_circ/cons_circ) %>% 
+  dplyr::mutate(rate_circ=(hosp_circ/cons_circ)*1000) %>% 
+  dplyr::mutate(rate_resp=(hosp_resp/cons_resp)*1000) %>% 
+  dplyr::mutate(ratio_resp=hosp_resp/cons_resp)
+
+attr(data15a64_rn_ratio$ratio,"variable.labels") <- "Ratio Between Trauma Hospitalizations and Trauma Consultations"
+attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Consultations per 1,000 population"
+attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Consultations per 1,000 population"
+attr(data15a64_rn_ratio$year_week, "label") <- "Year-Week (ISO 8601) (chr)"
+attr(data15a64_rn_ratio$isoweek, "label") <- "Week Number (ISO 8601) (num)"
+attr(data15a64_rn_ratio$year, "label") <- "Year"
+attr(data15a64_rn_ratio$month, "label") <- "Month"
+attr(data15a64_rn_ratio$day, "label") <- "Day"
+
+attr(data15a64_rn_ratio$cons_total, "label") <- "Total Consultations"
+attr(data15a64_rn_ratio$cons_resp, "label") <- "Respiratory Consultations"
+attr(data15a64_rn_ratio$cons_circ, "label") <- "Circulatory Consultations"
+attr(data15a64_rn_ratio$cons_diarrea, "label") <- "Diarrhea Consultations"
+attr(data15a64_rn_ratio$cons_trauma, "label") <- "Trauma Consultations"
+
+attr(data15a64_rn_ratio$hosp_total, "label") <- "Total Hospitalizations"
+attr(data15a64_rn_ratio$hosp_resp, "label") <- "Respiratory Hospitalizations"
+attr(data15a64_rn_ratio$hosp_circ, "label") <- "Circulatory Hospitalizations"
+attr(data15a64_rn_ratio$hosp_trauma, "label") <- "Trauma Hospitalizations"
+
+#attr(data$age, "label") <- "Age (factor)"
+#attr(data$exptime, "label") <- "From August 8th to December 31th"
+#attr(data15a64_wk) <- "Treatment Period"
+attr(data15a64_rn_ratio$tx, "label") <- "Post-treatment Period (Only 2019)"
+attr(data15a64_rn_ratio$did, "label") <- "Post-Treatment Period * Treatment"
+#attr(data15a64_wk$time, "label") <- "August 1st to December 31th, by Year"
+attr(data15a64_rn_ratio$txtime2, "label") <- "Post-intervention Period (After but incluiding 2019-10-18 W42)"
+attr(data15a64_rn_ratio$txtime, "label") <- "Post-intervention Period (After 2019-10-18 W42)"
+attr(data15a64_rn_ratio$yearday, "label") <- "Day of the year (numeric)"
+attr(data15a64_rn_ratio$weekday, "label") <- "Weekday"
+attr(data15a64_rn_ratio$week, "label") <- "Week number by Year (Lubridate criteria)"  #no está presente
+
+attr(data15a64_rn_ratio$sig, "label") <- "October 6th; October 18th; October 25th"
+
+attr(data15a64_rn_ratio$prevtrc, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Consultations"
+attr(data15a64_rn_ratio$prevrec, "label") <-  "Dependent Variable of Choice Prior Day Value of the Total Respiratory Consultations"
+attr(data15a64_rn_ratio$prevtrh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Hospitalizations"
+attr(data15a64_rn_ratio$prevreh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Respiratory Hospitalizations"
+
+attr(data15a64_rn_ratio$difftrc, "label") <- "Difference Between Total Consultations and the Total Trauma Consultations"
+attr(data15a64_rn_ratio$difftrh, "label") <- "Difference Between Total Hospitalizations and the Total Trauma Hospitalizations"
+attr(data15a64_rn_ratio$diffrec, "label") <-  "Difference Between Total Consultations and the Total Respiratory Consultations"
+attr(data15a64_rn_ratio$diffreh, "label") <- "Difference Between Total Hospitalizations and the Total Respiratory Hospitalizations"
+attr(data15a64_rn_ratio$offset, "label") <- "Sum of the total consultations and total hospitalizations"
+
+attr(data15a64_rn_ratio$rate,"label") <- "Rate of Trauma Hospitalizations per Trauma Consultations (x1,000 population)"
+attr(data15a64_rn_ratio$rate_resp,"label") <- "Respiratory Hospitalizations per Respiratory Consultations (x1,000 population)"
+
+library(compareGroups)
+#pvals <- compareGroups::getResults(table, "p.overall")
+table2 <- compareGroups::compareGroups(did ~ cons_total+ cons_trauma+ cons_resp+ cons_circ+ hosp_total+ hosp_trauma+ hosp_resp+ hosp_circ+ rate+ rate_resp, #27
+                       method = c(cons_total=2, cons_trauma=2, cons_resp=2, cons_circ=2,  hosp_total=2,
+                                  hosp_resp=2, hosp_circ=2, hosp_trauma=2,rate=2, rate_resp=2),
+                      data = data15a64_rn_ratio,
+                      include.miss = T,
+                      var.equal=T)
+                      #,
+                      #subset = age == "15-64")
+#p.adjust(pvals, method = "BH")
+restab <- createTable(table2, show.n = F, show.p.overall = F)
+ compareGroups::export2md(restab, first.strip = T, show.all = T,hide.no = "no",header.labels = c(`0`= "Pre- Oct 18, 2020", `1`="Post Oct 18, 2020"), size=12,col.names= c("", "Previous to social
+protests","During social protests"),format="html",position="center",caption= "Table 1. Median descriptive table of emergency department consultations and hospitalizations, pre and port Ocober’s 2019 social protests in Chile")%>%#,p.overall = "p-value"
+  kableExtra::add_footnote(paste0("Note. Percentiles 25 and 75 in brackets."), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+We subsetted the interval of consultations and hospitalizations of patients between 15 and 64.
+
+<br>
+
+# Session Info
 
 ```{r save, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
 Sys.getenv("R_LIBS_USER")
@@ -1452,4 +1895,6 @@ sessionInfo()
 
 #carsData <- read.table(unz(temp, "a1.dat"))
 #unlink(temp)
+save.image(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
+
 ```

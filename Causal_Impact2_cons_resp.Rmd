@@ -68,7 +68,7 @@ p.comment {
 ```
 ```{r setup0, include=FALSE}
 rm(list=ls());gc()
-load(paste0(getwd(),"/","Procesos hasta 4.RData"))
+load(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
 #xaringan::inf_mr()
 
 if(isTRUE(getOption('knitr.in.progress'))==T){
