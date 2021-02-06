@@ -1893,8 +1893,6 @@ rstudioapi::getSourceEditorContext()
 
 sessionInfo()
 
-#carsData <- read.table(unz(temp, "a1.dat"))
-#unlink(temp)
 save.image(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
 
 ```
