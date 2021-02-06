@@ -2,7 +2,16 @@
 title: "Compilation"
 author: "ags"
 date: "03-02-2021"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 6
+    fig_width: 8
+    theme: spacelab
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+    number_sections: yes
 ---
 
 <style type="text/css">
@@ -44,8 +53,7 @@ p.comment {
   font-style: italic;
 }
 </style>
-```
-```{=html}
+
 <style>
   p.comment {
     background-color: #ff9a9a;
@@ -136,7 +144,7 @@ eval_fork <- function(..., timeout=60){
   return(myresult);  
 }
 ```
-```{r setup2, include=FALSE}
+```{r setup2}
 local({r <- getOption("repos")
        r["CRAN"] <- "http://cran.r-project.org" 
        options(repos=r)
@@ -1175,7 +1183,7 @@ urg19_3 <- merge(cons, hosps)
 
 We generated three variables regarding year, month and day of the date.
 
-```{r 2 - Urg Data Cleaning, echo=FALSE}
+```{r 2 - Urg Data Cleaning}
 Sys.setlocale(category = "LC_ALL", locale = "english")
 `%>%`<- magrittr::`%>%`
 # -------- Separate Date into YMD Columns - Urg15 within 3KM --------
@@ -1218,7 +1226,7 @@ urg19_3 <- urg19_3[, c(1, 59, 2:4, 5:58)]
 
 We constructed three single time-series databases containing information related to each hospital.
 
-```{r 3 - Time Series (tsdata) Data Creation, echo=FALSE}
+```{r 3 - Time Series (tsdata) Data Creation}
 # -------- Isolate urg19_3 Hospital IDs 11-195 & 12-100 --------
 # Isolate Hospital ID 09-100
 urg19_3$date <- as.Date(urg19_3$date)
@@ -1352,7 +1360,7 @@ urg_control_3 <- rbind(urg15_3, urg16_3, urg17_3, urg18_3)
 
 We generated an aggregated database containing the sum of daily counts of each type of consultation and hospitalization.
 
-```{r 4 - Time Series (tsdata) Data Cleaning, echo=FALSE}
+```{r 4 - Time Series (tsdata) Data Cleaning}
 # -------- Sum Hospital ID Cases - urg19_3_clean --------
 urg19_3_clean$date <- as.Date(urg19_3_clean$date)
 
