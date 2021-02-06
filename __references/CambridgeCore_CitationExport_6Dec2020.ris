@@ -1,0 +1,17 @@
+TY  - JOUR
+AB  - Many areas of political science focus on causal questions. Evidence from statistical analyses is often used to make the case for causal relationships. While statistical analyses can help establish causal relationships, it can also provide strong evidence of causality where none exists. In this essay, I provide an overview of the statistics of causal inference. Instead of focusing on specific statistical methods, such as matching, I focus more on the assumptions needed to give statistical estimates a causal interpretation. Such assumptions are often referred to as identification assumptions, and these assumptions are critical to any statistical analysis about causal effects. I outline a wide range of identification assumptions and highlight the design-based approach to causal inference. I conclude with an overview of statistical methods that are frequently used for causal inference.
+AU  - Keele, Luke
+DB  - Cambridge Core
+DO  - DOI: 10.1093/pan/mpv007
+DP  - Cambridge University Press
+ET  - 2017/01/04
+IS  - 3
+PB  - Cambridge University Press
+PY  - 2015
+SN  - 1047-1987
+SP  - 313-335
+T2  - Political Analysis
+TI  - The Statistics of Causal Inference: A View from Political Methodology
+UR  - https://www.cambridge.org/core/article/statistics-of-causal-inference-a-view-from-political-methodology/314EFF877ECB1B90A1452D10D4E24BB3
+VL  - 23
+ER  - 

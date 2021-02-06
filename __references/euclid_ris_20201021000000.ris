@@ -1,0 +1,50 @@
+
+TY  - JOUR
+AB  - An important problem in econometrics and marketing is to infer the 
+      causal impact that a designed market intervention has exerted on an 
+      outcome metric over time. This paper proposes to infer causal impact 
+      on the basis of a diffusion-regression state-space model that predicts
+      the counterfactual market response in a synthetic control that would 
+      have occurred had no intervention taken place. In contrast to 
+      classical difference-in-differences schemes, state-space models make 
+      it possible to (i) infer the temporal evolution of attributable 
+      impact, (ii) incorporate empirical priors on the parameters in a fully
+      Bayesian treatment, and (iii) flexibly accommodate multiple sources of
+      variation, including local trends, seasonality and the time-varying 
+      influence of contemporaneous covariates. Using a Markov chain Monte 
+      Carlo algorithm for posterior inference, we illustrate the statistical
+      properties of our approach on simulated data. We then demonstrate its 
+      practical utility by estimating the causal effect of an online 
+      advertising campaign on search-related site visits. We discuss the 
+      strengths and limitations of state-space models in enabling causal 
+      attribution in those settings where a randomised experiment is 
+      unavailable. The CausalImpact R package provides an implementation of 
+      our approach. 
+AU  - Brodersen, Kay H.
+AU  - Gallusser, Fabian
+AU  - Koehler, Jim
+AU  - Remy, Nicolas
+AU  - Scott, Steven L.
+DA  - 2015/03
+DO  - 10.1214/14-AOAS788
+EP  - 274
+IS  - 1
+JA  - Ann. Appl. Stat.
+KW  - Causal inference
+KW  - counterfactual
+KW  - synthetic control
+KW  - observational
+KW  - difference in differences
+KW  - econometrics
+KW  - advertising
+KW  - market research
+LA  - en
+PB  - The Institute of Mathematical Statistics
+PY  - 2015
+SN  - 1932-6157
+SP  - 247
+TI  - Inferring causal impact using Bayesian structural time-series models
+UR  - https://projecteuclid.org:443/euclid.aoas/1430226092
+VL  - 9
+ER  - 
+

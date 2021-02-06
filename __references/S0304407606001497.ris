@@ -1,0 +1,23 @@
+TY  - JOUR
+T1  - Trends and cycles in economic time series: A Bayesian approach
+AU  - Harvey, Andrew C.
+AU  - Trimbur, Thomas M.
+AU  - Van Dijk, Herman K.
+JO  - Journal of Econometrics
+VL  - 140
+IS  - 2
+SP  - 618
+EP  - 649
+PY  - 2007
+DA  - 2007/10/01/
+SN  - 0304-4076
+DO  - https://doi.org/10.1016/j.jeconom.2006.07.006
+UR  - http://www.sciencedirect.com/science/article/pii/S0304407606001497
+KW  - Output gap
+KW  - Kalman filter
+KW  - Markov chain Monte Carlo
+KW  - Real-time estimation
+KW  - Turning points
+KW  - Unobserved components
+AB  - Trends and cyclical components in economic time series are modeled in a Bayesian framework. This enables prior notions about the duration of cycles to be used, while the generalized class of stochastic cycles employed allows the possibility of relatively smooth cycles being extracted. The posterior distributions of such underlying cycles can be very informative for policy makers, particularly with regard to the size and direction of the output gap and potential turning points. From the technical point of view a contribution is made in investigating the most appropriate prior distributions for the parameters in the cyclical components and in developing Markov chain Monte Carlo methods for both univariate and multivariate models. Applications to US macroeconomic series are presented.
+ER  - 

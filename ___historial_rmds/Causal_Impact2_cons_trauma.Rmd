@@ -1,0 +1,2331 @@
+---
+title: "Dataset Consolidation"
+output:
+  html_document: 
+    code_folding: hide
+    fig_height: 6
+    fig_width: 8
+    theme: spacelab
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+    number_sections: yes
+---
+
+```{=html}
+<style type="text/css">
+.tablelines table, .tablelines td, .tablelines th {
+  border: 1px solid black;
+  }
+.centrado {
+  text-align: center;
+}
+.table.center {
+  margin-left:auto; 
+  margin-right:auto;
+}
+.table_wrapper{
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+code.r{
+  font-size: 8px;
+}
+body{ /* Normal  */
+    text-align: justify;
+}
+.superbigimage{
+  overflow-y:scroll;
+  white-space: nowrap;
+}
+.superbigimage img{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+p.comment {
+  background-color: #FF7F79;
+    padding: 10px;
+  border: 1px solid black;
+  margin-left: 25px;
+  border-radius: 5px;
+  font-style: italic;
+}
+</style>
+```
+```{=html}
+<style>
+  p.comment {
+    background-color: #ff9a9a;
+      padding: 10px;
+    border: 1px solid red;
+    margin-left: 25px;
+    border-radius: 5px;
+    font-style: italic;
+  }
+
+</style>
+```
+```{r setup0, include=FALSE}
+rm(list=ls());gc()
+load(paste0(getwd(),"/","Procesos hasta 4.RData"))
+#xaringan::inf_mr()
+
+if(isTRUE(getOption('knitr.in.progress'))==T){
+    clus_iter=5000
+} else {
+  input <- readline('¿Are you gonna run the dataset with the whole iterations? (Si/No): ')
+  if(input=="Si"){
+    clus_iter=10000
+  } else {
+    clus_iter=1000
+  }
+}
+```
+
+```{r setup, include=T, message=F, warning=F}
+#arriba puse algunas opciones para que por defecto escondiera el código
+#también cargue algunos estilo .css para que el texto me apareciera justificado, entre otras cosas.
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+
+`%>%` <- magrittr::`%>%`
+copy_names <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(ungroup(x))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+unlink('Causal_Impact2_cons_trauma_cache', recursive = TRUE)
+if(!require(pacman)){install.packages("pacman")}
+
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+#dejo los paquetes estadísticos que voy a utilizar
+
+if(!require(plotly)){install.packages("plotly")}
+if(!require(lubridate)){install.packages("lubridate")}
+if(!require(htmlwidgets)){install.packages("htmlwidgets")}
+if(!require(tidyverse)){install.packages("tidyverse")}
+if(!require(gganimate)){install.packages("gganimate")}
+if(!require(readr)){install.packages("readr")}
+if(!require(stringr)){install.packages("stringr")}
+if(!require(data.table)){install.packages("data.table")}
+if(!require(DT)){install.packages("DT")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(lattice)){install.packages("lattice")}
+if(!require(forecast)){install.packages("forecast")}
+if(!require(zoo)){install.packages("zoo")}
+if(!require(panelView)){install.packages("panelView")}
+if(!require(janitor)){install.packages("janitor")}
+if(!require(rjson)){install.packages("rjson")}
+if(!require(estimatr)){install.packages("estimatr")} 
+if(!require(CausalImpact)){install.packages("CausalImpact")}
+if(!require(textreg)){install.packages("textreg")}
+if(!require(sjPlot)){install.packages("sjPlot")}
+if(!require(foreign)){install.packages("foreign")}
+if(!require(tsModel)){install.packages("tsModel")}
+if(!require(lmtest)){install.packages("lmtest")}
+if(!require(Epi)){install.packages("Epi")}
+if(!require(splines)){install.packages("splines")}
+if(!require(vcd)){install.packages("vcd")}
+if(!require(astsa)){install.packages("astsa")}
+if(!require(forecast)){install.packages("forecast")}
+if(!require(MASS)){install.packages("MASS")}
+if(!require(ggsci)){install.packages("ggsci")}
+if(!require(Hmisc)){install.packages("Hmisc")}
+if(!require(compareGroups)){install.packages("compareGroups")}
+if(!require(dplyr)){install.packages("dplyr")}
+if(!require(ggforce)){install.packages("ggforce")}
+if(!require(imputeTS)){install.packages("imputeTS")}
+if(!require(doParallel)){install.packages("doParallel")}
+if(!require(SCtools)){install.packages("SCtools")}
+if(!require(MSCMT)){install.packages("MSCMT")}
+# Calculate the number of cores
+no_cores <- detectCores() - 1
+cl<-makeCluster(no_cores)
+registerDoParallel(cl)
+
+Sys.setlocale(category = "LC_ALL", locale = "english")
+```
+
+```{r datasets_cons0, echo=T, cache= T, paged.print=TRUE, warning=F}
+tsdata3 <- read.csv("tsdata3.csv")
+
+#tsdata3 %>% glimpse()  # hosp_resp_ hosp_circ_ hosp_trauma_ hosp_total_
+tsdata3_corr<-
+tsdata3 %>% 
+  dplyr::mutate(date2=readr::parse_datetime(date, "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+  dplyr::arrange(id,fech_week)%>%
+  
+  dplyr::mutate(hosp_resp_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_all))%>%
+  dplyr::mutate(hosp_resp_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_15a64))%>% 
+  dplyr::mutate(hosp_resp_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_65a))%>%
+  
+  dplyr::mutate(hosp_circ_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_all))%>%  
+  dplyr::mutate(hosp_circ_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_15a64))%>% 
+  dplyr::mutate(hosp_circ_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_65a))%>%
+  
+  dplyr::mutate(hosp_trauma_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_all))%>%   
+    dplyr::mutate(hosp_trauma_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_15a64))%>%
+  dplyr::mutate(hosp_trauma_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_65a))%>%
+  
+  dplyr::mutate(hosp_total_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_all))%>%   dplyr::mutate(hosp_total_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_15a64))%>%   
+  dplyr::mutate(hosp_total_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_65a))%>%
+  
+  dplyr::group_by(id,year) %>% 
+ ### REPLACE WITH THE MEAN 
+    dplyr::mutate(hosp_resp_all= zoo::na.aggregate(hosp_resp_all,FUN=median))%>% 
+  dplyr::mutate(hosp_resp_15a64= zoo::na.aggregate(hosp_resp_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_resp_65a= zoo::na.aggregate(hosp_resp_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_circ_all= zoo::na.aggregate(hosp_circ_all,FUN=median))%>% 
+  dplyr::mutate(hosp_circ_15a64= zoo::na.aggregate(hosp_circ_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_circ_65a= zoo::na.aggregate(hosp_circ_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_trauma_all= zoo::na.aggregate(hosp_trauma_all,FUN=median))%>% 
+  dplyr::mutate(hosp_trauma_15a64= zoo::na.aggregate(hosp_trauma_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_trauma_65a= zoo::na.aggregate(hosp_trauma_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_total_all= zoo::na.aggregate(hosp_total_all,FUN=median))%>% 
+  dplyr::mutate(hosp_total_15a64= zoo::na.aggregate(hosp_total_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_total_65a= zoo::na.aggregate(hosp_total_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  dplyr::ungroup() %>% 
+  dplyr::select(-date2,-fech_week)
+
+tsdata3_corr_cons <- tsdata3_corr %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    year = unique(year),
+    month = unique(month),
+    day = unique(day),
+    cons_total_all = sum(cons_total_all),
+    cons_total_15a64 = sum(cons_total_15a64),
+    cons_total_65a = sum(cons_total_65a),
+    cons_resp_all = sum(cons_resp_all),
+    cons_resp_15a64 = sum(cons_resp_15a64),
+    cons_resp_65a = sum(cons_resp_65a),
+    cons_circ_all = sum(cons_circ_all),
+    cons_circ_15a64 = sum(cons_circ_15a64),
+    cons_circ_65a = sum(cons_circ_65a),
+    cons_diarrea_all = sum(cons_diarrea_all),
+    cons_diarrea_15a64 = sum(cons_diarrea_15a64),
+    cons_diarrea_65a = sum(cons_diarrea_65a),
+    cons_trauma_all = sum(cons_trauma_all),
+    cons_trauma_15a64 = sum(cons_trauma_15a64),
+    cons_trauma_65a = sum(cons_trauma_65a),
+    hosp_total_all = sum(hosp_total_all),
+    hosp_total_15a64 = sum(hosp_total_15a64),
+    hosp_total_65a = sum(hosp_total_65a),
+    hosp_resp_all = sum(hosp_resp_all),
+    hosp_resp_15a64 = sum(hosp_resp_15a64),
+    hosp_resp_65a = sum(hosp_resp_65a),
+    hosp_circ_all = sum(hosp_circ_all),
+    hosp_circ_15a64 = sum(hosp_circ_15a64),
+    hosp_circ_65a = sum(hosp_circ_65a),
+    hosp_trauma_all = sum(hosp_trauma_all),
+    hosp_trauma_15a64 = sum(hosp_trauma_15a64),
+    hosp_trauma_65a = sum(hosp_trauma_65a)
+  )
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
+no_muestra=1
+if(no_muestra==0){
+ tsdata3_corr %>% 
+   dplyr::filter(year==2018) %>% 
+  dplyr::mutate(date2=readr::parse_datetime(date, "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+    dplyr::mutate(id=factor(id, labels= c("Complejo Hospitalario San Jose (09-100)", 
+                                          "Hospital de Urgencia Asistencia Publica (11-195)", 
+                                          "Hospital Del Salvador de Santiago (12-100)"))) %>% 
+     pivot_longer(cols=cons_total_all:hosp_trauma_65a, names_to = "variable", values_to = "count") %>% 
+    dplyr::filter(variable  %in% c("hosp_total_15a64","hosp_resp_15a64","hosp_circ_15a64","hosp_trauma_15a64")) %>% 
+    dplyr::filter(count==0) %>%
+    dplyr::group_by(id,fech_week,variable) %>% 
+    dplyr::summarise(n = as.numeric(n()), start=min(date2)) %>% 
+   dplyr::ungroup() %>% 
+    ggplot2::ggplot(aes(x = fech_week, y = n, color=variable,group=variable)) +
+    geom_line(size=1) +
+    facet_wrap(id~.,ncol=1)+
+    #ylim()+
+    sjPlot::theme_sjplot2() +
+    ggtitle("Table 3. Dataset of Information of 2018, Cases with 0 hospitalizations (from 15 to 64 years)\nby Cause and Institution, after Interpolation of cases with the median")+
+    scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
+    labs(y="No. of Days in the week with 0 counts",
+         x="Years & Weeks") + 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+}
+
+```
+
+# Dataset Compile
+
+In first place, we downloaded the data and defined the datasets.
+
+```{r datasets_cons1, eval=T, echo=T, warning=FALSE, cache=TRUE, paged.print=TRUE}
+########## Read Data from CSV File ########
+#setwd("G:/My Drive/Research Data")
+data.control <- read.csv("tsdata3_cons.csv")
+data.control_corr <- tsdata3_corr_cons
+data.tx <- read.csv("tsdata_19_3_cons.csv")
+data_no_corr <- rbind(data.control, data.tx)
+data <- rbind(data.control_corr, data.tx)
+data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
+remove(data.control)
+remove(data.tx)
+
+########## Create Dummy Variables ########
+#aquí agrupó las instituciones
+## Dummy Variables for Age Group ##
+data15a64 <- data %>%
+  group_by(date) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    cons_total = cons_total_15a64,
+    cons_resp = cons_resp_15a64,
+    cons_circ = cons_circ_15a64,
+    cons_diarrea = cons_diarrea_15a64,
+    cons_trauma = cons_trauma_15a64,
+    hosp_total = hosp_total_15a64,
+    hosp_resp = hosp_resp_15a64,
+    hosp_circ = hosp_circ_15a64,
+    hosp_trauma = hosp_trauma_15a64,
+    age = "15-64"
+  )
+
+data65a <- data %>%
+  group_by(date) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    cons_total = cons_total_65a,
+    cons_resp = cons_resp_65a,
+    cons_circ = cons_circ_65a,
+    cons_diarrea = cons_diarrea_65a,
+    cons_trauma = cons_trauma_65a,
+    hosp_total = hosp_total_65a,
+    hosp_resp = hosp_resp_65a,
+    hosp_circ = hosp_circ_65a,
+    hosp_trauma = hosp_trauma_65a,
+    age = "65+"
+  )
+
+data <- rbind(data15a64, data65a)
+data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
+data$age <- as.factor(data$age)
+remove(data15a64)
+remove(data65a)
+
+## Other Dummy Variables ##
+data$exptime <- ifelse(data$month >=8, 1, 0)
+data$txtime <- ifelse(data$month >= 10 & data$day >= 18 | data$month >= 11, 1, 0)
+data$tx <- ifelse(data$year == "2019", 1, 0)
+data$did <- data$txtime * data$tx
+
+data$time <- 0
+data$time[data$exptime == 1] <- seq(by = 1, from = 1, to = 153)
+data$post <- 0
+data$post[data$did == 1] <- seq(by = 1, to = 87) #no me funciona length(data$post[data$did == 1])= 150 
+Sys.setlocale(category = "LC_ALL", locale = "english")
+#por qué no me funciona: data15a64%>% dplyr::filter(date>="2019-10-18")%>% dplyr::summarise(min=min(time),max=max(time),diff=max-min)
+```
+
+```{r datasets_cons2, echo=T, cache= T, paged.print=TRUE, warning=F}
+invisible(c("lo tuve que sacar"))
+
+#data <- data[data$date != "2016-02-29", ]
+
+data$yearday <- strftime(as.Date(data$date), format = "%j")
+data$yearday <- as.numeric(data$yearday)
+#data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] <- data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] - 1
+#glimpse(data)
+Sys.setlocale(category = "LC_ALL", locale = "english")
+data$weekday <- weekdays(as.Date(data$date))
+data$weekday <- ordered(data$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+data$sig <- ifelse(data$month == 10 & data$day == 6 | data$month == 10 & data$day == 18 | data$month == 10 & data$day == 25, 1, 0)
+data$week <-lubridate::week(data$date)
+data$isoweek <-lubridate::isoweek(lubridate::ymd(data$date))
+
+#lubridate::floor_date(isoweek(data$date, "%Y-%m-%d"), unit="week")
+
+## Dummy Variable for Dependent Variable of Choice Prior Day Value ##
+data$prevtrc[data$age == "15-64"] <- c(NA, data$cons_trauma[data$age == "15-64"][-1825])
+data$prevtrc[data$age == "65+"] <- c(NA, data$cons_trauma[data$age == "65+"][-1825])
+data$prevrec[data$age == "15-64"] <- c(NA, data$cons_resp[data$age == "15-64"][-1825])
+data$prevrec[data$age == "65+"] <- c(NA, data$cons_resp[data$age == "65+"][-1825])
+data$prevtrh[data$age == "15-64"] <- c(NA, data$hosp_trauma[data$age == "15-64"][-1825])
+data$prevtrh[data$age == "65+"] <- c(NA, data$hosp_trauma[data$age == "65+"][-1825])
+data$prevreh[data$age == "15-64"] <- c(NA, data$hosp_resp[data$age == "15-64"][-1825])
+data$prevreh[data$age == "65+"] <- c(NA, data$hosp_resp[data$age == "65+"][-1825])
+
+########## Create Dummy Variables ########
+#aquí agrupó las instituciones
+## Dummy Variables for Age Group ##
+data15a64_wk <- data %>%
+  dplyr::filter(as.character(age)=="15-64")%>%
+  dplyr::group_by(year_week) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    date= date,
+    cons_total = sum(cons_total,na.rm=T),
+    cons_resp = sum(cons_resp,na.rm=T),
+    cons_circ = sum(cons_circ,na.rm=T),
+    cons_diarrea = sum(cons_diarrea,na.rm=T),
+    cons_trauma = sum(cons_trauma,na.rm=T),
+    hosp_total = sum(hosp_total,na.rm=T),
+    hosp_resp = sum(hosp_resp,na.rm=T),
+    hosp_circ = sum(hosp_circ,na.rm=T),
+    hosp_trauma = sum(hosp_trauma,na.rm=T),
+    sig= sig,
+    weekday= weekday,
+    yearday= yearday,
+    prevtrc= sum(prevtrc,na.rm=T),
+    prevrec= sum(prevrec,na.rm=T),
+    prevtrh= sum(prevtrh,na.rm=T),
+    prevreh= sum(prevreh,na.rm=T),
+    week=week,
+    isoweek=isoweek
+    )%>%
+  slice(1)%>%
+  ungroup()
+
+data65a_wk <- data %>%
+  dplyr::filter(as.character(age)=="65+")%>%
+  dplyr::group_by(year_week)%>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    date= date,
+    cons_total = sum(cons_total,na.rm=T),
+    cons_resp = sum(cons_resp,na.rm=T),
+    cons_circ = sum(cons_circ,na.rm=T),
+    cons_diarrea = sum(cons_diarrea,na.rm=T),
+    cons_trauma = sum(cons_trauma,na.rm=T),
+    hosp_total = sum(hosp_total,na.rm=T),
+    hosp_resp = sum(hosp_resp,na.rm=T),
+    hosp_circ = sum(hosp_circ,na.rm=T),
+    hosp_trauma = sum(hosp_trauma,na.rm=T),
+    sig= sig,
+    weekday= weekday,
+    yearday= yearday,
+    prevtrc= sum(prevtrc,na.rm=T),
+    prevrec= sum(prevrec,na.rm=T),
+    prevtrh= sum(prevtrh,na.rm=T),
+    prevreh= sum(prevreh,na.rm=T),
+    week=week,
+    isoweek=isoweek
+  )%>%
+  slice(1)%>%
+  ungroup()
+
+data15a64_wk$difftrc <- data15a64_wk$cons_total - data15a64_wk$cons_trauma
+data15a64_wk$difftrh <- data15a64_wk$hosp_total - data15a64_wk$hosp_trauma
+data15a64_wk$diffrec <- data15a64_wk$cons_total - data15a64_wk$cons_resp
+data15a64_wk$diffreh <- data15a64_wk$hosp_total - data15a64_wk$hosp_resp
+
+data15a64_wk$offset <- data15a64_wk$cons_total + data15a64_wk$hosp_total
+
+data65a_wk$difftrc <- data65a_wk$cons_total - data65a_wk$cons_trauma
+data65a_wk$difftrh <- data65a_wk$hosp_total - data65a_wk$hosp_trauma
+data65a_wk$diffrec <- data65a_wk$cons_total - data65a_wk$cons_resp
+data65a_wk$diffreh <- data65a_wk$hosp_total - data65a_wk$hosp_resp
+
+data65a_wk$offset <- data65a_wk$cons_total + data65a_wk$hosp_total
+
+#data$tx <- ifelse(data$year == "2019", 1, 0)
+#data$did <- data$txtime * data$tx
+data15a64_wk$txtime <- ifelse(data15a64_wk$year == 2019 & data15a64_wk$isoweek>42, 1, 0)
+data15a64_wk$txtime2 <- ifelse(data15a64_wk$year == 2019 & data15a64_wk$isoweek>41, 1, 0)
+data15a64_wk$tx <- ifelse(data15a64_wk$year == 2019, 1, 0)
+data15a64_wk$did <- data15a64_wk$txtime * data15a64_wk$tx
+
+data65a_wk$txtime <- ifelse(data65a_wk$year == 2019 & data65a_wk$isoweek>42, 1, 0)
+data65a_wk$txtime2 <- ifelse(data65a_wk$year == 2019 & data65a_wk$isoweek>41, 1, 0)
+data65a_wk$tx <- ifelse(data65a_wk$year == 2019, 1, 0)
+data65a_wk$did <- data65a_wk$txtime * data65a_wk$tx
+#2019-W42
+
+# ISO 8601. If the week (starting on Monday) containing 1 January has four or more days in the new year, then it is considered week 1. You can double-check this in any of the iso 8601 week calculators online. 
+#(lubridate) states: Weeks is the number of complete seven day periods that have occured between the date and January 1st, plus one
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+########## Dataset Formation for Experiment Time Frame ########
+## Dataset During Experiment Time Only ##
+#data <- data[data$exptime == 1, ]
+```
+
+# Exploration of Time Series of Trauma Consultations
+
+<br>
+
+We defined the subsetted datasets of users between the abovementioned ages.
+
+<br>
+
+```{r setting_prev_a, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
+######1. Ejemplo 1 #####
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+#PARÁMETROS INGRESADOS A LOS MODELOS POR THOMAS
+#cons_trauma ~ offset(log(offset)) + year + as.Date(date) + month + day + weekday + yearday + prevtrc + difftrc + hosp_trauma,
+#hosp_trauma ~ offset(log(offset)) + year + as.Date(date) + month + day + weekday + yearday + prevtrh + difftrh + cons_trauma,
+#data15a64[data15a64$tx == 0 & data15a64$txtime == 0, ]
+#glm(hosp_trauma ~ hosp_circ + year + month + day + weekday + yearday + prevtrh, family = quasipoisson(), data15a64[data15a64$tx == 0 & data15a64$txtime == 1,])
+#glm(hosp_trauma ~ hosp_circ + year + month + day + weekday + yearday + prevtrh, family = poisson(), data15a64[data15a64$tx == 0 & data15a64$txtime == 1,])
+#lm(hosp_trauma ~ hosp_circ + year + month + day + weekday + yearday + prevtrh, data15a64[data15a64$tx == 0 & data15a64$txtime == 1,])
+
+#Genero una columna conteo por fila
+data15a64_rn<- data15a64_wk%>% dplyr::mutate(rn=row_number())
+data65a_rn<-  data15a64_wk%>% dplyr::mutate(rn=row_number())
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
+
+rn_summ_data15a64<-
+data15a64_rn%>%
+    dplyr::filter(did==1)%>%
+    dplyr::summarise(min=min(rn),max=max(rn),diff=max-min)
+post.period <- c(as.numeric(rn_summ_data15a64["min"]), as.numeric(rn_summ_data15a64["max"]))
+```
+
+<br>
+
+We explored the weekly trends in each year.
+
+<br>
+
+```{r setting_prev_a_ts_set, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+#number of times that data was collected per year by using the frequency parameter in the ts( )
+
+tsData1 <- ts(data15a64_rn$cons_trauma, frequency=1) #a cada unidad temporal le asigno una observación, por lo que asume que la unidad temporal considerada es el día
+tsData4 <- ts(data15a64_rn$cons_trauma, frequency=4) #a cada unidad temporal le asigno una observación, por lo que asume que la unidad temporal considerada es el día
+tsData52.4 <- ts(data15a64_rn$cons_trauma, frequency=52.4)#a cada unidad temporal le asigno una observación, por lo que asume que la unidad temporal considerada es la semana (262) #53+53+52+52+52
+tsData17.5 <- ts(data15a64_rn$cons_trauma, frequency=17.5)#a cada unidad temporal le asigno una observación, por lo que asume que la unidad temporal considerada es la semana (262) #53+53+52+52+52
+tsData_m <-msts(data15a64_rn$cons_trauma, seasonal.periods=c(4,52.5)) #a cada unidad temporal le asigno una observación, por lo que asume que la unidad temporal considerada es el día
+#tsData48 <- ts(data15a64_rn$hosp_trauma, frequency=48)
+#tsData262 <- ts(data15a64_rn$hosp_trauma, frequency=data15a64%>%dplyr::mutate(concat=paste0(year,"_",yearweek))%>%distinct(concat)%>% nrow())
+
+gg0 <- list()
+gg0[1] <- "tsData4"
+gg0[2] <- "tsData17.5"
+gg0[3] <- "tsData52.4"
+invisible(c("frequency :the number of observations per “cycle” (normally a year, but sometimes a week, a day or an hour). "))
+invisible(c("The “frequency” is the number of observations before the seasonal pattern repeats."))
+```
+
+## Explore Decomposition {.tabset .tabset-fade}
+
+<br>
+
+We explored several additive and multiplicative decomposition of the data, depending on the number of observations assigned to each time point. We decomposed the time series in three alternatives: one assigning 4 obs. to each temporal unity (as Monthly Series), a second assigning 17.5 obs. (as Quarterly Series) to each temporal unity, and another assumed 52.4 obs. to each temporal unity (as Yearly Series).
+
+<br>
+
+```{r setting_prev_a_decomp, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T,results='asis'}
+#https://otexts.com/fpp2/decomposition.html
+headings <- c('=4obs.', '=17.5obs.', '=52.4obs.','=Multiple(4 & 52.4)')
+
+for (i in 1:length(gg0)) {
+  cat("### ",headings[i],"\n")
+  plot(decompose(get(gg0[[i]])))
+  plot(decompose(get(gg0[[i]]), type="multiplicative"))
+  cat('\n\n')
+}
+
+#https://pkg.robjhyndman.com/forecast/reference/mstl.html
+cat("### ",headings[4],"\n")
+mstl(tsData_m, lambda = NULL) %>% autoplot()+
+  theme_bw()
+
+#Aditivo: Seasonal+Trend+Random
+#Multiplicativo:Seasonal*Trend*Random
+#El multiplicativo asume que la interacción no es constante ni los componentes son consistentes
+#
+## Observed: los datos actuales
+## Trend: el movimiento general hacia arriba o hacia abajo de los puntos de datos
+## Seasonal: cualquier patrón mensual / anual de los puntos de los datos
+## Random – parte inexplicable de los datos
+
+#Determinar
+## Tendencia: a largo plazo
+## Estacional/Periodico: cuando la serie está influenciada por un periodo fijo y conocido (dia mes o semana)
+## Cíclico= cuando hay subidas y caidas que no corresponden a un periodo fio
+```
+
+<br>
+
+## Correlograms
+
+<br>
+
+The visual inspection of the spectral characteristics of the series permitted us to appreciate an important upward trend, and a seasonality determined by yearly combined with weekly cycles.
+
+<br>
+
+```{r setting_prev_b_ACF, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 3. Correlograms of Series"}
+#acf() calcula la función de autocorrelación simple de una serie temporal, y pacf() la función de autocorrelación parcial. En ambos casos, por defecto se muestra el gráfico con bandas de confianza al 95%.
+ggAcf(data15a64_rn$cons_trauma,20,main="3.a.Autocorreation Plot of the Series of Trauma Consultations")+ #data15a64_rn$hosp_trauma
+  theme_sjplot()+
+  theme(plot.caption=element_text(hjust = 0))+
+  labs(x="Number of Lags",y="ACF",caption="Note. Dotted Blue Line= 95% CI")
+
+lags_acf<-ggAcf(data15a64_rn$cons_trauma,20)$data %>% dplyr::arrange(desc(abs(Freq)))%>% slice(1:10)%>% dplyr::select(lag)
+ggPacf(data15a64_rn$cons_trauma,20,main="3.b.Partial Autocorreation Plot of the Series of Trauma Consultations")+ #data15a64_rn$hosp_trauma
+  theme_sjplot()+
+  theme(plot.caption=element_text(hjust = 0))+
+  labs(x="Number of Lags",y="ACF",caption="Note. Dotted Blue Line= 95% CI")
+
+lags_pacf<-ggPacf(tsData1,20)$data %>% dplyr::arrange(desc(abs(Freq)))%>% slice(1:10)%>% dplyr::select(lag)
+
+#tseries::adf.test(tsData)
+#Augmented Dickey-Fuller Test gives a p-value of 0.01, so we have enough evidence to reject null hypothesis of non-stationarity.
+
+#The test statistic is much bigger than the 1% critical value, indicating that the null hypothesis is rejected. That is, the data are not stationary. We can difference the data, and apply the test again.
+
+#Se requiere para que las estimaciones de los parámetros sean útiles. De otra forma, no se podrían calcular medias y variancias conforme la serie va creciendo
+
+#LOS MODELOS ARCH Y GARCH NO REQUIEREN CONSISTENCIA EN LA VARIANZA
+#eing able to control the lags in our test, allows us to avoid a stationarity test that is too complex to be supported by our data.
+
+#https://nwfsc-timeseries.github.io/atsa-labs/sec-boxjenkins-aug-dickey-fuller.html
+ 
+#todos los parámetros son sig., por lo que son eestacionarios
+```
+
+<br>
+
+As seen in the correlograms and in the multiple decompositions, the series contains an upward trend, leading to think that the mean was not constant over time, and there could be evidence of seasonallity. This could be interpreted as that the series were not stationary. However, the Dickey-Fuller test indicated the presence of stationarity (`r round(tseries::adf.test(tsData1)$statistic,2)`, p\<`r round(tseries::adf.test(tsData1)$p.value,3)`).
+
+<br>
+
+# Bayesian Structural Time-Series
+
+<br>
+
+In order to reproduce adequately what was solicited, we looked over the models Thomas did. The independent variables we selected were: - Circulatory Consultations (`cons_circ`) - Respiratory Consultations (`cons_resp`) - Year, month, day, weekday, yearday - Difference Between Total Hospitalizations and Trauma Hospitalizations (`difftrh`)
+
+<br>
+
+The model of Bayesian Structural Time Series (BSTS) with Causal Impact Analysis contains a local level component (observation equation linking observed data to a state vector) and a seasonal component (state equation that describes how the state vector evolves over time). Also it can contain other predictor series. The method uses a Markov chain Monte Carlo (MCMC) sampling of the structural time series given the observed data and the priors.
+
+<br>
+
+```{=html}
+<!--- 
+modelA <- lm(hosp_resp ~ hosp_circ + year + month + day + weekday + yearday + prevreh, data15a64[data15a64$tx == 0 & data15a64$txtime == 0,])
+modelB <- glm(hosp_resp ~ hosp_circ + year + month + day + weekday + yearday + prevreh, family = poisson, data15a64[data15a64$tx == 0 & data15a64$txtime == 0,])
+modelC <- glm(hosp_resp ~ hosp_circ + year + month + day + weekday + yearday + prevreh, family = quasipoisson, data15a64[data15a64$tx == 0 & data15a64$txtime == 0,])
+modelD <- nb(hosp_resp ~ offset(log(offset)) + year + as.Date(date) + month + day + weekday + yearday + prevreh + diffreh + cons_resp,
+    data15a64[data15a64$tx == 0 & data15a64$txtime == 0, ])
+    
+attr(data15a64_wk$prevtrc, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Consultations"
+attr(data15a64_wk$prevrec, "label") <-  "Dependent Variable of Choice Prior Day Value of the Total Respiratory Consultations"
+attr(data15a64_wk$prevtrh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Hospitalizations"
+attr(data15a64_wk$prevreh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Respiratory Hospitalizations"
+
+attr(data15a64_wk$difftrc, "label") <- "Difference Between Total Consultations and the Total Trauma Consultations"
+attr(data15a64_wk$difftrh, "label") <- "Difference Between Total Hospitalizations and the Total Trauma Hospitalizations"
+attr(data15a64_wk$diffrec, "label") <-  "Difference Between Total Consultations and the Total Respiratory Consultations"
+attr(data15a64_wk$diffreh, "label") <- "Difference Between Total Hospitalizations and the Total Respiratory Hospitalizations"
+attr(data15a64_wk$offset, "label") <- "Sum of the total consultations and total hospitalizations"
+--->
+```
+## Several models contrasted
+
+We decided to contrast several models with different specifications and control variables. We started with a model that did not have a counterfactual.
+
+<br>
+
+### No counterfactual, no control variables
+
+```{r bsts1, echo=T, cache= T, paged.print=TRUE, warning=F}
+library(CausalImpact)
+
+data15a64_rn2<-
+data15a64_rn%>%
+  dplyr::mutate(log_offset=log(offset))%>%
+  dplyr::mutate(log_cons_trauma=log(cons_trauma))%>%
+  dplyr::mutate(log_cons_circ=log(cons_circ))%>%
+  dplyr::mutate(log_cons_resp=log(cons_resp))%>%
+  dplyr::mutate(log_difftrh=log(difftrh))%>%
+  data.frame()
+  
+#rn_summ_data15a64
+
+#CREATE THE DB --> SUPER IMPORTANT TO ADD THE OUTPUT OF INTEREST AS THE FIRST COLUMN here, plus to select all the other time series we want:
+#in this case we take all the columns from 2 to 10
+df <- zoo(data15a64_rn2[c("cons_trauma","cons_circ","cons_resp","difftrh")], as.Date(data15a64_rn2$date)) #prevtrh had a missing value due to the absence of previous value
+#set the period before intervention
+pre.period <- as.Date(c("2015-01-01", "2019-10-17"))
+#set the period after intervention
+post.period <- as.Date(c("2019-10-18", "2019-12-31"))
+#compute CausalImpact, look at the documentation to change niter and nseasons
+set.seed(2125)
+impact <- CausalImpact(df, pre.period,post.period, model.args=list(niter=clus_iter, nseasons=7))
+plot(impact, "original") 
+
+plot(impact)
+##summary(impact) 
+##summary(impact,"report")
+```
+
+<br>
+
+### With counterfactuals
+
+We decided to exclude the post-treatment period data to specify our model, to mimic the fact that this data should be unobserved after the intervention. We introduced yearly and monthly seasonal components into the time-series structure. We started with a Random Walk. This local level model assumes the trend is a random walk (do not assume an observable pattern or trend).
+
+<br>
+
+```{r bsts2, echo=T, cache= T, paged.print=TRUE, warning=F}
+###RANDOM WALK
+#######https://magoosh.com/statistics/what-is-random-walk-theory/
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+##data%>% dplyr::filter(yearday>0)%>% group_by(year)%>% summarise(min(as.Date(date)),max(as.Date(date)),n())
+
+#I will explore their cumulative 1 step forward prediction error for the time series between the start to the time of intervention
+# Post Intervention Period is filled with NA
+# Remove outcomes from the post-period. The BSTS model should be ignorant of the values we intend to predict
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_
+#MADE WITH VECTORS: https://rpubs.com/irJERAD/Causal-Impact
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#c("log_cons_resp","log_cons_circ","log_cons_trauma","log_diffreh")
+data15a64_rn_causal <- data15a64_rn %>%
+    dplyr::mutate(cons_trauma = replace(cons_trauma, did >= 1, NA)) %>% 
+    dplyr::mutate(log_cons_trauma=log(cons_trauma))%>%
+    dplyr::mutate(log_cons_circ=log(cons_circ))%>%
+    dplyr::mutate(log_cons_resp=log(cons_resp))%>%
+    dplyr::mutate(log_difftrh=log(difftrh))
+
+post_period_response <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==1),"cons_trauma"]))
+
+
+y<- data15a64_rn_causal$cons_trauma
+x1 <-data15a64_rn_causal$cons_circ
+x2 <-data15a64_rn_causal$cons_resp
+x3 <-data15a64_rn_causal$difftrh
+x4 <-data15a64_rn_causal$log_offset
+
+#y<- data15a64_rn_causal$log_cons_trauma
+#x1 <-data15a64_rn_causal$log_cons_circ
+#x2 <-data15a64_rn_causal$log_cons_resp
+#x3 <-data15a64_rn_causal$log_difftrh
+#x4 <-data15a64_rn_causal$log_offset
+
+# Model 1
+ss <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss <- AddLocalLevel(ss, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss <- AddSeasonal(ss, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss <- AddSeasonal(ss, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration = 4) #months
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1 <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ss, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+plot(model1, main = "Model 1")
+plot(model1, "components")
+
+impact2 <- CausalImpact(bsts.model = model1,
+                       post.period.response = post_period_response)
+plot(impact2, "original") 
+
+burn1 <- SuggestBurn(0.1, model1)
+
+plot(impact2)
+#summary(impact2) 
+##summary(impact2,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2 <- AddLocalLevel(ss2, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2 <- AddSeasonal(ss2, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2 <- AddSeasonal(ss2, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2 <- bsts(data15a64_rn_causal$cons_trauma ~ x1, 
+               state.specification = ss2, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+plot(model2, main = "Model 2")
+plot(model2, "components")
+
+impact3 <- CausalImpact(bsts.model = model2,
+                       post.period.response = post_period_response)
+plot(impact3, "original") 
+
+burn2 <- SuggestBurn(0.1, model2)
+
+plot(impact3)
+#summary(impact3) 
+##summary(impact3,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+```
+
+<br>
+
+### Local Linear Trend
+
+A model with too many components can sometimes offer too much flexibility, providing unrealistically widening forecasts. This is why the default model does not include a local linear trend component [(see this link)](https://stats.stackexchange.com/questions/266129/causalimpact-model-in-the-paper-and-default-in-the-package/267170#267170). But in the next two models we assumed a local structure of the latent state variable (`AddLocalLinearTrend`), instead of a random process.
+
+```{=html}
+<!--- 
+This model differs from the local linear trend model in that the latter assumes the slope  follows a random walk. A stationary AR(1) process is less variable than a random walk when making projections far into the future, so this model often gives more reasonable uncertainty estimates when making long term forecasts.
+ 
+ This could be due to the fact that the drift component in the semi local linear trend comprised of more variables (D, ρ) that allowed for more extreme stochasticity. This allowed for the semi-local linear trend models to capture certain high spike points such as in Jan 2018 that were not captured by the trends in the local linear trend models.
+--->
+```
+<br>
+
+```{r bsts2b, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssb <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssb <- AddLocalLinearTrend(ssb, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+# Add weekly seasonal
+ssb <- AddSeasonal(ssb, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssb <- AddSeasonal(ssb, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1b <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssb, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data. NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1b, main = "Model 1")
+plot(model1b, "components")
+
+impact2b <- CausalImpact(bsts.model = model1b,
+                       post.period.response = post_period_response)
+plot(impact2b, "original") 
+
+burn1b <- SuggestBurn(0.1, model1b)
+
+plot(impact2b)
+#summary(impact2b) 
+##summary(impact2b,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3b, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2b <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2b <- AddLocalLinearTrend(ss2b, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2b <- AddSeasonal(ss2b, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2b <- AddSeasonal(ss2b, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2b <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2b, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+              # family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2b, main = "Model 2")
+plot(model2b, "components")
+
+impact3b <- CausalImpact(bsts.model = model2b,
+                       post.period.response = post_period_response)
+plot(impact3b, "original") 
+
+burn2b <- SuggestBurn(0.1, model2b)
+
+plot(impact3b)
+#summary(impact3b) 
+##summary(impact3b,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+<br>
+
+### Local Linear Trend & AR
+
+<br>
+
+We also introduced an a sparse AR(1) process to the state distribution.
+
+<br>
+
+```{r bsts2b_ar, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssb <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssb <- AddLocalLinearTrend(ssb, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+ssb <- AddAutoAr(ssb,data15a64_rn_causal$cons_trauma)
+
+# Add weekly seasonal
+ssb <- AddSeasonal(ssb, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssb <- AddSeasonal(ssb, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1bar <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssb, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data. NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1bar, main = "Model 1")
+plot(model1bar, "components")
+
+impact2bar <- CausalImpact(bsts.model = model1bar,
+                       post.period.response = post_period_response)
+plot(impact2bar, "original") 
+
+burn1bar <- SuggestBurn(0.1, model1bar)
+
+plot(impact2bar)
+#summary(impact2b) 
+##summary(impact2b,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3b_ar, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2b <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2b <- AddLocalLinearTrend(ss2b, data15a64_rn_causal$cons_trauma) #
+ss2b <- AddAutoAr(ss2b,data15a64_rn_causal$cons_trauma)
+
+# Add weekly seasonal
+ss2b <- AddSeasonal(ss2b, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2b <- AddSeasonal(ss2b, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2bar <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2b, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+              # family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2bar, main = "Model 2")
+plot(model2bar, "components")
+
+impact3bar <- CausalImpact(bsts.model = model2b,
+                       post.period.response = post_period_response)
+plot(impact3bar, "original") 
+
+burn2bar <- SuggestBurn(0.1, model2bar)
+
+plot(impact3bar)
+#summary(impact3b) 
+##summary(impact3b,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+<br>
+
+### Prior Local Level SD=.1 (more restrictive)
+
+We used the term `prior.level.sd` to .1 instead of the default .01, which had been a typical choice for well-behaved and stable datasets with low residual volatility. We decided to distinguish between models that assumed a Random Walk structure, to local linear trends.
+
+<br>
+
+```{r bsts2c, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssc <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssc <- AddLocalLevel(ssc, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+# Add weekly seasonal
+ssc <- AddSeasonal(ssc, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssc <- AddSeasonal(ssc, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1c <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssc, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data. NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1c, main = "Model 1")
+plot(model1c, "components")
+
+impact2c <- CausalImpact(bsts.model = model1c,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact2c, "original") 
+
+burn1c <- SuggestBurn(0.1, model1c)
+
+plot(impact2c)
+#summary(impact2c) 
+##summary(impact2c,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3c, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2c <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2c <- AddLocalLevel(ss2c, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2c <- AddSeasonal(ss2c, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2c <- AddSeasonal(ss2c, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2c <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2c, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+              # family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2c, main = "Model 2")
+plot(model2c, "components")
+
+impact3c <- CausalImpact(bsts.model = model2c,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact3c, "original") 
+
+burn2c <- SuggestBurn(0.1, model2c)
+
+plot(impact3c)
+#summary(impact3c) 
+##summary(impact3c,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+#### Prior Local SD=.1 (more restrictive) w/ Local Linear Trends
+
+<br>
+
+We changed the assumption of a random walk model to a local-linear trend to the structure of the series.
+
+<br>
+
+```{r bsts2c3, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssc3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssc3 <- AddLocalLinearTrend(ssc3, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+# Add weekly seasonal
+ssc3 <- AddSeasonal(ssc3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssc3 <- AddSeasonal(ssc3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1c3 <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssc3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data. NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1c3, main = "Model 1")
+plot(model1c3, "components")
+
+impact2c3 <- CausalImpact(bsts.model = model1c3,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact2c3, "original") 
+
+burn1c3 <- SuggestBurn(0.1, model1c3)
+
+plot(impact2c3)
+#summary(impact2c) 
+##summary(impact2c,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3c3, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2c3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2c3 <- AddLocalLinearTrend(ss2c3, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2c3 <- AddSeasonal(ss2c3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2c3 <- AddSeasonal(ss2c3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2c3 <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2c3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+              # family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2c3, main = "Model 2")
+plot(model2c3, "components")
+
+impact3c3 <- CausalImpact(bsts.model = model2c3, model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact3c3, "original") 
+
+burn2c3 <- SuggestBurn(0.1, model2c3)
+
+plot(impact3c3)
+#summary(impact3c) 
+##summary(impact3c,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+#### Prior Local SD=.1 (more restrictive) w/ Local Linear Trends & AR
+
+<br>
+
+We also introduced an a sparse AR(1) process to the state distribution.
+
+<br>
+
+```{r bsts2c3_ar, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssc3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssc3 <- AddLocalLinearTrend(ssc3, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+ssc3 <- AddAutoAr(ssc3,data15a64_rn_causal$cons_trauma)
+# Add weekly seasonal
+ssc3 <- AddSeasonal(ssc3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssc3 <- AddSeasonal(ssc3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1c3ar <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssc3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               #family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data. NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1c3ar, main = "Model 1")
+plot(model1c3ar, "components")
+
+impact2c3ar <- CausalImpact(bsts.model = model1c3ar,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact2c3ar, "original") 
+
+burn1c3ar <- SuggestBurn(0.1, model1c3ar)
+
+plot(impact2c3ar)
+#summary(impact2c) 
+##summary(impact2c,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3c3_ar, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2c3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2c3 <- AddLocalLinearTrend(ss2c3, data15a64_rn_causal$cons_trauma) #
+ss2c3 <- AddAutoAr(ss2c3,data15a64_rn_causal$cons_trauma)
+# Add weekly seasonal
+ss2c3 <- AddSeasonal(ss2c3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2c3 <- AddSeasonal(ss2c3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2c3ar <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2c3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+              # family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2c3ar, main = "Model 2")
+plot(model2c3ar, "components")
+
+impact3c3ar <- CausalImpact(bsts.model = model2c3ar, model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact3c3ar, "original") 
+
+burn2c3ar <- SuggestBurn(0.1, model2c3ar)
+
+plot(impact3c3ar)
+#summary(impact3c) 
+##summary(impact3c,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+### Studentized Distributed Noise (more restrictive)
+
+<br>
+
+The default model assumes a Gaussian noise and a Gaussian random walk. In order to handle outliers, we assumed studentized distributed noise.
+
+<br>
+
+```{r bsts2d, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssd <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssd <- AddLocalLevel(ssd, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+# Add weekly seasonal
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1d1 <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssd, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data. POISSON NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1d1, main = "Model 1")
+plot(model1d1, "components")
+
+impact2d1 <- CausalImpact(bsts.model = model1d1,
+                       post.period.response = post_period_response)
+plot(impact2d1, "original") 
+
+burn1d1 <- SuggestBurn(0.1, model1d1)
+
+plot(impact2d1)
+#summary(impact2d1) 
+##summary(impact2d1,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3d, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d1 <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2d1, main = "Model 2")
+plot(model2d1, "components")
+
+impact3d1 <- CausalImpact(bsts.model = model2d1,
+                       post.period.response = post_period_response)
+plot(impact3d1, "original") 
+
+burn2d1 <- SuggestBurn(0.1, model2d1)
+
+plot(impact3d1)
+#summary(impact3d1) 
+##summary(impact3d1,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+##### Studentized Distributed Noise w/ Local Linear Trends
+
+<br>
+
+```{r bsts2d22, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssd <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssd <- AddLocalLinearTrend(ssd, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+# Add weekly seasonal
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1d2 <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssd, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data. POISSON NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1d2, main = "Model 1")
+plot(model1d2, "components")
+
+impact2d2 <- CausalImpact(bsts.model = model1d2,
+                       post.period.response = post_period_response)
+plot(impact2d2, "original") 
+
+burn1d2 <- SuggestBurn(0.1, model1d2)
+
+plot(impact2d2)
+#summary(impact2d1) 
+##summary(impact2d1,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3d22, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLinearTrend(ss2d, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d2 <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2d2, main = "Model 2")
+plot(model2d2, "components")
+
+impact3d2 <- CausalImpact(bsts.model = model2d2,
+                       post.period.response = post_period_response)
+plot(impact3d2, "original") 
+
+burn2d2 <- SuggestBurn(0.1, model2d2)
+
+plot(impact3d2)
+#summary(impact3d1) 
+##summary(impact3d1,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+<br>
+
+##### Studentized Distributed Noise w/ Local Linear Trends & AR
+
+<br>
+
+We also introduced an a sparse AR(1) process to the state distribution.
+
+<br>s
+
+```{r bsts2d22_ar, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssd <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssd <- AddLocalLinearTrend(ssd, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel
+ssd <- AddAutoAr(ssd,data15a64_rn_causal$cons_trauma)
+
+# Add weekly seasonal
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1d2ar <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssd, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data. POISSON NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1d2ar, main = "Model 1")
+plot(model1d2ar, "components")
+
+impact2d2ar <- CausalImpact(bsts.model = model1d2ar,
+                       post.period.response = post_period_response)
+plot(impact2d2ar, "original") 
+
+burn1d2ar <- SuggestBurn(0.1, model1d2ar)
+
+plot(impact2d2ar)
+#summary(impact2d1) 
+##summary(impact2d1,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3d22_ar, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLinearTrend(ss2d, data15a64_rn_causal$cons_trauma)
+ss2d <- AddAutoAr(ss2d,data15a64_rn_causal$cons_trauma)
+#
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d2ar <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2d2ar, main = "Model 2")
+plot(model2d2ar, "components")
+
+impact3d2ar <- CausalImpact(bsts.model = model2d2ar,
+                       post.period.response = post_period_response)
+plot(impact3d2ar, "original") 
+
+burn2d2ar <- SuggestBurn(0.1, model2d2ar)
+
+plot(impact3d2ar)
+#summary(impact3d1) 
+##summary(impact3d1,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+<br>
+
+#### Studentized Distributed Noise w/ Priors SD=.1 (more restrictive)
+
+<br>
+
+For the following models, we used a prior SD of .1
+
+<br>
+
+```{r bsts2d2, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssd <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssd <- AddLocalLevel(ssd, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel AddLocalLinearTrend
+# Add weekly seasonal
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssd <- AddSeasonal(ssd, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1d <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssd, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data. POISSON NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model1d, main = "Model 1")
+plot(model1d, "components")
+
+impact2d <- CausalImpact(bsts.model = model1d,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact2d, "original") 
+
+burn1d <- SuggestBurn(0.1, model1d)
+
+plot(impact2d)
+#summary(impact2d) 
+##summary(impact2d,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3d2, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2d, main = "Model 2")
+plot(model2d, "components")
+
+impact3d <- CausalImpact(bsts.model = model2d,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact3d, "original") 
+
+burn2d <- SuggestBurn(0.1, model2d)
+
+plot(impact3d)
+#summary(impact3d) 
+##summary(impact3d,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+#### Studentized Distributed Noise w/ Priors SD=.1 (more restrictive) w/ Local Linear Trends
+
+<br>
+
+For the following models, we used a prior SD of .1 and a Local Linear Trend.
+
+<br>
+
+```{r bsts2d3, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssd3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssd3 <- AddLocalLinearTrend(ssd3, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel AddLocalLinearTrend
+#ssd3 <- AddAutoAr(ssd3,data15a64_rn_causal$log_hosp_trauma)
+# Add weekly seasonal
+ssd3 <- AddSeasonal(ssd3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssd3 <- AddSeasonal(ssd3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1d3 <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssd3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data. POISSON NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+
+burn1d3 <- SuggestBurn(0.1, model1d3)
+#,
+#               dynamic.regression=T)
+plot(model1d3, main = "Model 1")
+plot(model1d3, "components")
+
+#pred <- predict(model1d3, horizon = 9, burn =burn1d3)
+#updated.pred <- predict(model1d3, horizon = 9, olddata = data15a64_rn_causal$log_hosp_trauma)
+
+impact2d3 <- CausalImpact(bsts.model = model1d3,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact2d3, "original") 
+
+plot(impact2d3)
+#summary(impact2d3) 
+##summary(impact2d3,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3d3, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d3 <- AddLocalLinearTrend(ss2d3, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel AddLocalLinearTrend
+#ss2d3 <- AddAutoAr(ss2d3,data15a64_rn_causal$cons_trauma)
+# Add weekly seasonal
+ss2d3 <- AddSeasonal(ss2d3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d3 <- AddSeasonal(ss2d3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d3 <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2d3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2d3, main = "Model 2")
+plot(model2d3, "components")
+
+impact3d3 <- CausalImpact(bsts.model = model2d3,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact3d3, "original") 
+
+burn2d3 <- SuggestBurn(0.1, model2d3)
+
+plot(impact3d3)
+#summary(impact3d3) 
+##summary(impact3d3,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+<br>
+
+#### Studentized Distributed Noise w/ Priors SD=.1 (more restrictive) w/ Local Linear Trends & AR
+
+<br>
+
+We also introduced an a sparse AR(1) process to the state distribution.
+
+<br>s
+
+```{r bsts2d3_ar, echo=T, cache= T, paged.print=TRUE, warning=F}
+# Model 1
+ssd3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ssd3 <- AddLocalLinearTrend(ssd3, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel AddLocalLinearTrend
+ssd3 <- AddAutoAr(ssd3,data15a64_rn_causal$cons_trauma)
+# Add weekly seasonal
+ssd3 <- AddSeasonal(ssd3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ssd3 <- AddSeasonal(ssd3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model1d3ar <- bsts(data15a64_rn_causal$cons_trauma, 
+               state.specification = ssd3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data. POISSON NO SE PUEDE OCUPAR
+               niter = clus_iter, 
+               #burn = 200, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+
+burn1d3ar <- SuggestBurn(0.1, model1d3ar)
+#,
+#               dynamic.regression=T)
+plot(model1d3ar, main = "Model 1")
+plot(model1d3ar, "components")
+
+#pred <- predict(model1d3, horizon = 9, burn =burn1d3)
+#updated.pred <- predict(model1d3, horizon = 9, olddata = data15a64_rn_causal$log_hosp_trauma)
+
+impact2d3ar <- CausalImpact(bsts.model = model1d3ar,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact2d3ar, "original") 
+
+plot(impact2d3ar)
+#summary(impact2d3) 
+##summary(impact2d3,"report")
+#msts(data15a64_rn$hosp_trauma, seasonal.periods=c(7,365.25))
+```
+
+```{r bsts3d3_ar, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d3 <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d3 <- AddLocalLinearTrend(ss2d3, data15a64_rn_causal$cons_trauma) #AddSemilocalLinearTrend #AddLocalLevel AddLocalLinearTrend
+ss2d3 <- AddAutoAr(ss2d3,data15a64_rn_causal$cons_trauma)
+# Add weekly seasonal
+ss2d3 <- AddSeasonal(ss2d3, data15a64_rn_causal$cons_trauma, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d3 <- AddSeasonal(ss2d3, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d3ar <- bsts(data15a64_rn_causal$cons_trauma ~ x1,
+               state.specification = ss2d3, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+plot(model2d3ar, main = "Model 2")
+plot(model2d3ar, "components")
+
+impact3d3ar <- CausalImpact(bsts.model = model2d3ar,model.args = list(prior.level.sd=.1),
+                       post.period.response = post_period_response)
+plot(impact3d3ar, "original") 
+
+burn2d3 <- SuggestBurn(0.1, model2d3ar)
+
+plot(impact3d3ar)
+#summary(impact3d3) 
+##summary(impact3d3,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+```
+
+<br>
+
+------------------------------------------------------------------------
+
+## Comparison Between Models
+
+<br>
+
+We compared the models selected in terms of cumulative absolute error.
+
+<br>
+
+```{r comp_models_prev, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T,fig.show='hide', fig.height=14}
+comp_mod<-CompareBstsModels(list("No control variables(a)" = model1,
+                                "Control variables(b)" = model2,
+                                "a, LocalLinearTrend" = model1b,
+                                "b, LocalLinearTrend" = model2b,
+                                "a, LocalLinearTrend & AR" = model1bar,
+                                "b, LocalLinearTrend & AR" = model2bar,
+                                "a, Prior sd=.1" = model1c,
+                                "b, Prior sd=.1" = model2c,
+                                "a, Prior sd=.1,LocalLinearTrend" = model1c3,
+                                "b, Prior sd=.1,LocalLinearTrend" = model2c3,
+                                "a, Prior sd=.1,LocalLinearTrend & AR" = model1c3ar,
+                                "b, Prior sd=.1,LocalLinearTrend & AR" = model2c3ar,
+                                "a, Student Dist, Prior sd=.01" = model1d1, #Student SD=.1 Local
+                                "b, Student Dist, Prior sd=.01" = model2d1, #Student SD=.1 Local
+                                "a, Student Dist, Prior sd=.01, LocalLinearTrend" = model1d2,
+                                "b, Student Dist, Prior sd=.01, LocalLinearTrend" = model2d2,
+                                "a, Student Dist, Prior sd=.01, LocalLinearTrend & AR" = model1d2ar,
+                                "b, Student Dist, Prior sd=.01, LocalLinearTrend & AR" = model2d2ar,
+                                "a, Student Dist, Prior sd=.1" = model1d,
+                                "b, Student Dist, Prior sd=.1" = model2d,
+                                "a, Student Dist, Prior sd=.1, LocalLinearTrend" = model1d3,
+                                "b, Student Dist, Prior sd=.1, LocalLinearTrend" = model2d3,
+                                "a, Student Dist, Prior sd=.1, LocalLinearTrend & AR" = model1d3ar,
+                                "b, Student Dist, Prior sd=.1, LocalLinearTrend & AR" = model2d3ar
+                       ),
+                  colors = c("black", "red", "blue","purple","gray","darkslategrey","darkslateblue","darkorange3","forestgreen",
+                             "yellow","pink", "brown","cyan"))
+```
+
+```{r comp_models, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 9. Comparison of BSTS models (cum. error)"}
+scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm)
+
+comp_mod_df<-
+data.frame(cbind(Models=c("No control variables(a)",
+                          "Control variables(b)",
+                          "a, LocalLinearTrend",
+                          "b, LocalLinearTrend",
+                          "a, LocalLinearTrend & AR",
+                          "b, LocalLinearTrend & AR",                          
+                          "a, Prior sd=.1",
+                          "b, Prior sd=.1",
+                          "a, Prior sd=.1, LocalLinearTrend",
+                          "b, Prior sd=.1, LocalLinearTrend",
+                          "a, Prior sd=.1, LocalLinearTrend & AR",
+                          "b, Prior sd=.1, LocalLinearTrend & AR",
+                          "a, Student Dist, Prior sd=.01",
+                          "b, Student Dist, Prior sd=.01",
+                          "a, Student Dist, Prior sd=.01, LocalLinearTrend",
+                          "b, Student Dist, Prior sd=.01, LocalLinearTrend",
+                          "a, Student Dist, Prior sd=.01, LocalLinearTrend & AR",
+                          "b, Student Dist, Prior sd=.01, LocalLinearTrend & AR",
+                          "a, Student Dist, Prior sd=.1",
+                          "b, Student Dist, Prior sd=.1",
+                          "a, Student Dist, Prior sd=.1, LocalLinearTrend",
+                          "b, Student Dist, Prior sd=.1, LocalLinearTrend",
+                          "a, Student Dist, Prior sd=.1, LocalLinearTrend & AR",
+                          "b, Student Dist, Prior sd=.1, LocalLinearTrend & AR"),
+                 comp_mod)) %>%  #16
+  melt(id=1)%>%
+  dplyr::rename("Time"="variable") %>% 
+  dplyr::rename("Cumulative Absolute Error"="value") %>% 
+  dplyr::mutate(Time=as.numeric(sub('V', '', Time))) %>% 
+  dplyr::mutate(`Cumulative Absolute Error`=as.numeric(`Cumulative Absolute Error`)) %>% 
+  dplyr::mutate(text=paste0("CAFE= ",sprintf("%4.0f",`Cumulative Absolute Error`),"\n","Time= ",Time,"\n",
+                            Models))
+
+ggplotcomp_models<-    
+ggplot(comp_mod_df)+
+  #geom_point(color="white")+
+    geom_line(size=.75, aes(x = Time, y = `Cumulative Absolute Error`, color=Models,group=Models, text=text))+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  scale_fill_brewer(type="seq", palette="Greys")+
+  theme_sjplot2()+
+  theme(axis.text.y=element_blank(),
+                    axis.text.x =  element_text(angle = 0, hjust = 1),
+                    axis.ticks.y=element_blank(),                    
+                    panel.grid.major.y=element_blank(),
+        #panel.grid.major.x=element_blank(),
+        panel.grid.minor.x=element_blank())+
+  theme(legend.position='none')+
+  scale_x_continuous(breaks=seq(from =1,to =max(comp_mod_df$Time)+4,by=12))+
+  labs(x="Time (in weeks)", y= "Cumulative Absolute Forecast Error (CAFE)")
+
+ggplotly(ggplotcomp_models,tooltip="text")
+
+comp_mod_df_sum<-
+comp_mod_df %>% group_by(Models) %>% summarise(mean=mean(`Cumulative Absolute Error`,na.rm=T),median=median(`Cumulative Absolute Error`,na.rm=T), p25=quantile(`Cumulative Absolute Error`,.25,na.rm=T),p75=quantile(`Cumulative Absolute Error`,.75,na.rm=T)) %>%
+  dplyr::mutate(mean=scale2(mean),median=scale2(median),p25=scale2(p25),p75=scale2(p75)) %>%
+  rowwise() %>%
+  mutate(mean_tot = mean(c(mean,median,p25,p75))) %>% 
+  dplyr::arrange(mean_tot)
+  #geom_line(aes(x=Models,y=median),color="blue")+
+  #geom_line(aes(x=Models,y=p25),color="green")
+
+
+#impact "No counterfactual approach, No seasonal components" "Counterfactual Approach, NoSeasonal Components (impact2)" (b= SemilocalLinearTrend) (c=Gaussian, prior sd=.01) (d1= Student, Prior sd .01) (d= Student, Prior sd = .1)
+#impact2d$summary[,"p"]
+```
+
+<br>
+
+As seen in the Figure above, the errors in the different models were very similar. However, some exhibited lower cumulative errors.
+
+<br>
+
+```{r summary_of_models, echo=T, cache= T, paged.print=TRUE, warning=T,eval=T}
+summary<-cbind(Models=c("No control variables(a)",
+                          "Control variables(b)",
+                          "a, LocalLinearTrend",
+                          "b, LocalLinearTrend",
+                          "a, LocalLinearTrend & AR",
+                          "b, LocalLinearTrend & AR",                          
+                          "a, Prior sd=.1",
+                          "b, Prior sd=.1",
+                          "a, Prior sd=.1, LocalLinearTrend",
+                          "b, Prior sd=.1, LocalLinearTrend",
+                          "a, Prior sd=.1, LocalLinearTrend & AR",
+                          "b, Prior sd=.1, LocalLinearTrend & AR",
+                          "a, Student Dist, Prior sd=.01",
+                          "b, Student Dist, Prior sd=.01",
+                          "a, Student Dist, Prior sd=.01, LocalLinearTrend",
+                          "b, Student Dist, Prior sd=.01, LocalLinearTrend",
+                          "a, Student Dist, Prior sd=.01, LocalLinearTrend & AR",
+                          "b, Student Dist, Prior sd=.01, LocalLinearTrend & AR",
+                          "a, Student Dist, Prior sd=.1",
+                          "b, Student Dist, Prior sd=.1",
+                          "a, Student Dist, Prior sd=.1, LocalLinearTrend",
+                          "b, Student Dist, Prior sd=.1, LocalLinearTrend",
+                          "a, Student Dist, Prior sd=.1, LocalLinearTrend & AR",
+                          "b, Student Dist, Prior sd=.1, LocalLinearTrend & AR"),
+               name=c("impact2","impact3","impact2b","impact3b","impact2bar","impact3bar","impact2c","impact3c","impact2c3","impact3c3","impact2c3ar","impact3c3ar","impact2d1","impact3d1","impact2d2","impact2d2ar","impact3d2","impact3d2ar","impact2d","impact3d","impact2d3","impact3d3","impact2d3ar","impact3d3ar"),
+  `_`= rbind(    
+                        data.table(impact2$summary,keep.rownames = T)[1,],
+                        data.table(impact3$summary,keep.rownames = T)[1,],
+                        data.table(impact2b$summary,keep.rownames = T)[1,],
+                        data.table(impact3b$summary,keep.rownames = T)[1,],
+                        data.table(impact2bar$summary,keep.rownames = T)[1,],
+                        data.table(impact3bar$summary,keep.rownames = T)[1,],
+                        data.table(impact2c$summary,keep.rownames = T)[1,],
+                        data.table(impact3c$summary,keep.rownames = T)[1,],
+                        data.table(impact2c3$summary,keep.rownames = T)[1,],
+                        data.table(impact3c3$summary,keep.rownames = T)[1,],
+                        data.table(impact2c3ar$summary,keep.rownames = T)[1,],
+                        data.table(impact3c3ar$summary,keep.rownames = T)[1,],
+                        data.table(impact2d1$summary,keep.rownames = T)[1,],
+                        data.table(impact3d1$summary,keep.rownames = T)[1,],
+                        data.table(impact2d2$summary,keep.rownames = T)[1,],
+                        data.table(impact2d2ar$summary,keep.rownames = T)[1,],
+                        data.table(impact3d2$summary,keep.rownames = T)[1,],
+                        data.table(impact3d2ar$summary,keep.rownames = T)[1,],
+                        data.table(impact2d$summary,keep.rownames = T)[1,],
+                        data.table(impact3d$summary,keep.rownames = T)[1,],
+                        data.table(impact2d3$summary,keep.rownames = T)[1,],
+                        data.table(impact3d3$summary,keep.rownames = T)[1,],
+                        data.table(impact2d3ar$summary,keep.rownames = T)[1,],
+                        data.table(impact3d3ar$summary,keep.rownames = T)[1,]
+             ))%>% data.table(.,keep.rownames = F)
+
+comp_mod_df_sum<-
+      comp_mod_df_sum %>% 
+            left_join(summary, by="Models")
+#comp_mod_df_sum[,c("Models","name","mean_tot")]
+  summary%>%
+    rename_all(~sub('_.', '', .x))%>%
+    dplyr::mutate_at(4:(ncol(.)-1),~round(as.numeric(.),2)) %>% 
+    dplyr::mutate_at(ncol(.),~round(as.numeric(.),4)) %>% 
+   # dplyr::rename_at(vars(starts_with('X_')),~
+  knitr::kable(format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
+               caption="Table 2. Summary of the effects of the different models",
+                 align =c('l',rep('c', 101)))%>%
+   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 8) %>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+## Poisson Distribution
+
+<br>
+
+We also included a Poisson regression over the raw counts of consultations. **We are still trying to predict and compare these predictions to the actual values, due to computational limitations**.
+
+<br>
+
+```{r bsts3d_pois, echo=T, cache= T, paged.print=TRUE, warning=F,eval=F}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLinearTrend(ss2d, data15a64_rn_causal$cons_trauma) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma,nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, data15a64_rn_causal$cons_trauma, nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+
+y_pois<-data15a64_rn_causal$cons_trauma[1:(length(data15a64_rn_causal$cons_trauma)-10)]
+x1_pois<-data15a64_rn_causal$cons_circ[1:(length(data15a64_rn_causal$cons_circ)-10)]
+x2_pois<-data15a64_rn_causal$cons_resp[1:(length(data15a64_rn_causal$cons_resp)-10)]
+x3_pois<-data15a64_rn_causal$difftrh[1:(length(data15a64_rn_causal$difftrh)-10)]
+
+model2d2_pois <- bsts(y_pois ~ x1_pois + x2_pois + x3_pois,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="poisson", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter,
+               ping= 0,
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+
+#               dynamic.regression=T)
+plot(model2d2_pois, main = "Model assuming Student Dist, Prior sd=.1")
+plot(model2d2_pois, "components")
+
+x_pois<-data15a64_rn[length(data15a64_rn$difftrc)-10:length(data15a64_rn$diffrec),c("cons_trauma","cons_circ","cons_resp","difftrh")]
+
+burn2d1_pois <- SuggestBurn(0.1, model2d2_pois)
+
+#p <- predict.bsts(model2d1_pois, horizon = 10,newdata=x_pois,   burn = burn2d1_pois, quantiles = c(.025, .975))
+
+d2 <- data.frame(
+    # fitted values and predictions
+    c(10^as.numeric(-colMeans(bsts.model$one.step.prediction.errors[-(1:burn),])+y),  
+    10^as.numeric(p$mean)),
+    # actual data and dates 
+    as.numeric(AirPassengers),
+    as.Date(time(AirPassengers)))
+names(d2) <- c("Fitted", "Actual", "Date")
+```
+
+## Selected Model
+
+<br>
+
+For the meantime, we selected the model with the lowest cumulative errors.
+
+<br>
+
+```{r bsts_model_selected2, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+invisible(c("'0b, Student Dist, Prior sd=.01' = model2d1, #Student SD=.1 Local           'b, Prior sd=.1'"))
+
+cat("#### ",as.character(comp_mod_df_sum[1,c("Models")]),"\n")
+summary(get(as.character(comp_mod_df_sum[1,c("name")]))) 
+
+cat("#### ",as.character(comp_mod_df_sum[2,c("Models")]),"\n")
+summary(get(as.character(comp_mod_df_sum[2,c("name")])))
+
+#The “Average” column represents the average across time during the post-intervention period, while the “Cumulative” column presents the total sum of the time points. In particular, looking at the Average Absolute effect, we see that it is estimated to be 22, with a 95% posterior interval between -38 to -5. Since the interval excludes 0, we can conclude that the intervention of the Public Health Emergency in Los Angeles had a causal impact on the PM2.5 air quality with certain assumptions.
+```
+
+<br>
+
+```{=html}
+<!--- 
+Generally, we can write a Bayesian structural model like this:
+
+$$ Y_t = \mu_t + x_t \beta + S_t + e_t, e_t \sim N(0, \sigma^2_e) $$
+$$ \mu_{t+1} = \mu_t + \nu_t, \nu_t \sim N(0, \sigma^2_{\nu}). $$
+--->
+```
+<br>
+
+# Interrupted Time Series Analysis
+
+We estimated the difference in post treatment and pre-treatment periods while controlling for covariates and a lagged depentent variable through a Type-2 Sum Squares ANCOVA Lagged Dependent Variable model. The model also accounts for baseline levels and trends present in the data, allowing us to attribute significant changes to the interruption. The F-statistics were calculated using a bootstrap model of `r print(clus_iter/2)` replications.
+
+<br>
+
+::: {style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:350px; overflow-x: scroll; width:100%"}
+```{r itsa1, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.show="hide"}
+#tsData_gastos$trend
+#Using the inputted variables, a Type-2 Sum Squares ANCOVA Lagged Dependent Variable model is fitted which estimates the difference in means between interrupted and non-interrupted time periods, while accounting for the lag of the dependent variable and any further specified covariates.
+#Typically such analyses use Auto-regressive Integrated Moving Average (ARIMA) models to handle the serial dependence of the residuals of a linear model, which is estimated either as part of the ARIMA process or through a standard linear regression modeling process [9,17]. All such time series methods enable the effect of the event to be separated from general trends and serial dependencies in time, thereby enabling valid statistical inferences to be made about whether an intervention has had an effect on a time series.
+   #it uses Type-2 Sum Squares ANCOVA Lagged Dependent Variable model
+   #ITSA model da cuenta de observaciones autocorrelacionadas e impactos dinámicos mediante una regresión de deltas en rezagados. Una vez que se incorporan en el modelo, se controlan. 
+#residual autocorrelation assumptions
+#TSA allows the model to account for baseline levels and trends present in the data therefore allowing us to attribute significant changes to the interruption
+#RDestimate(all~agecell,data=metro_region,cutpoint = 21)
+
+#Ver con CHANGEPOINT
+##http://www.lancs.ac.uk/~killick/Pub/KillickEckley2011.pdf
+data15a64_rn2_its<-
+data15a64_rn2 %>% 
+  dplyr::mutate(did=factor(did))
+
+itsa_metro_region_quar<-
+        its.analysis::itsa.model(time = "rn", depvar = "cons_trauma",data=data15a64_rn2,
+                                 interrupt_var = "did", covariates = c("cons_circ", "cons_resp","difftrh"), 
+                                 alpha = 0.05,no.plots = FALSE, bootstrap = TRUE, Reps = clus_iter/2, print = TRUE) 
+
+print(itsa_metro_region_quar)
+
+#This function runs and reports post-estimation tests on fits from the itsa.model function, and generates four plots.
+#Main tests are whether two key ANCOVA assumptions are met, and an additional autocorrelation test for the time series framework.
+#The Shaprio-Wilks test examines the residuals from the fitted model for abnormality. A p-value less than alpha indicates abnormal residuals.
+#The Levene’s Test makes sure that there are equal variances between the treated groups. A p-value less than alpha indicates heterogeneous variances.
+#A QQ-Norm and Boxplot are generated with the test results overlaid (respectively), with a Residualv Fitted and Autocorrelation Function Plot also generated.
+#The results of bootstrap estimations in itsa.model will be plotted, unless argument is switched to FALSE.
+#Default is to generate plots and summary table, but plots may be overridden using no.plots argument.
+#Default alpha value for post-estimation statistics is 0.05, test results will suggest potential presence of problems at higher values (and also at higher levels relative to a user-inputted alpha), but user discretion is needed (examined in tandam with the Residuals v Fitted plot).
+```
+:::
+
+<br>
+
+```{r itsa_plot,echo=T,fig.align='center', fig.pos='H', eval=T, message=FALSE, warning=F, fig.align='center', fig.cap= "Figure 12. Interrupted Time-Series Analysis of Trauma Consultations in Inervention Period (2019-10-18)", error=T}
+ggplot_itsa<-itsa_metro_region_quar$itsa.plot
+
+print(ggplot_itsa)
+```
+
+<br>
+
+There were non-significant differences in the average trauma consultations (F=`r round(itsa_metro_region_quar$booted.ints$'Mean F-value',2)[1]`, p=`r round(itsa_metro_region_quar$booted.ints$'P-value',3)[1]`). There were equal variances between two groups. Must note that there were evidence of autocorrelation, but there were abnormal residuals (p= `r itsa_metro_region_quar$shapiro.test`). Tukey HSD test showed non-significant differences `r paste0("(diff=",round(itsa_metro_region_quar$tukey.result$'x$interrupt_var'[1],2),",p=",sprintf("%4.4f",itsa_metro_region_quar$tukey.result$'x$interrupt_var'[4]),")")` between pre-period (`r paste0("M=",sprintf("%4.2f",itsa_metro_region_quar$group.means[1,3]),", SD=",sprintf("%4.2f",itsa_metro_region_quar$group.means[1,4]))`) and post-intervention period (`r paste0("M=",sprintf("%4.2f",itsa_metro_region_quar$group.means[2,3]),", SD=",sprintf("%4.2f",itsa_metro_region_quar$group.means[2,4]))`).
+
+<br>
+
+# Synthetic Control
+
+Next, we compared trauma consultations in 2019, to the consultations of years from 2015 to 2018, estimating a counterfactual based on linear trends from these years and using the weeks previous to the event (from week 1 to 42).
+
+<br>
+
+```{r exp_plot_lines_log_synth, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 13. Linear trends of Weekly Trauma Consultations by Years (Median and IQRs)"}
+#data15a64_rn_causal$cons_trauma ~ data15a64_rn_causal$cons_circ+ data15a64_rn_causal$cons_resp+ data15a64_rn_causal$difftrh,
+ggplotly_series<-
+data15a64_rn2%>%
+ # dplyr::group_by(year,yearweek)%>%
+  #dplyr::summarise(median=median(hosp_trauma,na.rm=T))%>%
+ggplot() + #median
+  #geom_point() + 
+  #geom_line() +
+  #geom_jitter(aes(y = hosp_trauma,x = isoweek, color = year),width = 0.5, alpha = 0.3)+
+  facet_wrap(~year, ncol = 1,strip.position="right") + 
+  theme_bw() + 
+  theme(strip.background  = element_blank(),
+        strip.text = element_text(face="bold", size=7))+
+  ylab("Counts") + 
+  xlab("Date") + 
+  theme(strip.text.x = element_text(size = 8, face = "bold"),
+        axis.text.y = element_blank(),
+        legend.position = "none",
+        plot.caption=element_text(hjust = 0))+
+  geom_smooth(aes(y = cons_trauma,x = isoweek, color = year),stat = 'summary', color = 'red', fill = 'red', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = cons_circ,x = isoweek, color = year),stat = 'summary', color = 'darkblue', fill = 'navyblue', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = cons_resp,x = isoweek, color = year),stat = 'summary', color = 'violet', fill = 'violet', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = difftrh,x = isoweek, color = year),stat = 'summary', color = 'darkgreen', fill = 'green', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+    #  geom_smooth(aes(y = hosp_total,x = yearweek, color = year),stat = 'summary', color = 'gray80', fill = 'gray80', alpha = 0.2, 
+   #             fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  labs(caption="Note. Year 2015 & 2016 had a length of 53 weeks.Red= Trauma Consultations; Blue= Circulatory System Consultations;\nViolet= Respiratory System Consultations; Green= Diff. Between Trauma and Total Hospitalizations")+
+  xlab("Week")+
+  scale_x_continuous(
+  breaks = seq(from = 1, to = 53, by =4)#,
+#  label = c("two", "four", "six")
+)
+ggplotly(ggplotly_series)%>% 
+ layout(annotations = 
+ list(x = .5, y = -0.035, text = "Note. Year 2015 & 2016 had a length of 53 weeks.Red= Trauma Hospitalizations; Blue= Circulatory System Hospitalizations;\n Violet= Respiratory System Hospitalizations; Green= Diff. Between Trauma and Total Consultations", 
+      showarrow = F, xref='paper', yref='paper', 
+      #xanchor='center', yanchor='auto', xshift=0, yshift=-0,
+      font=list(size=7, color="darkblue"))
+ )
+```
+
+<br>
+
+We observed that linear trends shows very similar behaviors in the pre-intervention period.
+
+<br>
+
+```{r exp_plot_lines_log_synth_std_diff, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=10,eval=T, fig.align='center', fig.cap= "Figure 14. Linear trends of Std. Differences of Variables, Between 2015-2018 vs. 2019, Before Week 43"}
+ggplotly_trends<-
+  data15a64_rn2%>%
+   dplyr::filter(isoweek<43) %>%
+  #escalar los datos por todos l
+  #data15a64_rn_causal$cons_trauma ~ data15a64_rn_causal$cons_circ+ data15a64_rn_causal$cons_resp+ data15a64_rn_causal$difftrh,
+
+  dplyr::group_by(isoweek) %>% 
+  dplyr::mutate_at(.vars=vars(cons_trauma, cons_circ, cons_resp, difftrh), 
+                   .funs = funs(`zw`=scale(.)))%>%
+  dplyr::select(year,cons_trauma_zw, cons_circ_zw, cons_resp_zw, difftrh_zw) %>% 
+  dplyr::ungroup()%>%
+  dplyr::mutate(treat.var=ifelse(year==2019,1,0))%>%
+  dplyr::group_by(treat.var,isoweek)%>%
+  dplyr::summarise_at(.vars=vars(cons_trauma_zw, cons_circ_zw, cons_resp_zw, difftrh_zw), 
+                      .funs = funs(mean = mean(.,na.rm=T)))%>%
+  dplyr::ungroup()%>%
+  tidyr::pivot_longer(cols = ends_with("_mean"),names_to="variable", values_to="value",values_drop_na = F)%>%
+  dplyr::group_by(isoweek, variable)%>%
+  dplyr::mutate(difference = max(value) - min(value))%>%
+  dplyr::filter(treat.var==0)%>%
+ # dplyr::mutate(sig=if_else(variable %in% c("T21_AnyOpioid_zw_mean", "T21_PercRecHighDosage_zw_mean", "T57_Total_zw_mean"),0,1,0))%>%
+#  dplyr::mutate(sig=factor(sig))%>%
+  dplyr::ungroup()%>%
+   dplyr::rename("Outcome"="variable")%>%
+  ggplot(aes(x=isoweek,y=difference, color=Outcome))+
+  geom_line(size=1)+
+  geom_point(size=2) +
+  labs(y = "Std. Differences", x = "Week Number")+ 
+  sjPlot::theme_sjplot2() +
+  #scale_y_continuous(labels = scales::percent,limits=c(0, .999))+
+  #scale_color_manual(values=brewer.pal(n = 7, name = "Moonrise2"))+ #"Pastel1"
+  scale_color_manual(values=RColorBrewer::brewer.pal(n=4,name="Pastel2"))+ #"Pastel1"
+  #  scale_fill_manual(values = wes_palette(n=7, name="Darjeeling2"))+
+  #facet_grid(sig~., labeller= to_string, switch = "y")+
+  theme(legend.title = element_text(size= 10.5, colour = "black", family="Arial"), legend.position='bottom', 
+        legend.text=element_text(size=10, family="Arial"))+
+  theme(plot.caption = element_text(hjust = 0, face = "italic", family="Arial"))+
+  scale_x_continuous("Quarters & Years",breaks=seq(1,42,by=4))+
+  theme(panel.border = element_blank(),
+        panel.grid.major.y = element_blank(),
+        #panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())+
+  theme(strip.background=element_rect(fill="white"),
+        strip.text.y = element_text(face="bold", family="Arial"))+
+  guides(color = guide_legend(ncol = 2, nrow = 4, byrow = TRUE))
+ggplotly(ggplotly_trends) %>% 
+   layout(legend = list(
+      orientation = "h", y = -0.2
+    )
+  )
+```
+
+<br>
+
+Considering the differences shown in the figure above, we conserved all the covariates in order to generate a synthetic control.
+
+<br>
+
+```{r synth1, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#https://uclspp.github.io/PUBL0050/seminar6.html
+library("Synth")
+data15a64_rn3<-data15a64_rn2 %>% 
+  dplyr::filter(isoweek!=53)
+#data15a64_rn3[which(data15a64_rn3$isoweek==53),"did"]<-1
+#table(data15a64_rn2$isoweek,data15a64_rn2$did)
+#log_cons_trauma, log_cons_circ, log_cons_resp, log_difftrh
+dataprep.out <-
+        dataprep(data15a64_rn3,
+          predictors = c("cons_circ", "cons_resp","difftrh"),
+          dependent     = "cons_trauma",
+          unit.variable = "year",
+          time.variable = "isoweek",
+          treatment.identifier  = 2019,
+          special.predictors = list(
+             list("cons_trauma", 1, "median"),
+             list("cons_trauma", 11, "median"),
+             list("cons_trauma", 21, "median"),
+             list("cons_trauma", 41, "median")),
+          predictors.op="median",
+          time.predictors.prior = c(1:42),
+          time.optimize.ssr= c(1:42),
+          controls.identifier   = c(2015:2018),
+          time.plot             = c(1:52))
+
+# Run synth
+  synth.out <- synth(dataprep.out,method = "All")
+
+synth2.out <- MSCMT::improveSynth(synth.out,dataprep.out,seed=2125)
+
+print(synth.tables   <- synth.tab(
+        dataprep.res = dataprep.out,
+        synth.res    = synth2.out)
+      )
+
+#https://rpubs.com/danilofreire/synth
+#https://towardsdatascience.com/causal-inference-using-synthetic-control-the-ultimate-guide-a622ad5cf827
+
+synth.tables = synth.tab(dataprep.res = dataprep.out,
+                         synth.res = synth2.out)
+names(synth.tables)
+
+synth.tables$tab.pred
+
+#To calculate the difference between the real trauma hospitalizations in 2019 and the synthetic control as follows:
+gaps = dataprep.out$Y1plot - (dataprep.out$Y0plot %*% synth2.out$solution.w)
+#plot(gaps,type="l")
+```
+
+<br>
+
+```{r synth2, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T, fig.show="hide", fig.cap= "Figure 15. Coefficients of SCM"}
+no_mostrar=1
+if(no_mostrar==0){
+path.plot(synth.res    = synth2.out,
+          dataprep.res = dataprep.out,
+          Ylab         = c("Y"),
+          Xlab         = c("Week of the Year"),
+          Ylim         = c(3, 5),
+          Legend       = c("2019","2015 to 2018"),
+          Legend.position = c("topleft")
+)
+abline(v   = 43,
+       lty = 2)
+}
+
+gaps.plot(synth.res = synth2.out, dataprep.res = dataprep.out, Ylab = "Trauma Consultations", Xlab= "Week Number")
+```
+
+<br>
+
+```{r synth3, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 16. Comparison of Linear Trends of Trauma Consultations in 2019 vs. Synthetic Counterfactual Based on 2015-2018"}
+
+plot.df = data.frame(dataprep.out$Y0plot%*%synth2.out$solution.w)
+
+years <- as.numeric(row.names(plot.df))
+plot.df = rbind(data.frame(year=years,y=plot.df$w.weight,unit='Synthetic'),
+           data.frame(year=years,y=data15a64_rn3$cons_trauma[data15a64_rn3$year==2019 & data15a64_rn3$isoweek %in% years],unit='2019')
+)
+ggplot(plot.df,aes(x=year,y=y,color=unit)) + geom_line() + ylab("") + xlab("Week Number") + scale_color_manual(values=c('black','red')) +
+  ggtitle('Trauma Consultations') +
+  theme_sjplot2()+
+  guides(color=guide_legend(title="Series"))+
+  geom_vline(xintercept = 43,linetype="longdash")+
+  labs(caption="Note. Vertical Line, Posterior Week to October 18th")+
+  theme(plot.caption = element_text(hjust = 0, face = "italic", family="Arial"))
+```
+
+<br>
+
+We compared several controls as a placebo test.
+
+<br>
+
+```{r synth4, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+library(SCtools)
+#https://cran.r-project.org/web/packages/SCtools/SCtools.pdf
+
+placebos<-generate.placebos(
+dataprep.out,
+synth.out,
+Sigf.ipop = 5,
+strategy = "sequential"
+)
+mspe_test(placebos, discard.extreme = FALSE, mspe.limit = 20)
+
+```
+
+```{r synth5_plot_mspe_placebos, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 17. Ratio of MSPE of Placebos"}
+mspe.plot(
+placebos,
+discard.extreme = FALSE,
+mspe.limit = 20,
+plot.hist = FALSE,
+title = NULL,
+xlab = "Post/Pre MSPE ratio",
+ylab = NULL
+)
+```
+
+```{r synth6_plot_placebos, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 18. Comparison of Linear Trends of Placebos"}
+plot_placebos(
+tdf = placebos,
+discard.extreme = FALSE,
+mspe.limit = 20,
+xlab = NULL,
+ylab = NULL,
+title = NULL,
+alpha.placebos = 1,
+)
+```
+
+```{r prepare_codebook, echo=T, error=T,eval=T}
+
+invisible(c("DataExp"))
+#https://boxuancui.github.io/DataExplorer/
+#DataExplorer::create_report(coronavirus_iso3c_8)
+    
+mostrar="no"
+    if(mostrar=="si"){
+        ExPanDaR::ExPanD(df = codebook_data,
+               export_nb_option = F,  #para proteger la base de datos
+               title= "Exploration of Dataset", 
+               abstract= "Summarised information of the variables. ID: " ,
+               df_name= "", 
+              # df_def= df_def,
+               cs_id = "iso_code",
+               key_phrase = "ags", #proteger la bd
+               store_encrypted= T) 
+    }
+
+# to import an SPSS file from the same folder uncomment and edit the line below
+# codebook_data <- rio::import("mydata.sav")
+# for Stata
+# codebook_data <- rio::import("mydata.dta")
+# for CSV
+# codebook_data <- rio::import("mydata.csv")
+
+      tryCatch(
+                     {
+      save.image(paste0(getwd(),"/","Procesos hasta 5_cons_trauma.RData"))
+      #rio::export(codebook_data, "C:/Users/andre/Dropbox/Covid-19_2020/Article_SecondManuscript/LT Environmental analysis/Databases/merged_data_post_ago.dta")
+                     },
+                         error = function(e){
+      save.image(paste0(getwd(),"/","Procesos hasta 5_cons_trauma.RData"))
+      #rio::export(codebook_data, "C:/Users/CISS Fondecyt/Dropbox/Covid-19_2020/Article_SecondManuscript/LT Environmental analysis/Databases/merged_data_post_ago.dta")
+                         }
+                   )
+sessionInfo()
+```
+
+```{r codebook_final, echo=T,error=T,eval=F}
+codebook::codebook(codebook_data)
+```
+
+# References
+
+-   Cox, L. (2015) Quantifying and Reducing Uncertainty about Causality in Improving Public Health and Safety. In: Ghanem R., Higdon D., Owhadi H. (eds) Handbook of Uncertainty Quantification. Springer, Cham. <https://doi.org/10.1007/978-3-319-11259-6_71-1>
+
+-   Brodersen, KH., Gallusser, F., Koehler, J., Remy, N., Scott, SL. (2015) Inferring causal impact using Bayesian structural time-series models. Ann Appl Stat 9:247--274

@@ -1,0 +1,30 @@
+
+TY  - JOUR
+T1  - Bayesian Model Averaging: A Systematic Review and Conceptual Classification
+AU  - Fragoso, Tiago M.
+AU  - Bertoli, Wesley
+AU  - Louzada, Francisco
+Y1  - 2018/04/01
+PY  - 2018
+DA  - 2018/04/01
+N1  - doi: 10.1111/insr.12243
+DO  - 10.1111/insr.12243
+T2  - International Statistical Review
+JF  - International Statistical Review
+JO  - International Statistical Review
+JA  - International Statistical Review
+SP  - 1
+EP  - 28
+VL  - 86
+IS  - 1
+KW  - Bayesian model averaging
+KW  - systematic review
+KW  - conceptual classification scheme
+KW  - qualitative content analysis
+PB  - John Wiley & Sons, Ltd
+SN  - 0306-7734
+M3  - doi: 10.1111/insr.12243
+UR  - https://doi.org/10.1111/insr.12243
+Y2  - 2020/10/21
+N2  - Summary Bayesian model averaging (BMA) provides a coherent and systematic mechanism for accounting for model uncertainty. It can be regarded as an direct application of Bayesian inference to the problem of model selection, combined estimation and prediction. BMA produces a straightforward model choice criterion and less risky predictions. However, the application of BMA is not always straightforward, leading to diverse assumptions and situational choices on its different aspects. Despite the widespread application of BMA in the literature, there were not many accounts of these differences and trends besides a few landmark revisions in the late 1990s and early 2000s, therefore not accounting for advancements made in the last decades. In this work, we present an account of these developments through a careful content analysis of 820 articles in BMA published between 1996 and 2016. We also develop a conceptual classification scheme to better describe this vast literature, understand its trends and future directions and provide guidance for the researcher interested in both the application and development of the methodology. The results of the classification scheme and content review are then used to discuss the present and future of the BMA literature.
+ER  - 

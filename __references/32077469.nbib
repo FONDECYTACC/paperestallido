@@ -1,0 +1,92 @@
+PMID- 32077469
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20201005
+LR  - 20201005
+IS  - 1476-6256 (Electronic)
+IS  - 0002-9262 (Print)
+IS  - 0002-9262 (Linking)
+VI  - 189
+IP  - 9
+DP  - 2020 Sep 1
+TI  - Florida's Opioid Crackdown and Mortality From Drug Overdose, Motor Vehicle Crashes, 
+      and Suicide: A Bayesian Interrupted Time-Series Analysis.
+PG  - 885-893
+LID - 10.1093/aje/kwaa015 [doi]
+AB  - In 2011, Florida established a prescription drug monitoring program and adopted new 
+      regulations for independent pain-management clinics. We examined the association of 
+      those reforms with drug overdose deaths and other injury fatalities. Florida's 
+      postreform monthly mortality rates-for drug-involved deaths, motor vehicle crashes, 
+      and suicide by means other than poisoning-were compared with a counterfactual 
+      estimate of what those rates would have been absent reform. The counterfactual was 
+      estimated using a Bayesian structural time-series model based on mortality trends in 
+      similar states. By December 2013, drug overdose deaths were down 17% (95% credible 
+      interval: -21, -12), motor vehicle crash deaths were down 9% (95% credible interval: 
+      -14, -4), and suicide deaths were unchanged compared with what would be expected in 
+      the absence of reform. Florida's opioid prescribing reform substantially reduced 
+      drug overdose deaths. Reforms may also have reduced motor vehicle crash deaths but 
+      were not associated with a change in suicides. More research is needed to understand 
+      these patterns. Bayesian structural time-series modeling is a promising new approach 
+      to interrupted time-series studies.
+CI  - © The Author(s) 2020. Published by Oxford University Press on behalf of the Johns 
+      Hopkins Bloomberg School of Public Health. All rights reserved. For permissions, 
+      please e-mail: journals.permissions@oup.com.
+FAU - Feder, Kenneth A
+AU  - Feder KA
+FAU - Mojtabai, Ramin
+AU  - Mojtabai R
+FAU - Stuart, Elizabeth A
+AU  - Stuart EA
+FAU - Musci, Rashelle
+AU  - Musci R
+FAU - Letourneau, Elizabeth J
+AU  - Letourneau EJ
+LA  - eng
+GR  - F31 DA044699/DA/NIDA NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+TA  - Am J Epidemiol
+JT  - American journal of epidemiology
+JID - 7910653
+RN  - 0 (Analgesics, Opioid)
+SB  - IM
+CIN - Am J Epidemiol. 2020 Sep 1;189(9):898-899. PMID: 32077468
+CIN - Am J Epidemiol. 2020 Sep 1;189(9):894-897. PMID: 32077473
+MH  - Accidents, Traffic/*mortality
+MH  - Analgesics, Opioid/*poisoning
+MH  - Bayes Theorem
+MH  - Cause of Death
+MH  - Drug Monitoring/*methods
+MH  - Drug Overdose/*mortality
+MH  - Drug and Narcotic Control/*legislation & jurisprudence
+MH  - Female
+MH  - Florida/epidemiology
+MH  - Humans
+MH  - Interrupted Time Series Analysis
+MH  - Law Enforcement
+MH  - Male
+MH  - Pain Clinics/legislation & jurisprudence
+MH  - Practice Patterns, Physicians'/legislation & jurisprudence
+MH  - Suicide/*statistics & numerical data
+PMC - PMC7443765
+OTO - NOTNLM
+OT  - *drug policy
+OT  - *interrupted time series
+OT  - *mortality
+OT  - *opioids
+EDAT- 2020/02/23 06:00
+MHDA- 2020/10/06 06:00
+PMCR- 2021/09/01
+CRDT- 2020/02/21 06:00
+PHST- 2019/01/03 00:00 [received]
+PHST- 2019/09/22 00:00 [revised]
+PHST- 2019/10/15 00:00 [accepted]
+PHST- 2021/09/01 00:00 [pmc-release]
+PHST- 2020/02/23 06:00 [pubmed]
+PHST- 2020/10/06 06:00 [medline]
+PHST- 2020/02/21 06:00 [entrez]
+AID - 5741085 [pii]
+AID - kwaa015 [pii]
+AID - 10.1093/aje/kwaa015 [doi]
+PST - ppublish
+SO  - Am J Epidemiol. 2020 Sep 1;189(9):885-893. doi: 10.1093/aje/kwaa015.
