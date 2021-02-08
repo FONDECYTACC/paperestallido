@@ -2100,7 +2100,7 @@ One disadvantage of this model is that does not allow to include covariates as c
 ```{r save, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
 Sys.getenv("R_LIBS_USER")
 
-rstudioapi::getSourceEditorContext()
+rstudioapi::getSourceEdito rContext()
 
 #paste0("Folder where packages were saved: ",get.groundhog.folder())
 
