@@ -220,6 +220,8 @@ if(!require(tidyr)){install.packages("tidyr")}
 if(!require(sjPlot)){install.packages("sjPlot")}
 if(!require(ggplot2)){install.packages("ggplot2")}
 if(!require(compareGroups)){install.packages("compareGroups")}
+if(!require(forecast)){install.packages("forecast")}
+
 ```
 
 # Compile Database
@@ -1447,7 +1449,7 @@ tsdata3 <- urg_control_3 %>%
 
 ### Analyse shocks
 
-```{r exp_plot_lines1, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 1. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution"}
+```{r exp_shocks0, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 1. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution"}
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
 
@@ -1474,7 +1476,9 @@ tsdata3 <- urg_control_3 %>%
     scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
     labs(y="No. of Days in the week with 0 counts",
          x="Years & Weeks") + 
-    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), 
+          legend.position="bottom",
+          plot.caption=element_text(hjust=0)) 
 
 ```
 
@@ -1565,7 +1569,7 @@ tsdata3_corr_cons <- tsdata3_corr %>%
   )
 ```
 
-```{r exp_plot_lines, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 2. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution, After Interpolaiton"}
+```{r exp_shocks1, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 2. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution, After Interpolaiton"}
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
 
@@ -1592,7 +1596,9 @@ tsdata3_corr_cons <- tsdata3_corr %>%
     scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
     labs(y="No. of Days in the week with 0 counts",
          x="Years & Weeks") + 
-    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), plot.caption=element_text(hjust=0)) 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60),
+          legend.position="bottom",
+          plot.caption=element_text(hjust=0)) 
 ```
 <br>
 
@@ -1882,6 +1888,213 @@ We subsetted the interval of consultations and hospitalizations of patients betw
 
 <br>
 
+Then, we explored the weekly trends in each year.
+
+<br>
+
+```{r exp_plot_lines, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 3. Linear trends of Weekly Trauma Hospitalizations by Years (Median and IQRs)"}
+data15a64_rn%>%
+  dplyr::mutate(year_week_fmt=as.Date(year_week,"%Y-W%V"))%>%
+ # dplyr::group_by(year,yearweek)%>%
+  #dplyr::select(hosp_trauma,hosp_circ,hosp_resp) %>%  summary(min(),max())
+  #dplyr::summarise(median=median(hosp_trauma,na.rm=T))%>%
+ggplot() + #median
+  #geom_point() + 
+  #geom_line() +
+  geom_jitter(aes(y = hosp_trauma,x = isoweek, color = year),width = 0.5, alpha = 0.3)+
+  facet_wrap(~year, ncol = 1) + 
+  theme_bw() + 
+  ylab("Trauma Hospitalizations") + 
+  xlab("Week") + 
+  theme(strip.text.x = element_text(size = 14, face = "bold"),
+        legend.position = "none",
+        plot.caption=element_text(hjust = 0))+
+  geom_smooth(aes(y = hosp_trauma,x = isoweek, color = year),stat = 'summary', color = 'red', fill = 'red', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = hosp_circ,x = isoweek, color = year),stat = 'summary', color = 'darkblue', fill = 'navyblue', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = hosp_resp,x = isoweek, color = year),stat = 'summary', color = 'violet', fill = 'violet', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  #geom_smooth(aes(y = cons_trauma,x = yearweek, color = year),stat = 'summary', color = 'darkgreen', fill = 'green', alpha = 0.2, 
+  #              fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+    #  geom_smooth(aes(y = hosp_total,x = yearweek, color = year),stat = 'summary', color = 'gray80', fill = 'gray80', alpha = 0.2, 
+   #             fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  labs(caption="Note. Year 2015 & 2016 had a length of 53 weeks.\nRed= Trauma Hospitalizations; Blue= Circulatory System Hospitalizations; Violet= Respiratory System Hospitalizations; Gray Dots= Trauma Hospitalizations (obs)")+
+  
+  scale_y_continuous(breaks=seq(0,1000,50))+
+  scale_x_continuous(
+  breaks = seq(from = 1, to = 53, by =4)#,
+#  label = c("two", "four", "six")
+)
+```
+
+## TBATS
+
+This models let us include multiple seasonalities. Their initials stand for T (trigonometric regressors for multiple seasonalities), B (box-cox transformations that correct for the effect of normality in data), A (inclusion of autorregresive  and moving-average errors), T (trend) y S (seasonality). This model automatically identifies the parameters that reduces. However, we pre-defined a monthly and annual seasonality, in order to capture monthly and annual seasonal patterns.
+
+<br>
+
+The test set were defined 11 weeks before the intervention period (week of October 21th, 2019). The training set had information of each outcome from 2015 to the first semester of 2019. **We expect that these models would give us information about the structure of the time series that will be used in the Bayesian Time-Series Analysis**.
+
+<br>
+
+```{r setting_prev_g_tbats_multiple_time_seasonality, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+pre_period_response_hosp_trauma <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"hosp_trauma"]))
+pre_period_response_hosp_resp <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"hosp_resp"]))
+pre_period_response_cons_resp <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"cons_resp"]))
+pre_period_response_cons_trauma <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"cons_trauma"]))
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+pre_period_response_hosp_trauma_train<-as.numeric(unlist(data15a64_rn[1:241,"hosp_trauma"]))%>% 
+                        ts()
+pre_period_response_hosp_trauma_val<-as.numeric(unlist(data15a64_rn[242:252,"hosp_trauma"]))%>% 
+                        ts(start=242)
+
+pre_period_response_hosp_resp_train<-as.numeric(unlist(data15a64_rn[1:241,"hosp_resp"]))%>% 
+                        ts()
+pre_period_response_hosp_resp_val<-as.numeric(unlist(data15a64_rn[242:252,"hosp_resp"]))%>% 
+                         ts(start=242)
+
+pre_period_response_cons_resp_train<-as.numeric(unlist(data15a64_rn[1:241,"cons_resp"]))%>% 
+                        ts()
+pre_period_response_cons_resp_val<-as.numeric(unlist(data15a64_rn[242:252,"cons_resp"]))%>% 
+                         ts(start=242)
+
+pre_period_response_cons_trauma_train<-as.numeric(unlist(data15a64_rn[1:241,"cons_trauma"]))%>% 
+                        ts()
+pre_period_response_cons_trauma_val<-as.numeric(unlist(data15a64_rn[242:252,"cons_trauma"])) %>% 
+                        ts(start=242) 
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+set.seed(2125)
+fit_trainset_tbats_hosp_trauma <- tbats(pre_period_response_hosp_trauma_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_hosp_resp <- tbats(pre_period_response_hosp_resp_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_cons_trauma <- tbats(pre_period_response_cons_trauma_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_cons_resp <- tbats(pre_period_response_cons_resp_train,seasonal.periods= c(52,4),biasadj=T)
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#Trigonometric terms for seasonality
+#1	Box-Cox transformation parameter, for heterogeneity
+#{0,0}	ARMA error for short-term dynamics
+#-	Damping parameter -> Trend
+#{\<51.18,14>}	Seasonal period, Fourier terms
+
+#Las opciones tomadas: 1(no transformación), la segunda es el error ARMA (1,1),p=1, q=1, - significa que no hay damping o trend, después vienen los periodos estacionales (no hay), y no hay serialized terms seleccionados; puede que estas dos estén en 2 grupos <> <> porque haya más estacionalidad 
+#
+# The TBATS incorporates a state space model that is a generalization of those underpinning exponential smoothing. It also allows for automatic Box-Cox transformation and ARMA errors, it provides a very flexible way of accounting for seasonality and trends. The parameters include a box-cox transformation parameter, ARMA errors, damping. The seasonality and trend is easily handled in this model through the fourier transformations and smoothening parameters, which can be further tuned. Due to limited data however, the accuracy on test set in terms of Mean Absolute Percentage Error can vary from the metric given in this report, however when forecasting for longer periods, we see very smooth trends. After making the forecasting model, the expense percentage predicted for May 2016 is 3.52%.
+```
+
+<br>
+
+First, we applied the TBATS model on Trauma Hospitalizations.
+
+<br>
+
+```{r setting_tbats_hosp_trauma, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 4. TBATS Model of Truama Hospitalizations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_hosp_trauma, h=11) %>%  autoplot()+ autolayer(pre_period_response_hosp_trauma_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+#Sure, you can apply a Box-Cox Transformation, e.g. lambda = 0 (Log-Transform), on the time series before fitting the model. After which you need the apply the inverse Box-Cox transformation on predictions. In that way you ensure that the forecasts and confidence intervals are positive
+
+#RESIDUALS
+#forecast::ggtsdisplay(residuals(fit_trainset_tbats_hosp_trauma), lag.max=52, main='HoltWinters Exponenetial smoothing Residuals')
+```
+<br>
+
+The model suggested a box-cox transformation of lambda=`r sprintf("%1.2f",as.numeric(fit_trainset_tbats_hosp_trauma$lambda))`, that can be rounded to the squared root of Y (√(Y)).  However, it may very well be the case that the resulting transformation of the data is not appropriate to our case. Additionally, the model did not identify ARMA errors and trends (damping).
+
+<!--- 0= suggest a log transformation --->
+
+<br>
+
+Next, we applied the TBATS model on Respiratory Hospitalizations. 
+
+<br>
+
+```{r setting_tbats_hosp_resp, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 5. TBATS Model of Respiratory Hospitalizations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_hosp_resp, h=11) %>%  autoplot()+ autolayer(pre_period_response_hosp_resp_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The resulting model suggested a log transformation (Lambda= `r sprintf("%1.2f",as.numeric(fit_trainset_tbats_hosp_resp$lambda))`), but did not identify ARMA errors nor trends, but seasonal components. 
+
+<br>
+
+Also we applied the TBATS model on Trauma Consultations. 
+
+
+<br>
+
+```{r setting_tbats_cons_trauma, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T,  fig.align="center",fig.cap="Figure 6. TBATS Model of Trauma Consultations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_cons_trauma, h=11) %>%  autoplot()+ autolayer(pre_period_response_cons_trauma_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The model identified no box-cox transformations, no ARMA errors, a trend of `r round(fit_trainset_tbats_cons_trauma$damping.parameter,1)` but no seasonal periods. However, a visual inspection may not let us to conclude that there was an upward trend on the series.
+
+<br>
+
+```{r setting_tbats_cons_resp, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T,  fig.align="center",fig.cap="Figure 7. TBATS Model of Respiratory Consultations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_cons_resp, h=11) %>%  autoplot()+ autolayer(pre_period_response_cons_resp_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 252, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The resulting model suggested a box-cox transformation of lambda=`r sprintf("%1.2f",as.numeric(fit_trainset_tbats_cons_resp$lambda))`, that can be rounded to 1 (no transformation needed). Also, it identified no ARMA errors, no dumping parameters, but confirmed the monthly and annual seasonal components.
+
+<br>
+
+One disadvantage of this model is that does not allow to include covariates as control time-series. Additionally, despite that some outcomes did not show any seasonal trends, we decided to incorporate them anyways because of groundedIn backgrounds that add support for their inclusion.
+
+
 # Session Info
 
 ```{r save, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
@@ -1894,5 +2107,4 @@ rstudioapi::getSourceEditorContext()
 sessionInfo()
 
 save.image(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
-
 ```
