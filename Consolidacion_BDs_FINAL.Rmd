@@ -179,7 +179,8 @@ if(!require(ISOweek)){install.packages("ISOweek")}
 if(!require(gridExtra)){install.packages("gridExtra")}
 if(!require(cowplot)){install.packages("cowplot")}
 if(!require(grid)){install.packages("grid")}
-if(!require(ArCo)){install.packages("ArCo")}
+if(!require(devtools)){install.packages("devtools")}
+if(!require(Statamarkdown)){devtools::install_github("hemken/Statamarkdown", quiet=T,  upgrade="never")}
 
 # Calculate the number of cores
 no_cores <- detectCores() - 1
@@ -988,929 +989,7 @@ Effect","95%Credible Interval", "P- Value","Relative Effect(%)","95%Credible Int
   kableExtra::scroll_box(width = "100%", height = "375px")
 ```
 
-## Final Plots
-
-<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%">
-
-```{r original_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.height= 14, fig.width= 23, fig.cap= "Figure 1. Estimated Trends of the Outcomes"}
-library(cowplot)
-
-#horizontal
-height_y<-16
-height_x<-16
-size_title<-18
-line_size<-1.2 #.8
-#c("impact3d1_cons_trauma", "impact3d_cons_resp","impact3d_hosp_trauma", "impact3d1_hosp_resp", "impact3d_ratio", "impact3d_ratio_resp")
-
-Sys.setlocale(category = "LC_ALL", locale = "english")
-
-cons_trauma_plot_red<-
-plot(impact3d1_cons_trauma, "original")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=format(as.Date(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])),"%Y %b"))+
-  ylim(c(0,1600))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("a) Trauma Consultations")
-
-cons_resp_plot_red<-
-plot(impact3d_cons_resp, "original")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=format(as.Date(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])),"%Y %b"))+
-  ylim(c(0,1600))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("b) Respiratory Consultations")
-
-hosp_trauma_plot_red<-
-plot(impact3d_hosp_trauma, "original")$data %>% 
-    ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=format(as.Date(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])),"%Y %b"))+
-  ylim(c(0,150))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("c) Trauma Hospitalizations")
-
-hosp_resp_plot_red<-
-plot(impact3d1_hosp_resp, "original")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=format(as.Date(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])),"%Y %b"))+
-  ylim(c(0,150))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("d) Respiratory Hospitalizations")
-
-rate_trauma_plot_red<-
-plot(impact3d_ratio, "original")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=format(as.Date(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])),"%Y %b"))+
-  ylim(c(0,400))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("e) Trauma Hospitalizations per 1,000 consultations")
-
-rate_resp_plot_red<-
-plot(impact3d_ratio_resp, "original")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=format(as.Date(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])),"%Y %b"))+
-  ylim(c(0,400))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")
-
-
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-
-cons_trauma_plot<-
-plot(impact3d1_cons_trauma, "original")+
-    xlab("")+
-    #ylab("Consultations")+
-    scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])))+
-    ylim(c(0,1600))+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("a) Trauma Consultations")
-cons_resp_plot<-
-plot(impact3d_cons_resp, "original")+
-    xlab("")+
-    #ylab("Consultations")+
-    scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])))+
-    ylim(c(0,1600))+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("b) Respiratory Consultations")
-
-hosp_trauma_plot<-
-plot(impact3d_hosp_trauma, "original")+
-    xlab("")+
-    #ylab("Hospitalizations")+
-    scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])))+
-    ylim(c(0,150))+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("c) Trauma Hospitalizations")
-hosp_resp_plot<-
-plot(impact3d1_hosp_resp, "original")+
-    xlab("")+
-    #ylab("Hospitalizations")+
-    scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])))+
-    ylim(c(0,150))+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("d) Respiratory Hospitalizations")
-
-rate_trauma_plot<-
-plot(impact3d_ratio, "original")+
-    xlab("")+
-    #ylab("Rate of Hospitalizations per Consultations")+
-    ylim(c(0,400))+
-    scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])))+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("e) Trauma Hospitalizations per 1,000 consultations")
-rate_resp_plot<-
-plot(impact3d_ratio_resp, "original")+
-    xlab("")+
-    #ylab("Rate of Hospitalizations per Consultations")+
-    ylim(c(0,400))+
-    scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),24),262)),
-                       labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),24),262),"date"])))+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")
-
-plot1<-
-plot_grid(
-  cons_trauma_plot+theme(axis.text.x = element_blank()),
-  cons_resp_plot+theme(axis.text.x = element_blank()),
-  hosp_trauma_plot+theme(axis.text.x = element_blank()),
-  hosp_resp_plot+theme(axis.text.x = element_blank()),
-  rate_trauma_plot+theme(axis.text.x = element_blank()),
-  rate_resp_plot,
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-  nrow = 6,  rel_heights = c(rep(1,5),1.52), align = "v"
-#, rel_widths = c(1, 1)
-)
-
-#vertical
-height_y<-13
-height_x<-13
-size_title<-14
-
-plot1b<-
-plot_grid(
-  cons_trauma_plot+theme(axis.text.x = element_blank()),
-  cons_resp_plot+theme(axis.text.x = element_blank()),
-  hosp_trauma_plot+theme(axis.text.x = element_blank()),
-  hosp_resp_plot+theme(axis.text.x = element_blank()),
-  rate_trauma_plot,
-  rate_resp_plot,#,
-  nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,3),1.7)
-)
-
-plot1b_red<-
-plot_grid(
-  cons_trauma_plot_red+theme(axis.text.x = element_blank()),
-  cons_resp_plot_red+theme(axis.text.x = element_blank()),
-  hosp_trauma_plot_red+theme(axis.text.x = element_blank()),
-  hosp_resp_plot_red+theme(axis.text.x = element_blank()),
-  rate_trauma_plot_red,
-  rate_resp_plot_red,#,
-  nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25)
-)
-
-
-ggdraw(plot1b_red)+
-   theme(plot.background = element_rect(fill=NA, color = NA))
-
-
-dont_show=1
-if(dont_show==0){
-  pdf("_Fig1.pdf", height = 14, width = 23)
-  ggdraw(plot1)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig1.jpg", height = 14, width = 23, units = 'in', res = 600)
-  ggdraw(plot1)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  pdf("_Fig1b.pdf", height = 19.5, width = 15.3)
-  ggdraw(plot1b)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig1b.jpg", height = 19.5, width = 15.3, units = 'in', res = 600)
-  ggdraw(plot1b)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-
-if(dont_show==0){
-  pdf("_Fig1c.pdf", height = 14, width = 23)
-  ggdraw(plot1b_red)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig1c.jpg", height = 14, width = 23, units = 'in', res = 600)
-  ggdraw(plot1b_red)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-#add_sub(, "Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nBlue area= Prediction intervals.", vpadding=grid::unit(0, "lines"), y = .55, x = 0.03, hjust = 0,size=9)
-#plot2 <- cowplot::ggdraw(grid.arrange(p14, p21,p212,p32,p42,p52,p57, ncol = 2, nrow = 4)) + 
-  # same plot.background should be in the theme of p1 and p2 as mentioned above
-#  theme(plot.background = element_rect(fill=NA, color = NA))
-```
-
-</div>
-
-
-<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%">
-
-```{r pointwise_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center',  fig.height= 14, fig.width= 23, fig.cap= "Figure 2. Estimated Trends of the Outcomes"}
-
-#horizontal
-height_y<-16
-height_x<-16
-size_title<-18
-line_size<-.8
-
-
-cons_trauma_plot2_red<-
-plot(impact3d1_cons_trauma, "pointwise")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("a) Trauma Consultations")
-
-cons_resp_plot2_red<-
-plot(impact3d_cons_resp, "pointwise")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("b) Respiratory Consultations")
-
-hosp_trauma_plot2_red<-
-plot(impact3d_hosp_trauma, "pointwise")$data %>% 
-    ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("c) Trauma Hospitalizations")
-
-hosp_resp_plot2_red<-
-plot(impact3d1_hosp_resp, "pointwise")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("d) Respiratory Hospitalizations")
-
-rate_trauma_plot2_red<-
-plot(impact3d_ratio, "pointwise")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("e) Trauma Hospitalizations per 1,000 consultations")
-
-rate_resp_plot2_red<-
-plot(impact3d_ratio_resp, "pointwise")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")
-
-vector_breaks_plot2b_red<- seq(238,nrow(data15a64_rn),3)
-Sys.setlocale(category = "LC_ALL", locale = "english")
-vector_dates_plot2b_red<-as.character(format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"))
-
-plot2b_red<-
-plot_grid(
-  cons_trauma_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  cons_resp_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  hosp_trauma_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  hosp_resp_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  rate_trauma_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-400,400,200), limits = c(-400,400)),
-  rate_resp_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-400,400,200), limits = c(-400,400)),
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-    nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.3)
-)
-
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-
-#vertical
-height_y<-13
-height_x<-13
-size_title<-14
-
-cons_trauma_plot2<-
-plot(impact3d1_cons_trauma, "pointwise")+
-    xlab("")+
-    #ylab("Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("a) Trauma Consultations")+
-  theme(plot.title = element_text(size=size_title))
-cons_resp_plot2<-
-plot(impact3d_cons_resp, "pointwise")+
-    xlab("")+
-    #ylab("Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=12))+
-  ggtitle("b) Respiratory Consultations")+
-  theme(plot.title = element_text(size=size_title))
-hosp_trauma_plot2<-
-plot(impact3d_hosp_trauma, "pointwise")+
-    xlab("")+
-    #ylab("Hospitalizations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("c) Trauma Hospitalizations")+
-  theme(plot.title = element_text(size=size_title))
-hosp_resp_plot2<-
-plot(impact3d1_hosp_resp, "pointwise")+
-    xlab("")+
-    #ylab("Hospitalizations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("d) Respiratory Hospitalizations")+
-  theme(plot.title = element_text(size=size_title))
-rate_trauma_plot2<-
-plot(impact3d_ratio, "pointwise")+
-    xlab("")+
-    #ylab("Rate of Hospitalizations per Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("e) Trauma Hospitalizations per 1,000 consultations")+
-  theme(plot.title = element_text(size=size_title))
-rate_resp_plot2<-
-plot(impact3d_ratio_resp, "pointwise")+
-    xlab("")+
-    #ylab("Rate of Hospitalizations per Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")+
-  theme(plot.title = element_text(size=size_title))
-
-plot2<-
-plot_grid(
-  cons_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  cons_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  hosp_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  hosp_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  rate_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
-  rate_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-  nrow = 3, rel_widths = c(1, 1)
-)
-
-#horizontal
-height_y<-15
-height_x<-15
-size_title<-16
-
-plot2b<-
-plot_grid(
-  cons_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  cons_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  hosp_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  hosp_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  rate_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
-  rate_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-  nrow = 3, rel_widths = c(1, 1)
-)
-
-ggdraw(plot2b_red)+
-   theme(plot.background = element_rect(fill=NA, color = NA))
-
-if(dont_show==0){
-  pdf("___Fig2.pdf", width = 15.3, height = 19.5)
-  ggdraw(plot2)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig2.jpg", width = 15.3, height = 19.5, units = 'in', res = 600)
-  ggdraw(plot2)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  pdf("_Fig2b.pdf", height = 14, width = 23)
-  ggdraw(plot2b)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig2b.jpg", height = 14, width = 23, units = 'in', res = 600)
-  ggdraw(plot2b)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  pdf("_Fig2c.pdf", height = 14, width = 23)
-  ggdraw(plot2b_red)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig2c.jpg", height = 14, width = 23, units = 'in', res = 600)
-  ggdraw(plot2b_red)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-```
-
-</div>
-
-
-<div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%">
-
-```{r cumulative_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.height= 14, fig.width= 23, fig.cap= "Figure 3. Estimated Trends of the Outcomes"}
-
-#horizontal
-height_y<-16
-height_x<-16
-size_title<-18
-line_size<-.8
-
-hosp_trauma_plot3_red<-
-plot(impact3d_hosp_trauma, "cumulative")$data %>% 
-    ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("c) Trauma Hospitalizations")
-
-hosp_resp_plot3_red<-
-plot(impact3d1_hosp_resp, "cumulative")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("d) Respiratory Hospitalizations")
-
-cons_trauma_plot3_red<-
-plot(impact3d1_cons_trauma, "cumulative")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("a) Trauma Consultations")
-
-cons_resp_plot3_red<-
-plot(impact3d_cons_resp, "cumulative")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("b) Respiratory Consultations")
-
-rate_trauma_plot3_red<-
-plot(impact3d_ratio, "cumulative")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("e) Trauma Hospitalizations per 1,000 consultations")
-
-rate_resp_plot3_red<-
-plot(impact3d_ratio_resp, "cumulative")$data %>% 
-      ggplot(aes(x=time))+
-      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
-      geom_line(aes(y=response), size=line_size, color="black")+
-  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
-  theme_sjplot()+
-  xlim(238,262)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
-     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-    ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")
-
-vector_breaks_plot3b_red<- seq(238,nrow(data15a64_rn),3)
-Sys.setlocale(category = "LC_ALL", locale = "english")
-vector_dates_plot3b_red<-as.character(format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"))
-
-plot3b_red<-
-plot_grid(
-  cons_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  cons_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  hosp_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)),
-  hosp_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)),
-  rate_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
-  rate_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-    nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25)
-)
-
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
-
-#
-#vertical
-height_y<-13
-height_x<-13
-size_title<-14
-
-#horizontal
-
-hosp_trauma_plot3<-
-plot(impact3d_hosp_trauma, "cumulative")+
-    xlab("")+
-   # ylab("Hospitalizations")+
-      xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("c) Trauma Hospitalizations")+
-  theme(plot.title = element_text(size=size_title))
-hosp_resp_plot3<-
-plot(impact3d1_hosp_resp, "cumulative")+
-    xlab("")+
-   # ylab("Hospitalizations")+
-      xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("d) Respiratory Hospitalizations")+
-  theme(plot.title = element_text(size=size_title))
-cons_trauma_plot3<-
-plot(impact3d1_cons_trauma, "cumulative")+
-    xlab("")+
-   # ylab("Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("a) Trauma Consultations")+
-  theme(plot.title = element_text(size=size_title))
-cons_resp_plot3<-
-plot(impact3d_cons_resp, "cumulative")+
-    xlab("")+
-   # ylab("Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("b) Respiratory Consultations")+
-  theme(plot.title = element_text(size=size_title))
-rate_trauma_plot3<-
-plot(impact3d_ratio, "cumulative")+
-    xlab("")+
-   # ylab("Rate of Hospitalizations per Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("e) Trauma Hospitalizations per 1,000 consultations")+
-  theme(plot.title = element_text(size=size_title))
-rate_resp_plot3<-
-plot(impact3d_ratio_resp, "cumulative")+
-    xlab("")+
-   # ylab("Rate of Hospitalizations per Consultations")+
-    xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
-          axis.text.y = element_text(size=height_y),
-          axis.title.y = element_text(size=9),
-          axis.title.x = element_blank(),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
-  ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")+
-  theme(plot.title = element_text(size=size_title))
-
-plot3<-
-plot_grid(
-  cons_trauma_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  cons_resp_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  hosp_trauma_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)), 
-  hosp_resp_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)),
-  rate_trauma_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
-  rate_resp_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),#,
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-  nrow = 3, rel_widths = c(1, 1)
-)
-
-height_y<-15
-height_x<-15
-size_title<-16
-
-plot3b<-
-plot_grid(
-  cons_trauma_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  cons_resp_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  hosp_trauma_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)), 
-  hosp_resp_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)),
-  rate_trauma_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
-  rate_resp_plot3+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),#,
-  #get_legend(t14_trend_leg + theme(legend.position="right",
-  #                                 legend.text = element_text(size = 15))),
-  nrow = 3, rel_widths = c(1, 1)
-)
-
-ggdraw(plot3b_red)+
-   theme(plot.background = element_rect(fill=NA, color = NA))
-
-dont_show=1
-if(dont_show==0){
-  pdf("___Fig3.pdf", width = 15.3, height = 19.5)
-  ggdraw(plot3)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig3.jpg", width = 15.3, height = 19.5, units = 'in', res = 600)
-  ggdraw(plot3)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  pdf("_Fig3b.pdf", height = 14, width = 23)
-  ggdraw(plot3b)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig3b.jpg", height = 14, width = 23, units = 'in', res = 600)
-  ggdraw(plot3b)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  pdf("_Fig3c.pdf", height = 14, width = 23)
-  ggdraw(plot3b_red)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-if(dont_show==0){
-  jpeg("_Fig3c.jpg", height = 14, width = 23, units = 'in', res = 600)
-  ggdraw(plot3b_red)+
-     theme(plot.background = element_rect(fill=NA, color = NA))
-  dev.off()
-}
-```
-
-</div>
+<br>
 
 ```{r 10_prepare_data, messages=T, eval=T, warnings=T}
 
@@ -1991,6 +1070,9 @@ data15a64_rn_ratio_its_resp_rate<-
         data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
         )
 colnames(data15a64_rn_ratio_its_resp_rate)<- c("rr_2015","rr_2016","rr_2017","rr_2018","rr_2019","did","isoweek")
+
+
+rio::export(data15a64_rn_ratio_its,"data15a64_rn_ratio_its.dta")
 ```
 
 
@@ -2119,6 +1201,129 @@ Resulting data is available in the following  [link]("https://drive.google.com/u
 ```{r 10_3_did_stata, messages=T, eval=F, echo=T, warnings=T}
 
 ```
+
+
+```{stata, collectcode=TRUE}
+
+cap ssc install outreg2c
+cap install xtscc
+cap ssc install coefplot
+cap ssc install xttest3
+cap ssc install xttest2
+cap ssc install xtcsd
+
+******************
+clear all
+******************
+if _rc == 0 { 
+	if `"`c(os)'"' == "Windows" & `"`c(username)'"' == "andre" global sf `"G:\Mi unidad\linkabbddyscriptderpaperestallidosocial"'
+	cd `"${sf}"'
+} 
+else if _rc == 0 { 
+	if `"`c(os)'"' == "Windows" & `"`c(username)'"' == "CISS Fondecyt" global sf `"G:\Mi unidad\Alvacast\CURES2_DB"'
+	cd `"${sf}"'
+	} 
+	else if _rc == 0 { 
+	if `"`c(os)'"' == "MacOSX" global sf `"/volumes/sdrive/data//"'
+	cd `"${sf}"'
+	}
+	else if _rc == 0 { 
+	mkdir "~\Stata_data" 
+	} 
+	else rmdir "~\Stata_data" 
+ global sf `"~\Stata_data"' //if does not work
+ *set working directory
+ cd `"${sf}"'
+ 
+	di `"${sf}"' 
+	pwd
+
+cap copy "https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true" data15a64_rn_ratio_its_did.dta,replace
+use data15a64_rn_ratio_its_did.dta
+
+xtset year isoweek
+
+replace did=0 if year!=2019
+replace did=0 if year==2019 & isoweek<43
+generate byte didf=recode(did,0,1)
+drop did
+gen did= didf
+
+*____________________________________________________________________________*
+***GENERAR XTSCC FINAL
+*____________________________________________________________________________*
+*the value of consultation or hospitalizations on each value DID (including the omitted value), adjusted for the circulatory hospitalizatons/consultations/rate. 
+*
+*Because graphical evidence suggests
+*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
+*transformations of scaled time, respectively.
+
+*add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
+cap gen month_sin = sin(month*2*c(pi)/12)
+cap gen month_cos = cos(month*2*c(pi)/12)//*(month*2*c(pi)
+
+
+
+cap drop fe_*
+cap drop xtscc_*
+*local it `" "hosp_circ" "hosp_circ" "cons_circ" "cons_circ" "rate_circ" "rate_circ" "' 
+local name `" "Trauma,Hospitalizations" "Respiratory,Hospitalizations" "Trauma,Consultations" "Respiratory,Consultations" "Trauma Hospitalizations,per Consultations (x1000)" "Respiratory Hospitalizations,per Consultations (x1000)" "' 
+foreach v of varlist hosp_trauma hosp_resp ///
+					 cons_trauma cons_resp ///
+					 rate rate_resp {
+    gettoken item it : it
+	gettoken nam name : name
+	xtscc  `v' i.tx##i.txtime, fe //*`item'
+	estimates store xtscc_`v'_none
+	margins, dydx(*) post 
+	eststo xtscc_mar_`v'_n
+	estimates restore xtscc_`v'_none
+	predict fe_no_month_`v'
+	xtscc  `v' i.tx##i.txtime c.month, fe //*`item'
+	estimates store xtscc_`v'_cnt_mth
+	margins i.tx##i.txtime, post
+	eststo xtscc_mar_`v'_cnt_m
+	estimates restore xtscc_`v'_cnt_mth
+	predict fe_cont_month_`v'
+	xtscc  `v' i.tx##i.txtime i.month, fe //*`item'
+	estimates store xtscc_`v'_month
+	margins i.tx##i.txtime, post
+	eststo xtscc_mar_`v'_month
+	estimates restore xtscc_`v'_month
+	predict fe_month_`v' 
+	eststo xtscc_mar_`v'_month
+	xtscc  `v' i.tx##i.txtime c.month#c.month, fe  //*`item'
+	estimates store xtscc_`v'_cd_mth
+	margins i.tx##i.txtime, post
+	eststo xtscc_mar_`v'_cd_m
+	estimates restore xtscc_`v'_cd_mth
+	predict fe_cuad_`v'
+	xtscc  `v' i.tx##i.txtime month_cos month_sin, fe //*`item'
+	estimates store xtscc_`v'_sincos
+	margins i.tx##i.txtime, post
+	eststo xtscc_mar_`v'_sc
+	estimates restore xtscc_`v'_sincos
+	predict fe_sin_cos_`v'
+}
+
+*matrix list r(table) ** para ver todos los términsos
+*Another way to obtain results
+cap erase fe_results.csv
+esttab xtscc_* ///
+using fe_results.csv, append wide varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+	 stats(N N_clust r2, fmt(%9.0f %9.0f %4.3f)) ///
+	 cells("b(star fmt(3) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))") ///
+	 mtitles("Trauma Hospitalizations-None" "Trauma Hospitalizations-Continuous" "Trauma Hospitalizations-Factor" "Trauma Hospitalizations-Cuadratic" "Trauma Hospitalizations-SinCos" /// 
+			"Respiratory Hospitalizations-None" "Respiratory Hospitalizations-Continuous" "Respiratory Hospitalizations-Factor" "Respiratory Hospitalizations-Cuadratic" "Respiratory Hospitalizations-SinCos" ///
+			"Trauma Consultations-None" "Trauma Consultations-Continuous" "Trauma Consultations-Factor" "Trauma Consultations-Cuadratic" "Trauma Consultations-SinCos" ///
+			"Respiratory Consultations-None" "Respiratory Consultations-Continuous" "Respiratory Consultations-Factor" "Respiratory Consultations-Cuadratic" "Respiratory Consultations-SinCos" ///
+			"Trauma Hospitalizations per Trauma Consultations(x1000)-None" "Trauma Hospitalizations per Trauma Consultations(x1000)-Continuous" "Trauma Hospitalizations per Trauma Consultations(x1000)-Factor" "Trauma Hospitalizations per Trauma Consultations(x1000)-Cuadratic" "Trauma Hospitalizations per Trauma Consultations(x1000)-SinCos" ///
+			"Respiratory Hospitalizations per Respiratory Consultations(x1000)-None" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Continuous" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Factor" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Cuadratic" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-SinCos") ///
+			legend label varwidth(25) ///
+	 title(Panel Estimation: Driscoll-Kraay standard errors and controlling for Circulatory Hospitalizations Consultations or Rates) ///
+	 compress
+```
+
 
 # Session Info
 
