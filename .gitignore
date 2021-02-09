@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+*.RData
+Definitive_models_2021*
+Definitive_models_2021

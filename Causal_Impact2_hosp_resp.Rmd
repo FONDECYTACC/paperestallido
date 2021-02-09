@@ -122,7 +122,7 @@ copy_names <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
  }
 }  
 
-unlink('Causal_Impact2_cache', recursive = TRUE)
+unlink('Causal_Impact2_hosp_resp_cache', recursive = TRUE)
 if(!require(pacman)){install.packages("pacman")}
 
 pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
@@ -1367,8 +1367,8 @@ ggplot(comp_mod_df)+
 ggplotly(ggplotcomp_models,tooltip="text")
 
 comp_mod_df_sum<-
-comp_mod_df %>% group_by(Models) %>% summarise(mean=mean(`Cumulative Absolute Error`,na.rm=T),median=median(`Cumulative Absolute Error`,na.rm=T), p25=quantile(`Cumulative Absolute Error`,.25,na.rm=T),p75=quantile(`Cumulative Absolute Error`,.75,na.rm=T)) %>%
-  dplyr::mutate(mean=scale2(mean),median=scale2(median),p25=scale2(p25),p75=scale2(p75)) %>%
+comp_mod_df %>% group_by(Models) %>% summarise(mean=mean(abs(`Cumulative Absolute Error`),na.rm=T),median=median(abs(`Cumulative Absolute Error`),na.rm=T), p25=quantile(abs(`Cumulative Absolute Error`),.25,na.rm=T),p75=quantile(abs(`Cumulative Absolute Error`),.75,na.rm=T), max=max(`Cumulative Absolute Error`,na.rm=T)) %>%
+  dplyr::mutate(mean=scale2(mean),median=scale2(median),p25=scale2(p25),p75=scale2(p75)) %>% 
   rowwise() %>%
   mutate(mean_tot = mean(c(mean,median,p25,p75))) %>% 
   dplyr::arrange(mean_tot)
@@ -1439,9 +1439,6 @@ summary<-cbind(Models=c("No control variables(a)",
                         data.table(impact3d3ar$summary,keep.rownames = T)[1,]
              ))%>% data.table(.,keep.rownames = F)
 
-comp_mod_df_sum<-
-      comp_mod_df_sum %>% 
-            left_join(summary, by="Models")
 #comp_mod_df_sum[,c("Models","name","mean_tot")]
   summary%>%
     rename_all(~sub('_.', '', .x))%>%
@@ -1460,7 +1457,7 @@ comp_mod_df_sum<-
 ```{r comparison_of_errors, echo=T, cache= T, paged.print=TRUE, warning=T,eval=T}
 comp_mod_df_sum<-
   comp_mod_df_sum %>% 
-    dplyr::filter(grepl("^a,", Models)) %>% 
+    dplyr::filter(grepl("^a,", Models)|grepl("\\(a,", Models)) %>% 
     dplyr::left_join(summary[,c("Models","name")],by="Models")
 
 comp_mod_df_sum %>% 
@@ -1473,7 +1470,7 @@ comp_mod_df_sum %>%
   knitr::kable(format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
                caption="Table 2. Standardized Comparison of Estimated Models",
                col.names=c("Models", "Mean (Std. z scale)","Median (z scale)", "Q1 (z scale)", "Q3 (z scale)",
-                           "Maximum CAFE", "Total Average (z scale)"),
+                           "Total Average (z scale)","Maximum CAFE"),
                  align =c('l',rep('c', 101)))%>%
    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 8) %>%
   kableExtra::scroll_box(width = "100%", height = "375px")

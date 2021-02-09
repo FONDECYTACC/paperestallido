@@ -68,7 +68,7 @@ p.comment {
 ```
 ```{r setup0, include=FALSE}
 rm(list=ls());gc()
-load("G:/Mi unidad/linkabbddyscriptderpaperestallidosocial/Definitive_models.RData")
+load("G:/Mi unidad/linkabbddyscriptderpaperestallidosocial/Definitive_models_2021.RData")
 #xaringan::inf_mr()
 
 if(isTRUE(getOption('knitr.in.progress'))==T){
@@ -120,7 +120,7 @@ copy_names <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
  }
 }  
 
-unlink('Causal_Impact2_cons_trauma_cache', recursive = TRUE)
+unlink('Plots 2021-01-18_cache', recursive = TRUE)
 if(!require(pacman)){install.packages("pacman")}
 
 pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
