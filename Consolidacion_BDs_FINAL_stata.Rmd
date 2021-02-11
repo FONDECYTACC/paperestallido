@@ -318,14 +318,6 @@ cap ssc install estout
 cap copy "https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true" data15a64_rn_ratio_its_did.dta,replace
 use data15a64_rn_ratio_its_did.dta
 
-gen year2 = real(year)
-drop year
-rename year2 year
-
-gen month2 = real(month)
-drop month
-rename month2 month
-
 xtset year isoweek
 
 replace did=0 if year!=2019
@@ -339,15 +331,6 @@ gen did= didf
 *____________________________________________________________________________*
 *the value of consultation or hospitalizations on each value DID (including the omitted value), adjusted for the circulatory hospitalizatons/consultations/rate. 
 *
-*Because graphical evidence suggests
-*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
-*transformations of scaled time, respectively.
-
-*add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
-cap gen month_sin = sin(month*2*c(pi)/12)
-cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)
-
-
 
 cap drop fe_*
 cap drop xtscc_*
@@ -469,7 +452,9 @@ svmat stats_f
 
 matrix comb = (stats_a \ stats_b \ stats_c \ stats_d \ stats_e \ stats_f)
 
-matrix list comb
+cap erase using fe_results_fit.csv
+esttab matrix(comb) ///
+using fe_results_fit.csv
 
 *****************************************v**************************************
 *****************************************v**************************************
@@ -572,26 +557,32 @@ varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
      mtitles("TH-SinCos" "RH-Factor" "TC-Factor" "RC-SinCos" ///
-             "TR-Factor" "RR-Factor") ///     
+             "TR-Factor" ///
+             "RR-Factor") ///     
      legend label ///
      title(Panel Estimation: Driscoll-Kraay standard errors) ///
      compress nogap
+	 
 	 
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:	 
 ** Relative differences:
 
+log using log.txt, replace text
 di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_TH_SinCos)']" 
 di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_Fact)']" 
 di "`=scalar(beti_TC_Fact)' [`=scalar(CI95_lo_TC_Fact)',`=scalar(CI95_up_TC_Fact)']" 
 di "`=scalar(beti_RC_SinCos)' [`=scalar(CI95_lo_RC_SinCos)',`=scalar(CI95_up_RC_SinCos)']" 
 di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_Fact)']" 
 di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_Fact)']" 
+log close 
 ```
 
 
 ```{r 10_3_did_eeee, messages=T, eval=F, warnings=T}
+fe_results_selection <- readr::read_csv("fe_results_selection.csv")
+#fe_results_selection <- readr::read_delim("log.txt")
 
 ```
 

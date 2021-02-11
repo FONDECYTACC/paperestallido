@@ -336,8 +336,8 @@ p.comment {
 </style>
 <pre class="r"><code>rm(list=ls());gc()</code></pre>
 <pre><code>##          used (Mb) gc trigger (Mb) max used (Mb)
-## Ncells 410989 22.0     850027 45.4   648454 34.7
-## Vcells 754685  5.8    8388608 64.0  1661381 12.7</code></pre>
+## Ncells 410984 22.0     850012 45.4   648454 34.7
+## Vcells 754621  5.8    8388608 64.0  1661381 12.7</code></pre>
 <pre class="r"><code>unlink(&#39;Consolidacion_BDs_cache&#39;, recursive = TRUE)
 unlink(&#39;Consolidacion_BDs_FINAL_cache&#39;, recursive = TRUE)
 #load(url(&quot;https://drive.google.com/uc?export=download&amp;id=1zLfLpJjGCfMSfwrtTnaOdBSgGg2ZCqjR&quot;))
@@ -579,14 +579,6 @@ cap ssc install estout
 cap copy &quot;https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true&quot; data15a64_rn_ratio_its_did.dta,replace
 use data15a64_rn_ratio_its_did.dta
 
-gen year2 = real(year)
-drop year
-rename year2 year
-
-gen month2 = real(month)
-drop month
-rename month2 month
-
 xtset year isoweek
 
 replace did=0 if year!=2019
@@ -600,15 +592,6 @@ gen did= didf
 *____________________________________________________________________________*
 *the value of consultation or hospitalizations on each value DID (including the omitted value), adjusted for the circulatory hospitalizatons/consultations/rate. 
 *
-*Because graphical evidence suggests
-*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
-*transformations of scaled time, respectively.
-
-*add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
-cap gen month_sin = sin(month*2*c(pi)/12)
-cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)
-
-
 
 cap drop fe_*
 cap drop xtscc_*
@@ -730,7 +713,9 @@ svmat stats_f
 
 matrix comb = (stats_a \ stats_b \ stats_c \ stats_d \ stats_e \ stats_f)
 
-matrix list comb
+cap erase using fe_results_fit.csv
+esttab matrix(comb) ///
+using fe_results_fit.csv
 
 *****************************************v**************************************
 *****************************************v**************************************
@@ -833,29 +818,30 @@ varlabels(1.txtime &quot;Social Protest&quot;) keep(1.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
      mtitles(&quot;TH-SinCos&quot; &quot;RH-Factor&quot; &quot;TC-Factor&quot; &quot;RC-SinCos&quot; ///
-             &quot;TR-Factor&quot; &quot;RR-Factor&quot;) ///     
+             &quot;TR-Factor&quot; ///
+             &quot;RR-Factor&quot;) ///     
      legend label ///
      title(Panel Estimation: Driscoll-Kraay standard errors) ///
      compress nogap
+     
      
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:   
 ** Relative differences:
 
+log using log.txt, replace text
 di &quot;`=scalar(beti_TH_SinCos)&#39; [`=scalar(CI95_lo_TH_SinCos)&#39;,`=scalar(CI95_up_TH_SinCos)&#39;]&quot; 
 di &quot;`=scalar(beti_RH_Fact)&#39; [`=scalar(CI95_lo_RH_Fact)&#39;,`=scalar(CI95_up_RH_Fact)&#39;]&quot; 
 di &quot;`=scalar(beti_TC_Fact)&#39; [`=scalar(CI95_lo_TC_Fact)&#39;,`=scalar(CI95_up_TC_Fact)&#39;]&quot; 
 di &quot;`=scalar(beti_RC_SinCos)&#39; [`=scalar(CI95_lo_RC_SinCos)&#39;,`=scalar(CI95_up_RC_SinCos)&#39;]&quot; 
 di &quot;`=scalar(beti_TR_Fact)&#39; [`=scalar(CI95_lo_TR_Fact)&#39;,`=scalar(CI95_up_TR_Fact)&#39;]&quot; 
-di &quot;`=scalar(beti_RR_Fact)&#39; [`=scalar(CI95_lo_RR_Fact)&#39;,`=scalar(CI95_up_RR_Fact)&#39;]&quot; </code></pre>
-<pre><code>       panel variable:  year (strongly balanced)
-        time variable:  isoweek, 1 to 52
-                delta:  1 unit
+di &quot;`=scalar(beti_RR_Fact)&#39; [`=scalar(CI95_lo_RR_Fact)&#39;,`=scalar(CI95_up_RR_Fact)&#39;]&quot; 
+log close </code></pre>
+<pre><code>Running G:\Mi unidad\paperestallido\profile.do type mismatch
+r(109);
 
-(208 real changes made)
 
-(42 real changes made)
 
 
 
@@ -866,215 +852,14 @@ di &quot;`=scalar(beti_RR_Fact)&#39; [`=scalar(CI95_lo_RR_Fact)&#39;,`=scalar(CI
 
 
 
-(results xtscc_hosp_trauma_n are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_trauma_ct_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_trauma_mth are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_trauma_cd_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_trauma_sc are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_resp_n are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_resp_ct_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_resp_mth are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_resp_cd_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_hosp_resp_sc are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_trauma_n are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_trauma_ct_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_trauma_mth are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_trauma_cd_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_trauma_sc are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_resp_n are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_resp_ct_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_resp_mth are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_resp_cd_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_cons_resp_sc are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_n are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_ct_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_mth are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_cd_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_sc are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_resp_n are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_resp_ct_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_resp_mth are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_resp_cd_m are active now)
-(option xb assumed; fitted values)
-(results xtscc_rate_resp_sc are active now)
-(option xb assumed; fitted values)
+string variables not allowed in varlist;
+year is a string variable
+r(109);
 
-
-(note: file fe_results.csv not found)
-(output written to fe_results.csv)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-comb[30,5]
-                    N        r2_a         aic         bic        rmse
-  TH-None         260   .01961449   1952.8546    1959.976   10.386766
-  TH-Cont         260   .02474524   1952.4647   1963.1468   10.359552
-  TH-Fact         260   .10342388   1940.1094   1986.3983   9.9328873
-  TH-Cuad         260    .0159877   1954.7891   1965.4711   10.405961
-TH-SinCos         260   .11422174   1928.4147   1942.6574   9.8728931
-  RH-None         260  -.01180874   1760.1429   1767.2643   7.1701969
-  RH-Cont         260   .00240136   1757.4399    1768.122   7.1196688
-  RH-Fact         260   .21499817   1704.6417   1750.9306   6.3156377
-  RH-Cuad         260  -.01421734   1761.7355   1772.4175   7.1787261
-RH-SinCos         260    .2070491   1698.7169   1712.9596   6.3475337
-  TC-None         260  -.01282489   3210.1039   3217.2252    116.5499
-  TC-Cont         260  -.01576983   3211.8331   3222.5151   116.71922
-  TC-Fact         260   .30020786   3124.4669   3170.7558   96.878909
-  TC-Cuad         260  -.01379462    3211.327   3222.0091   116.60568
-TC-SinCos         260   .19250687   3153.1418   3167.3846   104.06726
-  RC-None         260   .07570218   2771.1365   2778.2578   50.106536
-  RC-Cont         260   .12741764   2757.1407   2767.8228   48.684603
-  RC-Fact         260   .62095933   2549.8639   2596.1528   32.087163
-  RC-Cuad         260   .07743657   2771.6225   2782.3046   50.059503
-RC-SinCos         260   .61060702   2548.3254   2562.5681   32.522392
-  TR-None         260   .01878139   2237.2802   2244.4015   17.948467
-  TR-Cont         260   .02007342   2237.9119    2248.594   17.936646
-  TR-Fact         260   .11797257   2220.0605   2266.3493   17.017098
-  TR-Cuad         260   .02127605   2237.5927   2248.2747   17.925636
-TR-SinCos         260   .02559166    2237.414   2251.6567   17.886072
-  RR-None         260   .09658578   2702.7636    2709.885   43.932976
-  RR-Cont         260   .11131727   2699.4634   2710.1454   43.573308
-  RR-Fact         260   .17379975   2690.0233   2736.3121   42.013593
-  RR-Cuad         260    .0980534   2703.3153   2713.9973   43.897276
-RR-SinCos         260   .15325843    2687.864   2702.1067   42.532666
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(note: file fe_results_selection.csv not found)
-(output written to fe_results_selection.csv)
-
-
-Panel Estimation: Driscoll-Kraay standard errors
-----------------------------------------------------------------------------
-                       (1)       (2)       (3)       (4)       (5)       (6)
-                 TH-SinCos RH-Factor TC-Factor RC-SinCos TR-Factor RR-Factor
-                 Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s
-----------------------------------------------------------------------------
-Social Protest        7.53      0.37   -122.90    -52.01     24.38     86.55
-----------------------------------------------------------------------------
-N                      260       260       260       260       260       260
-r2_w                  0.14      0.26      0.34      0.62      0.17      0.22
-----------------------------------------------------------------------------
-
-
-11.7 [1.63,21.77]
-
-1.76 [-18.58,22.11]
-
--16.45 [-25.47,-7.42]
-
--40.68 [-67.62,-13.74]
-
-27.65 [17.91,37.4]
-
-48.94 [37.5,60.37]</code></pre>
+end of do-file
+r(109);</code></pre>
+<pre class="r"><code>fe_results_selection &lt;- readr::read_csv(&quot;fe_results_selection.csv&quot;)
+#fe_results_selection &lt;- readr::read_delim(&quot;log.txt&quot;)</code></pre>
 <div id="session-info" class="section level1" number="1">
 <h1 number="1"><span class="header-section-number">1</span> Session Info</h1>
 <pre class="r"><code>Sys.getenv(&quot;R_LIBS_USER&quot;)

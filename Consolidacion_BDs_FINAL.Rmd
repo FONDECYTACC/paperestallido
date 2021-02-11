@@ -1007,6 +1007,13 @@ data15a64_rn_ratio %>%
   dplyr::filter(isoweek!=53) %>% 
   dplyr::mutate(did=factor(did)) %>% 
   dplyr::mutate(month=as.numeric(month)) %>% 
+  dplyr::mutate(year=as.numeric(year)) %>% 
+#*Because graphical evidence suggests
+#*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
+#*transformations of scaled time, respectively.
+#*add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
+#cap gen month_sin = sin(month*2*c(pi)/12)
+#cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)  
   dplyr::mutate(month_sin=sin(month*2*pi/12)) %>% 
   dplyr::mutate(month_cos=cos(month*2*pi/12)) %>% 
   dplyr::mutate(tx=factor(tx),txtime=factor(txtime))
@@ -1149,14 +1156,6 @@ cap ssc install estout
 
 cap copy "https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true" data15a64_rn_ratio_its_did.dta,replace
 use data15a64_rn_ratio_its_did.dta
-
-gen year2 = real(year)
-drop year
-rename year2 year
-
-gen month2 = real(month)
-drop month
-rename month2 month
 
 xtset year isoweek
 
