@@ -1002,7 +1002,7 @@ df_results_bsts %>%
 Effect","95%Credible Interval", "P- Value","Relative Effect(%)","95%Credible Interval"),
                align =rep('c', 101)) %>%
     kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size= 11) %>% 
-  kableExtra::add_footnote(c("a- Each model had a structure of studentized distribution of errors, and a conservative prior standard deviation of .1","b- Models also included circulatory hospitalizations as a control variable.","c- Models also included circulatory consultations as a control variable.", "d- Models also included the proportion of circulatory hospitalizations of circulatory consultations (x 1,000 population) as a control variable."),
+  kableExtra::add_footnote(c("a- Each model had a structure of studentized distribution of errors, and a conservative prior standard deviation of .1"),
                              notation = "none")%>%
   kableExtra::scroll_box(width = "100%", height = "375px")
 ```

@@ -66,21 +66,11 @@ p.comment {
 
 </style>
 ```
-```{r setup0, include=FALSE}
+```{r setup0, include=T}
 rm(list=ls());gc()
 load("Definitive_models_2021.RData")
 #xaringan::inf_mr()
 
-if(isTRUE(getOption('knitr.in.progress'))==T){
-    clus_iter=5000
-} else {
-  input <- readline('¿Are you gonna run the dataset with the whole iterations? (Si/No): ')
-  if(input=="Si"){
-    clus_iter=10000
-  } else {
-    clus_iter=1000
-  }
-}
 ```
 
 ```{r setup, include=T, message=F, warning=F}
@@ -631,8 +621,9 @@ plot_grid(
   rate_resp_plot2_red+scale_x_continuous(breaks=vector_breaks_plot2b_red,labels=vector_dates_plot2b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-400,400,200), limits = c(-400,400)),
   #get_legend(t14_trend_leg + theme(legend.position="right",
   #                                 legend.text = element_text(size = 15))),
-    nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.3)
-)
+    nrow = 3, rel_widths = c(.95, .95), rel_heights = c(rep(1,2),1.3), scale = c(.95, .95, .95,.95,.95,.95)
+)+
+  draw_label("Weekly difference change in consultations/hospitalizations",x=0.005, y=.5, angle=90, size = 17)
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
@@ -648,7 +639,7 @@ plot(impact3d_hosp_trauma, "pointwise")+
     xlab("")+
     #ylab("Hospitalizations")+
     xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_text(size=9),
           axis.title.x = element_blank(),
@@ -660,7 +651,7 @@ plot(impact3d1_hosp_resp, "pointwise")+
     xlab("")+
     #ylab("Hospitalizations")+
     xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_text(size=9),
           axis.title.x = element_blank(),
@@ -672,7 +663,7 @@ plot(impact3d1_cons_trauma, "pointwise")+
     xlab("")+
     #ylab("Consultations")+
     xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_text(size=9),
           axis.title.x = element_blank(),
@@ -684,7 +675,7 @@ plot(impact3d_cons_resp, "pointwise")+
     xlab("")+
     #ylab("Consultations")+
     xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_text(size=9),
           axis.title.x = element_blank(),
@@ -696,7 +687,7 @@ plot(impact3d_ratio, "pointwise")+
     xlab("")+
     #ylab("Rate of Hospitalizations per Consultations")+
     xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_text(size=9),
           axis.title.x = element_blank(),
@@ -708,7 +699,7 @@ plot(impact3d_ratio_resp, "pointwise")+
     xlab("")+
     #ylab("Rate of Hospitalizations per Consultations")+
     xlim(238,262)+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=height_x),
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_text(size=9),
           axis.title.x = element_blank(),
@@ -716,37 +707,44 @@ plot(impact3d_ratio_resp, "pointwise")+
   ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")+
   theme(plot.title = element_text(size=size_title))
 
+Sys.setlocale(category = "LC_ALL", locale = "english")
 plot2<-
 plot_grid(
-  cons_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  cons_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  hosp_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  hosp_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  rate_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
-  rate_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
+  cons_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
+  cons_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
+  hosp_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
+  hosp_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
+  rate_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
+  rate_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
   #get_legend(t14_trend_leg + theme(legend.position="right",
   #                                 legend.text = element_text(size = 15))),
   nrow = 3, rel_widths = c(1, 1)
-)
+)+
+  draw_label("Weekly difference change in consultations/hospitalizations",x=0.01, y=.5, angle=90, size = 14)
 
 #horizontal
 height_y<-15
 height_x<-15
 size_title<-16
 
+
+Sys.setlocale(category = "LC_ALL", locale = "english")
 plot2b<-
 plot_grid(
-  cons_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  cons_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
-  hosp_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  hosp_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
-  rate_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
-  rate_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=as.character(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
+  cons_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
+  cons_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-800,300,200), limits = c(-800,300)),
+  hosp_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
+  hosp_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
+  rate_trauma_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
+  rate_resp_plot2+scale_x_continuous(breaks=seq(238,nrow(data15a64_rn),3),labels=format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"),limits=c(238,262))+scale_y_continuous(breaks=seq(-100,400,100), limits = c(-100,400)),
   #get_legend(t14_trend_leg + theme(legend.position="right",
   #                                 legend.text = element_text(size = 15))),
   nrow = 3, rel_widths = c(1, 1)
-)
-
+)+
+  draw_label("Weekly difference change in consultations/hospitalizations",x=0.01, y=.5, angle=90, size = 14)
+ #draw_figure_label(label = "\n\nFigure 1", angle = -90, colour = "black", position="bottom.left", size=20)
+  
+  
 #add_sub(, "Note. Difference between observed data and counterfactual predictions;\nBlue area= Prediction intervals.", 
                #vpadding=grid::unit(0, "lines"),
                 #   y = .55, x = 0.03, hjust = 0,size=9)
@@ -917,16 +915,16 @@ vector_dates_plot3b_red<-as.character(format(as.Date(unlist(data15a64_rn[c(seq(2
 
 plot3b_red<-
 plot_grid(
-  cons_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
-  cons_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-4000,2000,1000), limits = c(-4000,2000)),
+  cons_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-5000,2000,1000), limits = c(-5000,2000)),
+  cons_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-5000,2000,1000), limits = c(-5000,2000)),
   hosp_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)),
   hosp_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-250,250,100), limits = c(-250,250)),
   rate_trauma_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
   rate_resp_plot3_red+scale_x_continuous(breaks=vector_breaks_plot3b_red,labels=vector_dates_plot3b_red,limits=c(238,262))+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
   #get_legend(t14_trend_leg + theme(legend.position="right",
   #                                 legend.text = element_text(size = 15))),
-    nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25)
-)
+    nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25), scale = c(.95, .95, .95,.95,.95,.95))+
+ draw_label("Weekly difference change in consultations/hospitalizations",x=0.005, y=.5, angle=90, size = 17)
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
