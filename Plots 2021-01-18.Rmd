@@ -169,7 +169,7 @@ Sys.setlocale(category = "LC_ALL", locale = "english")
 
 ## Final Plots
 
-```{r original_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 11. Estimated Trends of the Outcomes",fig.height=14}
+```{r original_plots, fig.height = 14, fig.width = 23, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 11. Estimated Trends of the Outcomes"}
 library(cowplot)
 
 #horizontal
@@ -485,7 +485,7 @@ if(dont_show==0){
 #  theme(plot.background = element_rect(fill=NA, color = NA))
 ```
 
-```{r pointwise_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 12. Estimated Trends of the Outcomes",fig.height=14}
+```{r pointwise_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 12. Estimated Trends of the Outcomes"}
 
 #horizontal
 height_y<-16
@@ -744,11 +744,12 @@ plot_grid(
   draw_label("Weekly difference change in consultations/hospitalizations",x=0.01, y=.5, angle=90, size = 14)
  #draw_figure_label(label = "\n\nFigure 1", angle = -90, colour = "black", position="bottom.left", size=20)
   
-  
+    ggdraw(plot2b_red)+
+     theme(plot.background = element_rect(fill=NA, color = NA))
 #add_sub(, "Note. Difference between observed data and counterfactual predictions;\nBlue area= Prediction intervals.", 
                #vpadding=grid::unit(0, "lines"),
                 #   y = .55, x = 0.03, hjust = 0,size=9)
-plot2
+
 if(dont_show==0){
   pdf("___Fig2.pdf", width = 15.3, height = 19.5)
   ggdraw(plot2)+
@@ -787,7 +788,7 @@ if(dont_show==0){
 }
 ```
 
-```{r cumulative_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 13. Estimated Trends of the Outcomes",fig.height=14}
+```{r cumulative_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 13. Estimated Trends of the Outcomes"}
 
 #horizontal
 height_y<-16
@@ -1043,7 +1044,7 @@ plot_grid(
 #add_sub(, "Note. Added pointwise contributions from the second panel;\nBlue area= Cumulative intervals;\nBlue area= Prediction intervals.", 
                #vpadding=grid::unit(0, "lines"),
                 #   y = .55, x = 0.03, hjust = 0,size=9))+
-ggdraw(plot3)+
+ggdraw(plot3b_red)+
    theme(plot.background = element_rect(fill=NA, color = NA))
 
 if(dont_show==0){
