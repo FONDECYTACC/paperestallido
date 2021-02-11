@@ -179,7 +179,7 @@ if(!require(ISOweek)){install.packages("ISOweek")}
 if(!require(gridExtra)){install.packages("gridExtra")}
 if(!require(cowplot)){install.packages("cowplot")}
 if(!require(grid)){install.packages("grid")}
-if(!require(devtools)){install.packages("devtools")}
+if(!require(plm)){install.packages("plm")}
 if(!require(Statamarkdown)){devtools::install_github("hemken/Statamarkdown", quiet=T,  upgrade="never")}
 
 # Calculate the number of cores
@@ -540,7 +540,7 @@ ss2d <- AddSeasonal(ss2d, c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64
 #ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
 # For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
 model2d1_hosp_resp <- 
-  bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_rn_ratio$did==0),"cons_trauma"])), rep(NA,10)),
+  bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_rn_ratio$did==0),"hosp_resp"])), rep(NA,10)),
                state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
                family ="student", #A Bayesian Analysis of Time-Series Event Count Data
                niter = clus_iter,
@@ -991,121 +991,72 @@ Effect","95%Credible Interval", "P- Value","Relative Effect(%)","95%Credible Int
 
 <br>
 
+# Difference-in-differences
+
+
+<br>
+
+Data is available in the following  [link]("https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true") (https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true).
+
+<br>
+
 ```{r 10_prepare_data, messages=T, eval=T, warnings=T}
 
 data15a64_rn_ratio_its<-
 data15a64_rn_ratio %>% 
   dplyr::filter(isoweek!=53) %>% 
-  dplyr::mutate(did=factor(did))
-
-data15a64_rn_ratio_its_trauma_hosp<-
-        cbind.data.frame(
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2015),"hosp_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2016),"hosp_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2017),"hosp_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2018),"hosp_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"hosp_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"did"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
-        )
-colnames(data15a64_rn_ratio_its_trauma_hosp)<- c("ht_2015","ht_2016","ht_2017","ht_2018","ht_2019","did","isoweek")
-
-
-data15a64_rn_ratio_its_resp_hosp<-
-        cbind.data.frame(
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2015),"hosp_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2016),"hosp_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2017),"hosp_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2018),"hosp_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"hosp_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"did"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
-        )
-colnames(data15a64_rn_ratio_its_resp_hosp)<- c("hr_2015","hr_2016","hr_2017","hr_2018","hr_2019","did","isoweek")
-
-data15a64_rn_ratio_its_trauma_cons<-
-        cbind.data.frame(
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2015),"cons_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2016),"cons_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2017),"cons_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2018),"cons_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"cons_trauma"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"did"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
-        )
-colnames(data15a64_rn_ratio_its_trauma_cons)<- c("ct_2015","ct_2016","ct_2017","ct_2018","ct_2019","did","isoweek")
-
-data15a64_rn_ratio_its_resp_cons<-
-        cbind.data.frame(
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2015),"cons_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2016),"cons_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2017),"cons_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2018),"cons_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"cons_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"did"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
-        )
-colnames(data15a64_rn_ratio_its_resp_cons)<- c("cr_2015","cr_2016","cr_2017","cr_2018","cr_2019","did","isoweek")
-
-data15a64_rn_ratio_its_trauma_rate<-
-        cbind.data.frame(
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2015),"rate"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2016),"rate"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2017),"rate"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2018),"rate"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"rate"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"did"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
-        )
-colnames(data15a64_rn_ratio_its_trauma_rate)<- c("rt_2015","rt_2016","rt_2017","rt_2018","rt_2019","did","isoweek")
-
-data15a64_rn_ratio_its_resp_rate<-
-        cbind.data.frame(
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2015),"rate_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2016),"rate_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2017),"rate_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2018),"rate_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"rate_resp"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"did"],
-        data15a64_rn_ratio_its[which(data15a64_rn_ratio_its$year==2019),"isoweek"]
-        )
-colnames(data15a64_rn_ratio_its_resp_rate)<- c("rr_2015","rr_2016","rr_2017","rr_2018","rr_2019","did","isoweek")
-
+  dplyr::mutate(did=factor(did)) %>% 
+  dplyr::mutate(month=as.numeric(month)) %>% 
+  dplyr::mutate(month_sin=sin(month*2*pi/12)) %>% 
+  dplyr::mutate(month_cos=cos(month*2*pi/12)) %>% 
+  dplyr::mutate(tx=factor(tx),txtime=factor(txtime))
 
 rio::export(data15a64_rn_ratio_its,"data15a64_rn_ratio_its.dta")
+
+
+#*add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
+#https://stats.stackexchange.com/questions/251009/capture-yearly-and-daily-cyclicality-using-sine-cosine-function
+#https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7068504/
 ```
 
 
 ```{r 10_did, messages=T, eval=F, warnings=T}
-
-<br>
-
-We generated several Fixed Effects Diff in Diff regressions to adjust for unobserved unit-specific (month) and confounders (circulatory) at the same time.
-
-<br>
-  
-  <div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%">
-
 ####################################################
 library(plm)
+data_did<-
+  cbind.data.frame(
+y=c(rep("hosp_trauma",5), rep("hosp_resp",5), rep("cons_trauma",5),rep("cons_resp",5),rep("rate",5),rep("rate_resp",5)),
+x=rep(c("tx*txtime","tx*txtime + month","tx*txtime + factor(month)","tx*txtime + month*month","tx*txtime + month_cos + month_sin"),6),
+mod_name=c("HT_none","HT_cont","HT_fact","HT_cuad","HT_cos_sin",
+           "HR_none","HR_cont","HR_fact","HR_cuad","HR_cos_sin",
+           "CT_none","CT_cont","CT_fact","CT_cuad","CT_cos_sin",
+           "CR_none","CR_cont","CR_fact","CR_cuad","CR_cos_sin",
+           "RT_none","RT_cont","RT_fact","RT_cuad","RT_cos_sin",
+           "RR_none","RR_cont","RR_fact","RR_cuad","RR_cos_sin"))
 
 
-data_did<-cbind(
-y=c("hosp_trauma", "hosp_resp", "cons_trauma","cons_resp","rate","rate_resp"),
-x=c("hosp_circ", "hosp_circ", "cons_circ","cons_circ","rate_circ","rate_circ"),
-colname=c("ht_","hr_","ct_","cr_","rt_","rr_")
-)
-
-
-rob_se_mr <-data.frame() 
-for (i in  1:6) {
-  assign(paste0(data_did[i,1],"_dummy_DiD_cov"), plm::plm(as.formula(paste0(data_did[i,1],"~ did+month+",data_did[i,2])), data=data15a64_rn_ratio_its, index=c("year", "isoweek"), model="within", effect= "individual"),#fixed effects ("within")
+for (i in  1:30) {
+  assign(paste0(data_did[i,"mod_name"],"_DiD"), plm::plm(as.formula(paste0(data_did[i,1],"~ ",data_did[i,2])), data=data15a64_rn_ratio_its, index=c("year", "isoweek"), model="within"),#effect= "individual"
          envir = .GlobalEnv)
-  #print(paste0(i,"_mr_dummy_DiD_cov"))
-  #print(get(paste0(i,"_mr_dummy_DiD_cov")))
-  rob_se_mr<- dplyr::bind_rows(rob_se_mr, sqrt(diag(vcovHC(get(paste0(data_did[i,1],"_dummy_DiD_cov")),  method = "arellano"))))
+
+  assign(paste0("wi_",data_did[i,"mod_name"],"_DiD"),
+         plm::within_intercept(get(paste0(data_did[i,"mod_name"],"_DiD")),return.model=T))
 }
+
+
+  assign(paste0("vcov_",data_did[i,"mod_name"],"_DiD"),lmtest::coeftest(get(paste0("wi_",data_did[i,1],"_DiD")),
+                                                               vcov. = function(x) vcovSCC(x, type="sss")))
 #https://stats.stackexchange.com/questions/66973/difference-between-fixed-effects-models-in-r-plm-and-stata-xtreg
+  
+  wi<-within_intercept(RR_cos_sin_DiD, return.model=T)
+  
+  lmtest::coeftest(femodelint, vcov. = function(x) vcovSCC(x, type = "sss"))
+
+#stargazer(type = "html",HT_fact_DiD,  single.row = TRUE, header = FALSE, digits=5)
+#$HT_fact_DiD
+```
+
+```{r 10_did2, messages=T, eval=F, warnings=T}
 
 #wald<- data.frame()
 #for (i in 1:6) {
@@ -1115,23 +1066,15 @@ for (i in  1:6) {
 #  wald<- rbind(wald,df_wald)
 #}
   
-#ls()[grep("*_MR_dummy_DiD_cov*",ls())]
-AICs_BICs_fes<-
-cbind.data.frame(
-aicbic_plm(hosp_trauma_dummy_DiD_cov,"AIC"),
-aicbic_plm(hosp_resp_dummy_DiD_cov,"AIC"),
-aicbic_plm(cons_trauma_dummy_DiD_cov,"AIC"),
-aicbic_plm(cons_resp_dummy_DiD_cov,"AIC"),
-aicbic_plm(rate_dummy_DiD_cov,"AIC"),
-aicbic_plm(rate_resp_dummy_DiD_cov,"AIC"),
-aicbic_plm(hosp_trauma_dummy_DiD_cov,"BIC"),
-aicbic_plm(hosp_resp_dummy_DiD_cov,"BIC"),
-aicbic_plm(cons_trauma_dummy_DiD_cov,"BIC"),
-aicbic_plm(cons_resp_dummy_DiD_cov,"BIC"),
-aicbic_plm(rate_dummy_DiD_cov,"BIC"),
-aicbic_plm(rate_resp_dummy_DiD_cov,"BIC")
-)
-#copy_names(melt(data.frame(AICs_BICs_fes)))
+AICs_BICs_fes<-data.frame()
+  for (i in  1:30) {
+    AICs_BICs_fes<-rbind(AICs_BICs_fes,c(aicbic_plm(get(paste0(data_did[i,"mod_name"],"_DiD")),"AIC"),
+      aicbic_plm(get(paste0(data_did[i,"mod_name"],"_DiD")),"BIC")))
+  }
+colnames(AICs_BICs_fes)<-c("AIC","BIC")
+
+
+lmtest::coeftest(get("wi_",paste0(data_did[i,"mod_name"],"_DiD")),vcov. = function(x) vcovSSC(x,type="sss"))
 
 library(sandwich)
 
@@ -1142,12 +1085,7 @@ hcs_models<-rbind(hcs_models,hcs)
 }
 #HC4 - small samples with influential observations HAC - heteroskedasticity and autocorrelation consistent (type ?vcovHAC for more details)
 sjPlot::tab_model(
-  list(hosp_trauma_dummy_DiD_cov,
-                       hosp_resp_dummy_DiD_cov,
-                       cons_trauma_dummy_DiD_cov,
-                       cons_resp_dummy_DiD_cov,
-                       rate_dummy_DiD_cov,
-                       rate_resp_dummy_DiD_cov),
+  list(RR_cos_sin_DiD),
                   terms = c("did1"), 
                   vcov.fun = "HC",
                   string.est = "B",
@@ -1158,7 +1096,7 @@ sjPlot::tab_model(
                   show.aic = T,
                   ci.hyphen= ";",
                   p.style = "numeric_stars",
-                  vcov.type = "HC4",
+                  vcov.type = "sss",
                   show.loglik= T,
                   show.p=T, 
                   show.df=F,
@@ -1172,9 +1110,6 @@ sjPlot::tab_model(
 #qqline(residuals(hosp_resp_dummy_DiD_cov))
 #qqnorm(residuals(hosp_resp_dummy_DiD_cov), ylab = 'Residuals')
 #qqline(residuals(hosp_resp_dummy_DiD_cov))
-
-</div>
-
 ```
 
 ```{r 10_3_did_, messages=T, eval=F, warnings=T}
@@ -1194,16 +1129,12 @@ Nevertheless, must note that these coefficients are vulnerable to serial correla
 
 <br>
 
-Resulting data is available in the following  [link]("https://drive.google.com/uc?export=download&id=1_wamggiWaULbFbolokBlwmr2TZOSwubN") (https://drive.google.com/uc?export=download&id=1_wamggiWaULbFbolokBlwmr2TZOSwubN).
+We used the command `xtscc` to obtain robust standard errors. To run this code, you must have been installed stata and its commands.
 
 <br>
 
-```{r 10_3_did_stata, messages=T, eval=F, echo=T, warnings=T}
-
-```
-
-
 ```{stata, collectcode=TRUE}
+clear all 
 
 cap ssc install outreg2c
 cap install xtscc
@@ -1211,35 +1142,21 @@ cap ssc install coefplot
 cap ssc install xttest3
 cap ssc install xttest2
 cap ssc install xtcsd
+cap ssc install estout
 
 ******************
-clear all
 ******************
-if _rc == 0 { 
-	if `"`c(os)'"' == "Windows" & `"`c(username)'"' == "andre" global sf `"G:\Mi unidad\linkabbddyscriptderpaperestallidosocial"'
-	cd `"${sf}"'
-} 
-else if _rc == 0 { 
-	if `"`c(os)'"' == "Windows" & `"`c(username)'"' == "CISS Fondecyt" global sf `"G:\Mi unidad\Alvacast\CURES2_DB"'
-	cd `"${sf}"'
-	} 
-	else if _rc == 0 { 
-	if `"`c(os)'"' == "MacOSX" global sf `"/volumes/sdrive/data//"'
-	cd `"${sf}"'
-	}
-	else if _rc == 0 { 
-	mkdir "~\Stata_data" 
-	} 
-	else rmdir "~\Stata_data" 
- global sf `"~\Stata_data"' //if does not work
- *set working directory
- cd `"${sf}"'
- 
-	di `"${sf}"' 
-	pwd
 
 cap copy "https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true" data15a64_rn_ratio_its_did.dta,replace
 use data15a64_rn_ratio_its_did.dta
+
+gen year2 = real(year)
+drop year
+rename year2 year
+
+gen month2 = real(month)
+drop month
+rename month2 month
 
 xtset year isoweek
 
@@ -1260,72 +1177,409 @@ gen did= didf
 
 *add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
 cap gen month_sin = sin(month*2*c(pi)/12)
-cap gen month_cos = cos(month*2*c(pi)/12)//*(month*2*c(pi)
+cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)
 
 
 
 cap drop fe_*
 cap drop xtscc_*
+cap drop mar_xtscc_*
+
 *local it `" "hosp_circ" "hosp_circ" "cons_circ" "cons_circ" "rate_circ" "rate_circ" "' 
 local name `" "Trauma,Hospitalizations" "Respiratory,Hospitalizations" "Trauma,Consultations" "Respiratory,Consultations" "Trauma Hospitalizations,per Consultations (x1000)" "Respiratory Hospitalizations,per Consultations (x1000)" "' 
 foreach v of varlist hosp_trauma hosp_resp ///
-					 cons_trauma cons_resp ///
-					 rate rate_resp {
+                     cons_trauma cons_resp ///
+                     rate rate_resp {
     gettoken item it : it
-	gettoken nam name : name
-	xtscc  `v' i.tx##i.txtime, fe //*`item'
-	estimates store xtscc_`v'_none
-	margins, dydx(*) post 
-	eststo xtscc_mar_`v'_n
-	estimates restore xtscc_`v'_none
-	predict fe_no_month_`v'
-	xtscc  `v' i.tx##i.txtime c.month, fe //*`item'
-	estimates store xtscc_`v'_cnt_mth
-	margins i.tx##i.txtime, post
-	eststo xtscc_mar_`v'_cnt_m
-	estimates restore xtscc_`v'_cnt_mth
-	predict fe_cont_month_`v'
-	xtscc  `v' i.tx##i.txtime i.month, fe //*`item'
-	estimates store xtscc_`v'_month
-	margins i.tx##i.txtime, post
-	eststo xtscc_mar_`v'_month
-	estimates restore xtscc_`v'_month
-	predict fe_month_`v' 
-	eststo xtscc_mar_`v'_month
-	xtscc  `v' i.tx##i.txtime c.month#c.month, fe  //*`item'
-	estimates store xtscc_`v'_cd_mth
-	margins i.tx##i.txtime, post
-	eststo xtscc_mar_`v'_cd_m
-	estimates restore xtscc_`v'_cd_mth
-	predict fe_cuad_`v'
-	xtscc  `v' i.tx##i.txtime month_cos month_sin, fe //*`item'
-	estimates store xtscc_`v'_sincos
-	margins i.tx##i.txtime, post
-	eststo xtscc_mar_`v'_sc
-	estimates restore xtscc_`v'_sincos
-	predict fe_sin_cos_`v'
+    gettoken nam name : name
+    qui xtscc  `v' i.tx##i.txtime, fe 
+    estimates store xtscc_`v'_n
+    qui margins i.tx##i.txtime, post
+    eststo mar_xtscc_`v'_n
+    estimates restore xtscc_`v'_n
+    predict fe_no_month_`v'
+    qui xtscc  `v' i.tx##i.txtime c.month, fe 
+    estimates store xtscc_`v'_ct_m
+    qui margins i.tx##i.txtime, post
+    eststo mar_xtscc_`v'_ct_m
+    estimates restore xtscc_`v'_ct_m
+    predict fe_cont_month_`v'
+    qui xtscc  `v' i.tx##i.txtime i.month, fe 
+    estimates store xtscc_`v'_mth
+    qui margins i.tx##i.txtime, post
+    eststo mar_xtscc_`v'_mth
+    estimates restore xtscc_`v'_mth
+    predict fe_month_`v' 
+    eststo mar_xtscc_`v'_mth
+    qui xtscc  `v' i.tx##i.txtime c.month#c.month, fe  
+    estimates store xtscc_`v'_cd_m
+    qui margins i.tx##i.txtime, post
+    eststo mar_xtscc_`v'_cd_m
+    estimates restore xtscc_`v'_cd_m
+    predict fe_cuad_`v'
+    qui xtscc  `v' i.tx##i.txtime month_cos month_sin, fe 
+    estimates store xtscc_`v'_sc
+    qui margins i.tx##i.txtime, post
+    eststo mar_xtscc_`v'_sc
+    estimates restore xtscc_`v'_sc
+    predict fe_sin_cos_`v'
 }
 
 *matrix list r(table) ** para ver todos los términsos
 *Another way to obtain results
 cap erase fe_results.csv
 esttab xtscc_* ///
-using fe_results.csv, append wide varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
-	 stats(N N_clust r2, fmt(%9.0f %9.0f %4.3f)) ///
-	 cells("b(star fmt(3) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))") ///
-	 mtitles("Trauma Hospitalizations-None" "Trauma Hospitalizations-Continuous" "Trauma Hospitalizations-Factor" "Trauma Hospitalizations-Cuadratic" "Trauma Hospitalizations-SinCos" /// 
-			"Respiratory Hospitalizations-None" "Respiratory Hospitalizations-Continuous" "Respiratory Hospitalizations-Factor" "Respiratory Hospitalizations-Cuadratic" "Respiratory Hospitalizations-SinCos" ///
-			"Trauma Consultations-None" "Trauma Consultations-Continuous" "Trauma Consultations-Factor" "Trauma Consultations-Cuadratic" "Trauma Consultations-SinCos" ///
-			"Respiratory Consultations-None" "Respiratory Consultations-Continuous" "Respiratory Consultations-Factor" "Respiratory Consultations-Cuadratic" "Respiratory Consultations-SinCos" ///
-			"Trauma Hospitalizations per Trauma Consultations(x1000)-None" "Trauma Hospitalizations per Trauma Consultations(x1000)-Continuous" "Trauma Hospitalizations per Trauma Consultations(x1000)-Factor" "Trauma Hospitalizations per Trauma Consultations(x1000)-Cuadratic" "Trauma Hospitalizations per Trauma Consultations(x1000)-SinCos" ///
-			"Respiratory Hospitalizations per Respiratory Consultations(x1000)-None" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Continuous" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Factor" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Cuadratic" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-SinCos") ///
-			legend label varwidth(25) ///
-	 title(Panel Estimation: Driscoll-Kraay standard errors and controlling for Circulatory Hospitalizations Consultations or Rates) ///
-	 compress
+using fe_results.csv, append varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+     stats(N N_clust r2, fmt(%9.0f %9.0f %4.3f)) ///
+     cells("b(star fmt(3) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))") ///
+     mtitles("Trauma Hospitalizations-None" "Trauma Hospitalizations-Continuous" "Trauma Hospitalizations-Factor" "Trauma Hospitalizations-Cuadratic" "Trauma Hospitalizations-SinCos" /// 
+            "Respiratory Hospitalizations-None" "Respiratory Hospitalizations-Continuous" "Respiratory Hospitalizations-Factor" "Respiratory Hospitalizations-Cuadratic" "Respiratory Hospitalizations-SinCos" ///
+            "Trauma Consultations-None" "Trauma Consultations-Continuous" "Trauma Consultations-Factor" "Trauma Consultations-Cuadratic" "Trauma Consultations-SinCos" ///
+            "Respiratory Consultations-None" "Respiratory Consultations-Continuous" "Respiratory Consultations-Factor" "Respiratory Consultations-Cuadratic" "Respiratory Consultations-SinCos" ///
+            "Trauma Hospitalizations per Trauma Consultations(x1000)-None" "Trauma Hospitalizations per Trauma Consultations(x1000)-Continuous" "Trauma Hospitalizations per Trauma Consultations(x1000)-Factor" "Trauma Hospitalizations per Trauma Consultations(x1000)-Cuadratic" "Trauma Hospitalizations per Trauma Consultations(x1000)-SinCos" ///
+            "Respiratory Hospitalizations per Respiratory Consultations(x1000)-None" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Continuous" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Factor" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Cuadratic" "Respiratory Hospitalizations per Respiratory Consultations(x1000)-SinCos") ///
+            legend label varwidth(25) ///
+     title(Panel Estimation: Driscoll-Kraay standard errors) ///
+     compress
+	 
+*******************************************************************************
+**** XTREG LET ME ESTIMATE AIC & BIC, SHOULD NOT DIFFER WITH XTSCC
+*******************************************************************************
+
+
+local name `" "Trauma,Hospitalizations" "Respiratory,Hospitalizations" "Trauma,Consultations" "Respiratory,Consultations" "Trauma Hospitalizations,per Consultations (x1000)" "Respiratory Hospitalizations,per Consultations (x1000)" "' 
+foreach v of varlist hosp_trauma hosp_resp ///
+					 cons_trauma cons_resp ///
+					 rate rate_resp {
+	gettoken item it : it
+	gettoken nam name : name
+	qui xtreg `v' i.tx##i.txtime, fe 
+	estimates store xtreg_`v'_none
+	qui xtreg `v' i.tx##i.txtime c.month, fe 
+	estimates store xtreg_`v'_cont				 
+	qui xtreg `v' i.tx##i.txtime i.month, fe 
+	estimates store xtreg_`v'_fact
+	qui xtreg `v' i.tx##i.txtime c.month#c.month, fe 
+	estimates store xtreg_`v'_cuad
+	qui xtreg `v' i.tx##i.txtime month_sin month_cos, fe 
+	estimates store xtreg_`v'_sin_cos
+}
+*****************************************v**************************************
+*****************************************v**************************************
+***********TABLES************************v**************************************
+
+qui est table xtreg_hosp_trauma_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui return list
+matrix stats_a = r(stats)'
+matrix rownames stats_a = "TH-None" "TH-Cont" "TH-Fact" "TH-Cuad" "TH-SinCos"
+svmat stats_a 
+qui est table xtreg_hosp_resp_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui return list
+matrix stats_b = r(stats)'
+matrix rownames stats_b = "RH-None" "RH-Cont" "RH-Fact" "RH-Cuad" "RH-SinCos"
+svmat stats_b
+qui est table xtreg_cons_trauma_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui return list
+matrix stats_c = r(stats)'
+matrix rownames stats_c = "TC-None" "TC-Cont" "TC-Fact" "TC-Cuad" "TC-SinCos"
+svmat stats_c
+qui est table xtreg_cons_resp_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui return list
+matrix stats_d = r(stats)'
+matrix rownames stats_d = "RC-None" "RC-Cont" "RC-Fact" "RC-Cuad" "RC-SinCos"
+svmat stats_d
+qui est table xtreg_rate_none xtreg_rate_cont xtreg_rate_fact xtreg_rate_cuad xtreg_rate_sin_cos, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui return list
+matrix stats_e = r(stats)'
+matrix rownames stats_e = "TR-None" "TR-Cont" "TR-Fact" "TR-Cuad" "TR-SinCos"
+svmat stats_e
+qui est table xtreg_rate_resp_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui return list
+matrix stats_f = r(stats)'
+matrix rownames stats_f = "RR-None" "RR-Cont" "RR-Fact" "RR-Cuad" "RR-SinCos"
+svmat stats_f 
+
+matrix comb = (stats_a \ stats_b \ stats_c \ stats_d \ stats_e \ stats_f)
+
+cap erase using fe_results_fit.csv
+esttab matrix(comb) ///
+using fe_results_fit.csv
+
+*****************************************v**************************************
+*****************************************v**************************************
+*****************************************v**************************************
+* TH-SinCos  RH-Fact  TC-Fact RC-SinCos  TR-Fact RR-Fact
+
+
+*if((r(table)[1,4]/r(table)[1,9])<1) {
+*	local: di %9.2f (1-(r(table)[1,4]/r(table)[1,9]))*100
+*	}
+*else if((r(table)[1,4]/r(table)[1,9])>1){
+*	di %9.2f ((r(table)[1,4]/r(table)[1,9])-1)*100
+*	}
+
+* TH-SinCos 
+qui xtscc  hosp_trauma i.tx##i.txtime month_cos month_sin, fe 
+qui margins,eydx(txtime) atmeans
+
+scalar beti_TH_SinCos = r(table)[1,2]*100
+scalar beti_TH_SinCos = round(`=scalar(beti_TH_SinCos)', .01)
+scalar CI95_lo_TH_SinCos = r(table)[5,2]*100
+scalar CI95_lo_TH_SinCos = round(`=scalar(CI95_lo_TH_SinCos)', .01)
+scalar CI95_up_TH_SinCos = r(table)[6,2]*100
+scalar CI95_up_TH_SinCos = round(`=scalar(CI95_up_TH_SinCos)', .01)
+
+*  RH_Fact
+qui xtscc  hosp_resp i.tx##i.txtime i.month, fe 
+qui margins,eydx(txtime) atmeans
+
+scalar beti_RH_Fact = r(table)[1,2]*100
+scalar beti_RH_Fact = round(`=scalar(beti_RH_Fact)', .01)
+scalar CI95_lo_RH_Fact = r(table)[5,2]*100
+scalar CI95_lo_RH_Fact = round(`=scalar(CI95_lo_RH_Fact)', .01)
+scalar CI95_up_RH_Fact = r(table)[6,2]*100
+scalar CI95_up_RH_Fact = round(`=scalar(CI95_up_RH_Fact)', .01)
+
+* TC_Fact
+qui xtscc  cons_trauma i.tx##i.txtime i.month, fe 
+qui margins,eydx(txtime) atmeans
+
+scalar beti_TC_Fact = r(table)[1,2]*100
+scalar beti_TC_Fact = round(`=scalar(beti_TC_Fact)', .01)
+scalar CI95_lo_TC_Fact = r(table)[5,2]*100
+scalar CI95_lo_TC_Fact = round(`=scalar(CI95_lo_TC_Fact)', .01)
+scalar CI95_up_TC_Fact = r(table)[6,2]*100
+scalar CI95_up_TC_Fact = round(`=scalar(CI95_up_TC_Fact)', .01)
+
+* RC_SinCos
+qui xtscc  cons_resp i.tx##i.txtime month_cos month_sin, fe 
+qui margins,eydx(txtime) atmeans
+
+scalar beti_RC_SinCos = r(table)[1,2]*100
+scalar beti_RC_SinCos = round(`=scalar(beti_RC_SinCos)', .01)
+scalar CI95_lo_RC_SinCos = r(table)[5,2]*100
+scalar CI95_lo_RC_SinCos = round(`=scalar(CI95_lo_RC_SinCos)', .01)
+scalar CI95_up_RC_SinCos = r(table)[6,2]*100
+scalar CI95_up_RC_SinCos = round(`=scalar(CI95_up_RC_SinCos)', .01)
+
+* TR_Fact
+qui xtscc  rate i.tx##i.txtime i.month, fe 
+qui margins,eydx(txtime) atmeans
+
+scalar beti_TR_Fact = r(table)[1,2]*100
+scalar beti_TR_Fact = round(`=scalar(beti_TR_Fact)', .01)
+scalar CI95_lo_TR_Fact = r(table)[5,2]*100
+scalar CI95_lo_TR_Fact = round(`=scalar(CI95_lo_TR_Fact)', .01)
+scalar CI95_up_TR_Fact = r(table)[6,2]*100
+scalar CI95_up_TR_Fact = round(`=scalar(CI95_up_TR_Fact)', .01)
+
+* RR_Fact
+qui xtscc  rate_resp i.tx##i.txtime i.month, fe 
+qui margins,eydx(txtime) atmeans
+
+scalar beti_RR_Fact = r(table)[1,2]*100
+scalar beti_RR_Fact = round(`=scalar(beti_RR_Fact)', .01)
+scalar CI95_lo_RR_Fact = r(table)[5,2]*100
+scalar CI95_lo_RR_Fact = round(`=scalar(CI95_lo_RR_Fact)', .01)
+scalar CI95_up_RR_Fact = r(table)[6,2]*100
+scalar CI95_up_RR_Fact = round(`=scalar(CI95_up_RR_Fact)', .01)
+
+cap erase fe_results_selection.csv
+*# https://www.statalist.org/forums/forum/general-stata-discussion/general/1437172-margins-and-diff-in-diff-estimates
+*# https://stats.stackexchange.com/questions/482869/differences-between-calculating-the-relative-change-and-taking-the-natural-log-t
+esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
+xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth ///
+using fe_results_selection.csv, ///
+append varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+     stats(N r2_w, fmt(%9.0f %4.2f)) ///
+     cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
+	 mtitles("Trauma Hospitalizations-SinCos" "Respiratory Hospitalizations-Factor" "Trauma Consultations-Factor" "Respiratory Consultations-SinCos" ///
+             "Trauma Hospitalizations per Trauma Consultations(x1000)-Factor" ///
+             "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Factor") ///	 
+     legend label ///
+     title(Panel Estimation: Driscoll-Kraay standard errors) ///
+     compress nogap 
+
+esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
+xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth, ///
+varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+     stats(N r2_w, fmt(%9.0f %4.2f)) ///
+     cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
+     mtitles("TH-SinCos" "RH-Factor" "TC-Factor" "RC-SinCos" ///
+             "TR-Factor" ///
+             "RR-Factor") ///     
+     legend label ///
+     title(Panel Estimation: Driscoll-Kraay standard errors) ///
+     compress nogap
+	 
+	 
+*#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
+*#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
+*#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:	 
+** Relative differences:
+
+log using log.txt, replace text
+di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_TH_SinCos)']" 
+di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_Fact)']" 
+di "`=scalar(beti_TC_Fact)' [`=scalar(CI95_lo_TC_Fact)',`=scalar(CI95_up_TC_Fact)']" 
+di "`=scalar(beti_RC_SinCos)' [`=scalar(CI95_lo_RC_SinCos)',`=scalar(CI95_up_RC_SinCos)']" 
+di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_Fact)']" 
+di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_Fact)']" 
+log close 
 ```
 
 
+```{r 10_2_did_table_formal, messages=T, eval=T, warnings=T}
+fe_results_fit_indices <- 
+     readr::read_delim("fe_results_fit.csv", 
+        "=", escape_double = FALSE, comment = "\\", 
+        trim_ws = TRUE, skip = 1) %>% 
+      dplyr::select(-X1) %>% 
+      dplyr::mutate_at(2:3,~readr::parse_number(.,"\\d+")) %>% 
+      dplyr::mutate_at(1,~str_replace(.,'"",' , '')) %>% 
+      dplyr::mutate_at(1,~str_replace(.,'\"=\"\"' , '')) %>%
+    data.frame() %>% 
+    dplyr::rename_at(1,~"Models") 
+
+
+fe_results_fit_indices2 <-
+fe_results_fit_indices %>% 
+    dplyr::mutate(Metric=
+                    dplyr::case_when(grepl("None",Models)~"No monthly term",
+                          grepl("Cont",Models)~"Continuous Monthly term",
+                          grepl("Fact",Models)~"Month as a Factor Variable",
+                          grepl("Cuad",Models)~"Month as a Cuadratic Term",
+                          grepl("SinCos",Models)~"Sine & Cosine of the Month (Bimonth cyclicity)"
+                                          )) %>% 
+      dplyr::mutate(Models=
+                    dplyr::case_when(grepl("TH-",Models)~"Trauma Hospitalizations",
+                          grepl("RH-",Models)~"Respiratory Hospitalizations",
+                          grepl("TC-",Models)~"Trauma Consultations",
+                          grepl("RC-",Models)~"Respiratory Consultations",
+                          grepl("TR-",Models)~"Trauma Hospitalizations per 1,000 consultations",
+                          grepl("RR-",Models)~"Respiratory Hospitalizations per 1,000 consultations"
+                                          )) %>%
+  dplyr::select(Models,Metric, everything()) %>% 
+  dplyr::mutate(rn=row_number(), 
+                varnum=dplyr::case_when(grepl("Trauma Hospitalizations$",Models)~3,
+                                       grepl("Respiratory Hospitalizations$",Models)~4,
+                                       grepl("Trauma C",Models)~1,
+                                       grepl("Respiratory C",Models)~2,
+                                       grepl("Trauma Hospitalizations per",Models)~5,
+                                       grepl("Respiratory Hospitalizations per",Models)~6
+                                       )) %>% 
+  dplyr::arrange(varnum,rn) %>% 
+  dplyr::select(-varnum,-rn) %>% 
+  dplyr::mutate_at(3:4,~round(.,0)) %>% 
+  dplyr::mutate_at(5,~round(.,2))
+
+fe_results_fit_indices2 %>% 
+      knitr::kable(.,format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
+               caption = paste0("Table 3. Fit indices of the DiD Estimations"),
+               col.names= c("Models","Metric of the Month","AIC", "BIC", "RMSE"),
+               align =c('l','l',rep('c', 101))
+               ) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size= 11) %>% 
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+We selected the models with the best fit indices for each outcome.
+
+<br>
+
+
+```{r 10_3_did_table_formal, messages=T, eval=T, warnings=T}
+fe_results_selection <- 
+  readr::read_csv("fe_results_selection.csv", 
+    trim_ws = FALSE, skip = 2) %>% 
+  dplyr::mutate_all(~str_replace(.,'=\"' , '')) %>% 
+  dplyr::mutate_all(~str_replace(.,'\\"' , '')) %>% 
+  dplyr::mutate_all(~str_replace(.,'=' , '')) %>%
+  dplyr::rename_all(
+      funs(
+        stringr::str_replace_all(., '=', '')
+      )
+  )%>% 
+  dplyr::slice(-1)
+
+
+
+fe_results_selection_fmt<-
+cbind("Social protests"=c("Coef","CI95-Lo","CI95-Up","p-value","N","R-square",""),
+      fe_results_selection) %>% 
+  dplyr::select(-2)%>%
+   slice(-n()) %>% 
+  t()  %>%
+  data.table(keep.rownames = T) %>% 
+  
+  janitor::row_to_names(row_number = 1) %>% 
+  dplyr::select(-N) %>% 
+  dplyr::mutate(Metric=
+                dplyr::case_when(grepl("None",`Social protests`)~"No monthly term",
+                      grepl("Cont",`Social protests`)~"Continuous Monthly term",
+                      grepl("Fact",`Social protests`)~"Month as a Factor Variable",
+                      grepl("Cuad",`Social protests`)~"Month as a Cuadratic Term",
+                      grepl("SinCos",`Social protests`)~"Sine & Cosine of the Month  (Bimonth cyclicity)"
+                                      )) %>% 
+  dplyr::mutate("Social protests"=
+                dplyr::case_when(grepl("Trauma Hospitalizations-",`Social protests`)~"Trauma Hospitalizations",
+                      grepl("Respiratory Hospitalizations-",`Social protests`)~"Respiratory Hospitalizations",
+                      grepl("Trauma Consultations-",`Social protests`)~"Trauma Consultations",
+                      grepl("Respiratory Consultations-",`Social protests`)~"Respiratory Consultations",
+                      grepl("Trauma Hospitalizations per",`Social protests`)~"Trauma Hospitalizations per 1,000 consultations",
+                      grepl("Respiratory Hospitalizations per",`Social protests`)~"Respiratory Hospitalizations per 1,000 consultations")) %>% 
+  dplyr::mutate(varnum=dplyr::case_when(grepl("Trauma Hospitalizations$",`Social protests`)~3,
+                                       grepl("Respiratory Hospitalizations$",`Social protests`)~4,
+                                       grepl("Trauma C",`Social protests`)~1,
+                                       grepl("Respiratory C",`Social protests`)~2,
+                                       grepl("Trauma Hospitalizations per",`Social protests`)~5,
+                                       grepl("Respiratory Hospitalizations per",`Social protests`)~6
+                                       )) %>% 
+  dplyr::arrange(varnum) %>% 
+  dplyr::select(-varnum) %>% 
+  dplyr::mutate(CI95=paste0("[",`CI95-Lo`,",",`CI95-Up`,"]")) %>% 
+  dplyr::select(-`CI95-Lo`,-`CI95-Up`) %>% 
+  dplyr::select(`Social protests`,`Metric`,`Coef`, `CI95`,`p-value`,`R-square`)
+##_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#beti_TH_SinCos beti_RH_Fact beti_TC_Fact beti_RC_SinCos beti_TR_Fact beti_RR_Fact
+log <- 
+  readr::read_delim("~/log.txt", "\t", escape_double = FALSE, 
+    col_names = FALSE, comment = "--", trim_ws = TRUE, 
+    skip = 5) %>% 
+  dplyr::filter(!grepl("di ",X1)) %>% 
+  tidyr::separate(X1, c("b","ci"), sep = " ") %>% 
+  dplyr::mutate(b=readr::parse_number(b,"\\d+")) %>% 
+  dplyr::filter(!is.na(b))%>% 
+  dplyr::mutate(rn=row_number(),
+                varnum=dplyr::case_when(rn==3~1,
+                                       rn==4~2,
+                                       rn==1~3,
+                                       rn==2~4,
+                                       rn==5~5,
+                                       rn==6~6
+                                       )) %>% 
+  dplyr::arrange(varnum,rn) %>% 
+  dplyr::select(-varnum,-rn)
+
+cbind.data.frame(fe_results_selection_fmt,log) %>% 
+  dplyr::select(`Social protests`,`Metric`,`Coef`, `CI95`,
+                `b`,`ci`,`p-value`,`R-square`) %>% 
+  dplyr::mutate(`p-value`=dplyr::case_when(`p-value`<0.001~ "<0.001",T~as.character(`p-value`))) %>% 
+      knitr::kable(.,format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
+               caption = paste0("Table 4. Estimated effects of October’s 2019 social protests on the outcomes of interest (DiD)"),
+               col.names = c("Social protests","Metric","AE","CI95%","RE(%)","CI95%","P-value","R Sqr."),
+               align =c('l','l',rep('c', 101))) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size= 11) %>% 
+  kableExtra::add_footnote(c("Note. AE= Average Effect","RE= Relative Effects in Percentages")) %>% 
+  kableExtra::scroll_box(width = "100%", height = "375px")
+
+```
+
 # Session Info
+
 
 ```{r save, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
 Sys.getenv("R_LIBS_USER")
