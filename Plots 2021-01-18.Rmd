@@ -176,6 +176,7 @@ registerDoParallel(cl)
 
 Sys.setlocale(category = "LC_ALL", locale = "english")
 ```
+
 ## Final Plots
 
 ```{r original_plots, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 11. Estimated Trends of the Outcomes",fig.height=14}

@@ -303,6 +303,20 @@ aicbic_plm <- function(object, criterion) {
 # Dataset Compile
 
 ```{r datasets_cons0, echo=T, cache= T, paged.print=TRUE, warning=F}
+
+sum_cons_hosp<-
+data15a64_rn_ratio %>% 
+  dplyr::filter(did==1) %>% 
+  dplyr::summarise(cons_total_sum=sum(cons_total,na.rm=T),
+                   hosp_total_sum=sum(hosp_total,na.rm=T))
+
+ratio_cons_hosp<-
+data15a64_rn_ratio %>% 
+  dplyr::summarise(cons_resp_perc=scales::percent(sum(cons_resp,na.rm=T)/sum(cons_total,na.rm=T)),
+                   cons_trauma_perc=scales::percent(sum(cons_trauma,na.rm=T)/sum(cons_total,na.rm=T)),
+                   hosp_resp_perc=scales::percent(sum(hosp_resp,na.rm=T)/sum(hosp_total,na.rm=T)),
+                   hosp_trauma_perc=scales::percent(sum(hosp_trauma,na.rm=T)/sum(hosp_total,na.rm=T)))
+
 library(compareGroups)
 #pvals <- compareGroups::getResults(table, "p.overall")
 table2 <- compareGroups::compareGroups(did ~ cons_total+ cons_trauma+ cons_resp+ cons_circ+ hosp_total+ hosp_trauma+ hosp_resp+ hosp_circ+ rate+ rate_resp, #27
@@ -320,6 +334,12 @@ protests","During social protests"),format="html",position="center",caption= "Ta
   kableExtra::add_footnote(paste0("Note. Percentiles 25 and 75 in brackets."), notation = "none")%>%
   kableExtra::scroll_box(width = "100%", height = "375px")
 ```
+
+<br>
+
+A total of `r format(as.numeric(sum_cons_hosp[1]),big.mark=",")` ED consultations and `r format(as.numeric(sum_cons_hosp[2]),big.mark=",")` hospitalizations  were observed from October 21 of 2019 to December 31, 2019. Overall, during 2015-2019 trauma cases represent the `r as.character(ratio_cons_hosp["cons_trauma_perc"])` of total consultation and `r as.character(ratio_cons_hosp["hosp_trauma_perc"])` of total hospitalizations, and respiratory represents the `r as.character(ratio_cons_hosp["cons_resp_perc"])` and `r as.character(ratio_cons_hosp["hosp_resp_perc"])`, respectively . 
+
+<br>
 
 # Bayesian Structural Time Series Models
 
@@ -653,8 +673,7 @@ ss2d <- AddSeasonal(ss2d,
 #ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
 # For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
 
-model2d_ratio <- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_rn_ratio$did==0),"rate"])), rep(NA,10)) ~
-                   as.numeric(unlist(data15a64_rn_ratio[,"rate_circ"]))                   ,
+model2d_ratio <- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_rn_ratio$did==0),"rate"])), rep(NA,10)),
                state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
                family ="student", #A Bayesian Analysis of Time-Series Event Count Data
                niter = clus_iter, 
@@ -818,8 +837,7 @@ ss2d <- AddSeasonal(ss2d,
 #ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
 # For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
 
-model2d_ratio_resp <- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_rn_ratio$did==0),"rate_resp"])), rep(NA,10)) ~
-                   as.numeric(unlist(data15a64_rn_ratio[,"rate_circ"]))                   ,
+model2d_ratio_resp <- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_rn_ratio$did==0),"rate_resp"])), rep(NA,10)),
                state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
                family ="student", #A Bayesian Analysis of Time-Series Event Count Data
                niter = clus_iter, 
@@ -1353,16 +1371,16 @@ scalar CI95_lo_TC_Fact = round(`=scalar(CI95_lo_TC_Fact)', .01)
 scalar CI95_up_TC_Fact = r(table)[6,2]*100
 scalar CI95_up_TC_Fact = round(`=scalar(CI95_up_TC_Fact)', .01)
 
-* RC_SinCos
-qui xtscc  cons_resp i.tx##i.txtime month_cos month_sin, fe 
+* RC_Fact
+qui xtscc cons_resp i.tx##i.txtime i.month, fe 
 qui margins,eydx(txtime) atmeans
 
-scalar beti_RC_SinCos = r(table)[1,2]*100
-scalar beti_RC_SinCos = round(`=scalar(beti_RC_SinCos)', .01)
-scalar CI95_lo_RC_SinCos = r(table)[5,2]*100
-scalar CI95_lo_RC_SinCos = round(`=scalar(CI95_lo_RC_SinCos)', .01)
-scalar CI95_up_RC_SinCos = r(table)[6,2]*100
-scalar CI95_up_RC_SinCos = round(`=scalar(CI95_up_RC_SinCos)', .01)
+scalar beti_RC_Fact = r(table)[1,2]*100
+scalar beti_RC_Fact = round(`=scalar(beti_RC_Fact)', .01)
+scalar CI95_lo_RC_Fact = r(table)[5,2]*100
+scalar CI95_lo_RC_Fact = round(`=scalar(CI95_lo_RC_Fact)', .01)
+scalar CI95_up_RC_Fact = r(table)[6,2]*100
+scalar CI95_up_RC_Fact = round(`=scalar(CI95_up_RC_Fact)', .01)
 
 * TR_Fact
 qui xtscc  rate i.tx##i.txtime i.month, fe 
@@ -1390,12 +1408,12 @@ cap erase fe_results_selection.csv
 *# https://www.statalist.org/forums/forum/general-stata-discussion/general/1437172-margins-and-diff-in-diff-estimates
 *# https://stats.stackexchange.com/questions/482869/differences-between-calculating-the-relative-change-and-taking-the-natural-log-t
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
-xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth ///
+xtscc_cons_trauma_mth  xtscc_cons_resp_mth xtscc_rate_mth xtscc_rate_resp_mth ///
 using fe_results_selection.csv, ///
 append varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
-	 mtitles("Trauma Hospitalizations-SinCos" "Respiratory Hospitalizations-Factor" "Trauma Consultations-Factor" "Respiratory Consultations-SinCos" ///
+	 mtitles("Trauma Hospitalizations-SinCos" "Respiratory Hospitalizations-Factor" "Trauma Consultations-Factor" "Respiratory Consultations-Factor" ///
              "Trauma Hospitalizations per Trauma Consultations(x1000)-Factor" ///
              "Respiratory Hospitalizations per Respiratory Consultations(x1000)-Factor") ///	 
      legend label ///
@@ -1403,11 +1421,11 @@ append varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      compress nogap 
 
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
-xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth, ///
+xtscc_cons_trauma_mth  xtscc_cons_resp_mth xtscc_rate_mth xtscc_rate_resp_mth, ///
 varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
-     mtitles("TH-SinCos" "RH-Factor" "TC-Factor" "RC-SinCos" ///
+     mtitles("TH-SinCos" "RH-Factor" "TC-Factor" "RC-Factor" ///
              "TR-Factor" ///
              "RR-Factor") ///     
      legend label ///
@@ -1425,7 +1443,7 @@ log using log.txt, replace text
 di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_TH_SinCos)']" 
 di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_Fact)']" 
 di "`=scalar(beti_TC_Fact)' [`=scalar(CI95_lo_TC_Fact)',`=scalar(CI95_up_TC_Fact)']" 
-di "`=scalar(beti_RC_SinCos)' [`=scalar(CI95_lo_RC_SinCos)',`=scalar(CI95_up_RC_SinCos)']" 
+di "`=scalar(beti_RC_Fact)' [`=scalar(CI95_lo_RC_Fact)',`=scalar(CI95_up_RC_Fact)']" 
 di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_Fact)']" 
 di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_Fact)']" 
 log close 
@@ -1450,9 +1468,9 @@ fe_results_fit_indices %>%
     dplyr::mutate(Metric=
                     dplyr::case_when(grepl("None",Models)~"No monthly term",
                           grepl("Cont",Models)~"Continuous Monthly term",
-                          grepl("Fact",Models)~"Month as a Factor Variable",
-                          grepl("Cuad",Models)~"Month as a Cuadratic Term",
-                          grepl("SinCos",Models)~"Sine & Cosine of the Month (Bimonth cyclicity)"
+                          grepl("Fact",Models)~"11 dummy variables of the month",
+                          grepl("Cuad",Models)~"Month as a Quadratic Term",
+                          grepl("SinCos",Models)~"Sine & Cosine of the month scaled to the range 0,1π"
                                           )) %>% 
       dplyr::mutate(Models=
                     dplyr::case_when(grepl("TH-",Models)~"Trauma Hospitalizations",
@@ -1522,9 +1540,9 @@ cbind("Social protests"=c("Coef","CI95-Lo","CI95-Up","p-value","N","R-square",""
   dplyr::mutate(Metric=
                 dplyr::case_when(grepl("None",`Social protests`)~"No monthly term",
                       grepl("Cont",`Social protests`)~"Continuous Monthly term",
-                      grepl("Fact",`Social protests`)~"Month as a Factor Variable",
-                      grepl("Cuad",`Social protests`)~"Month as a Cuadratic Term",
-                      grepl("SinCos",`Social protests`)~"Sine & Cosine of the Month  (Bimonth cyclicity)"
+                      grepl("Fact",`Social protests`)~"11 dummy variables of the month",
+                      grepl("Cuad",`Social protests`)~"Month as a Quadratic Term",
+                      grepl("SinCos",`Social protests`)~"Sine & Cosine of the month scaled to the range 0,1π"
                                       )) %>% 
   dplyr::mutate("Social protests"=
                 dplyr::case_when(grepl("Trauma Hospitalizations-",`Social protests`)~"Trauma Hospitalizations",
@@ -1542,7 +1560,7 @@ cbind("Social protests"=c("Coef","CI95-Lo","CI95-Up","p-value","N","R-square",""
                                        )) %>% 
   dplyr::arrange(varnum) %>% 
   dplyr::select(-varnum) %>% 
-  dplyr::mutate(CI95=paste0("[",`CI95-Lo`,",",`CI95-Up`,"]")) %>% 
+  dplyr::mutate(CI95=paste0(`CI95-Lo`,",",`CI95-Up`)) %>% 
   dplyr::select(-`CI95-Lo`,-`CI95-Up`) %>% 
   dplyr::select(`Social protests`,`Metric`,`Coef`, `CI95`,`p-value`,`R-square`)
 ##_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#__#_#_#_#_#_#_#_
@@ -1565,7 +1583,9 @@ log <-
                                        rn==6~6
                                        )) %>% 
   dplyr::arrange(varnum,rn) %>% 
-  dplyr::select(-varnum,-rn)
+  dplyr::select(-varnum,-rn) %>% 
+  dplyr::mutate(ci=str_replace(ci,"\\[",""))%>% 
+  dplyr::mutate(ci=str_replace(ci,"\\]",""))
 
 cbind.data.frame(fe_results_selection_fmt,log) %>% 
   dplyr::select(`Social protests`,`Metric`,`Coef`, `CI95`,

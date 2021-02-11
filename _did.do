@@ -210,16 +210,16 @@ scalar CI95_lo_TC_Fact = round(`=scalar(CI95_lo_TC_Fact)', .01)
 scalar CI95_up_TC_Fact = r(table)[6,2]*100
 scalar CI95_up_TC_Fact = round(`=scalar(CI95_up_TC_Fact)', .01)
 
-* RC_SinCos
-qui xtscc  cons_resp i.tx##i.txtime month_cos month_sin, fe 
+* RC_Fact
+qui xtscc cons_resp i.tx##i.txtime i.month, fe 
 qui margins,eydx(txtime) atmeans
 
-scalar beti_RC_SinCos = r(table)[1,2]*100
-scalar beti_RC_SinCos = round(`=scalar(beti_RC_SinCos)', .01)
-scalar CI95_lo_RC_SinCos = r(table)[5,2]*100
-scalar CI95_lo_RC_SinCos = round(`=scalar(CI95_lo_RC_SinCos)', .01)
-scalar CI95_up_RC_SinCos = r(table)[6,2]*100
-scalar CI95_up_RC_SinCos = round(`=scalar(CI95_up_RC_SinCos)', .01)
+scalar beti_RC_Fact = r(table)[1,2]*100
+scalar beti_RC_Fact = round(`=scalar(beti_RC_Fact)', .01)
+scalar CI95_lo_RC_Fact = r(table)[5,2]*100
+scalar CI95_lo_RC_Fact = round(`=scalar(CI95_lo_RC_Fact)', .01)
+scalar CI95_up_RC_Fact = r(table)[6,2]*100
+scalar CI95_up_RC_Fact = round(`=scalar(CI95_up_RC_Fact)', .01)
 
 * TR_Fact
 qui xtscc  rate i.tx##i.txtime i.month, fe 
@@ -247,7 +247,7 @@ cap erase fe_results_selection.csv
 *# https://www.statalist.org/forums/forum/general-stata-discussion/general/1437172-margins-and-diff-in-diff-estimates
 *# https://stats.stackexchange.com/questions/482869/differences-between-calculating-the-relative-change-and-taking-the-natural-log-t
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
-xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth ///
+xtscc_cons_trauma_mth  xtscc_cons_resp_mth xtscc_rate_mth xtscc_rate_resp_mth ///
 using fe_results_selection.csv, ///
 append varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
@@ -260,7 +260,7 @@ append varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      compress nogap 
 
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
-xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth, ///
+xtscc_cons_trauma_mth  xtscc_cons_resp_mth xtscc_rate_mth xtscc_rate_resp_mth, ///
 varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
@@ -282,7 +282,7 @@ log using log.txt, replace text
 di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_TH_SinCos)']" 
 di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_Fact)']" 
 di "`=scalar(beti_TC_Fact)' [`=scalar(CI95_lo_TC_Fact)',`=scalar(CI95_up_TC_Fact)']" 
-di "`=scalar(beti_RC_SinCos)' [`=scalar(CI95_lo_RC_SinCos)',`=scalar(CI95_up_RC_SinCos)']" 
+di "`=scalar(beti_RC_Fact)' [`=scalar(CI95_lo_RC_Fact)',`=scalar(CI95_up_RC_Fact)']" 
 di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_Fact)']" 
 di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_Fact)']" 
 log close 
