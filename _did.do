@@ -1,5 +1,7 @@
 clear all 
 
+cd "G:\Mi unidad\paperestallido"
+
 cap ssc install outreg2c
 cap install xtscc
 cap ssc install coefplot
@@ -14,13 +16,6 @@ cap ssc install estout
 cap copy "https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true" data15a64_rn_ratio_its_did.dta,replace
 use data15a64_rn_ratio_its_did.dta
 
-gen year2 = real(year)
-drop year
-rename year2 year
-
-gen month2 = real(month)
-drop month
-rename month2 month
 
 xtset year isoweek
 
@@ -93,7 +88,7 @@ foreach v of varlist hosp_trauma hosp_resp ///
 *Another way to obtain results
 cap erase fe_results.csv
 esttab xtscc_* ///
-using fe_results.csv, append varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+using fe_results.csv, append varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N N_clust r2, fmt(%9.0f %9.0f %4.3f)) ///
      cells("b(star fmt(3) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))") ///
      mtitles("Trauma Hospitalizations-None" "Trauma Hospitalizations-Continuous" "Trauma Hospitalizations-Factor" "Trauma Hospitalizations-Cuadratic" "Trauma Hospitalizations-SinCos" /// 
@@ -132,32 +127,32 @@ foreach v of varlist hosp_trauma hosp_resp ///
 *****************************************v**************************************
 ***********TABLES************************v**************************************
 
-qui est table xtreg_hosp_trauma_*, star b(%7.4f) stats(aic bic rmse) keep(1.txtime)
+qui est table xtreg_hosp_trauma_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_a = r(stats)'
 matrix rownames stats_a = "TH-None" "TH-Cont" "TH-Fact" "TH-Cuad" "TH-SinCos"
 svmat stats_a 
-qui est table xtreg_hosp_resp_*, star b(%7.4f) stats(aic bic rmse) keep(1.txtime)
+qui est table xtreg_hosp_resp_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_b = r(stats)'
 matrix rownames stats_b = "RH-None" "RH-Cont" "RH-Fact" "RH-Cuad" "RH-SinCos"
 svmat stats_b
-qui est table xtreg_cons_trauma_*, star b(%7.4f) stats(aic bic rmse) keep(1.txtime)
+qui est table xtreg_cons_trauma_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_c = r(stats)'
 matrix rownames stats_c = "TC-None" "TC-Cont" "TC-Fact" "TC-Cuad" "TC-SinCos"
 svmat stats_c
-qui est table xtreg_cons_resp_*, star b(%7.4f) stats(aic bic rmse) keep(1.txtime)
+qui est table xtreg_cons_resp_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_d = r(stats)'
 matrix rownames stats_d = "RC-None" "RC-Cont" "RC-Fact" "RC-Cuad" "RC-SinCos"
 svmat stats_d
-qui est table xtreg_rate_none xtreg_rate_cont xtreg_rate_fact xtreg_rate_cuad xtreg_rate_sin_cos, star b(%7.4f) stats(aic bic rmse) keep(1.txtime)
+qui est table xtreg_rate_none xtreg_rate_cont xtreg_rate_fact xtreg_rate_cuad xtreg_rate_sin_cos, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_e = r(stats)'
 matrix rownames stats_e = "TR-None" "TR-Cont" "TR-Fact" "TR-Cuad" "TR-SinCos"
 svmat stats_e
-qui est table xtreg_rate_resp_*, star b(%7.4f) stats(aic bic rmse) keep(1.txtime)
+qui est table xtreg_rate_resp_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_f = r(stats)'
 matrix rownames stats_f = "RR-None" "RR-Cont" "RR-Fact" "RR-Cuad" "RR-SinCos"
@@ -165,9 +160,9 @@ svmat stats_f
 
 matrix comb = (stats_a \ stats_b \ stats_c \ stats_d \ stats_e \ stats_f)
 
+cap erase fe_results_fit.csv
 esttab matrix(comb) ///
 using fe_results_fit.csv
-
 
 *****************************************v**************************************
 *****************************************v**************************************
@@ -254,7 +249,7 @@ cap erase fe_results_selection.csv
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
 xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth ///
 using fe_results_selection.csv, ///
-append varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+append varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
 	 mtitles("Trauma Hospitalizations-SinCos" "Respiratory Hospitalizations-Factor" "Trauma Consultations-Factor" "Respiratory Consultations-SinCos" ///
@@ -266,20 +261,23 @@ append varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
 
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
 xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth, ///
-varlabels(1.txtime "Social Protest") keep(1.txtime) nobaselevels  ///
+varlabels(2.txtime "Social Protest") keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
      mtitles("TH-SinCos" "RH-Factor" "TC-Factor" "RC-SinCos" ///
-             "TR-Factor" "RR-Factor") ///     
+             "TR-Factor" ///
+             "RR-Factor") ///     
      legend label ///
      title(Panel Estimation: Driscoll-Kraay standard errors) ///
-     compress nogap 
+     compress nogap
+	 
 	 
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:	 
 ** Relative differences:
 
+cap erase log.txt
 log using log.txt, replace text
 di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_TH_SinCos)']" 
 di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_Fact)']" 
@@ -288,5 +286,3 @@ di "`=scalar(beti_RC_SinCos)' [`=scalar(CI95_lo_RC_SinCos)',`=scalar(CI95_up_RC_
 di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_Fact)']" 
 di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_Fact)']" 
 log close 
-
-			   

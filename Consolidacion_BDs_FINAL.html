@@ -337,8 +337,8 @@ p.comment {
 </style>
 <pre class="r"><code>rm(list=ls());gc()</code></pre>
 <pre><code>##          used (Mb) gc trigger (Mb) max used (Mb)
-## Ncells 412248 22.1     853624 45.6   648454 34.7
-## Vcells 765947  5.9    8388608 64.0  1661381 12.7</code></pre>
+## Ncells 412253 22.1     853638 45.6   648454 34.7
+## Vcells 766036  5.9    8388608 64.0  1661381 12.7</code></pre>
 <pre class="r"><code>unlink(&#39;Consolidacion_BDs_cache&#39;, recursive = TRUE)
 unlink(&#39;Consolidacion_BDs_FINAL_cache&#39;, recursive = TRUE)
 #load(url(&quot;https://drive.google.com/uc?export=download&amp;id=1zLfLpJjGCfMSfwrtTnaOdBSgGg2ZCqjR&quot;))
@@ -770,25 +770,25 @@ model2d1_cons_trauma &lt;-  bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(da
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 20:08:19 2021
+<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 23:35:12 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Wed Feb 10 20:08:35 2021
+=-=-=-=-= Iteration 3000 Wed Feb 10 23:35:28 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Wed Feb 10 20:08:51 2021
+=-=-=-=-= Iteration 6000 Wed Feb 10 23:35:44 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Wed Feb 10 20:09:07 2021
+=-=-=-=-= Iteration 9000 Wed Feb 10 23:36:01 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Wed Feb 10 20:09:22 2021
+=-=-=-=-= Iteration 12000 Wed Feb 10 23:36:17 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Wed Feb 10 20:09:38 2021
+=-=-=-=-= Iteration 15000 Wed Feb 10 23:36:33 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Wed Feb 10 20:09:54 2021
+=-=-=-=-= Iteration 18000 Wed Feb 10 23:36:49 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Wed Feb 10 20:10:09 2021
+=-=-=-=-= Iteration 21000 Wed Feb 10 23:37:05 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Wed Feb 10 20:10:25 2021
+=-=-=-=-= Iteration 24000 Wed Feb 10 23:37:21 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Wed Feb 10 20:10:41 2021
+=-=-=-=-= Iteration 27000 Wed Feb 10 23:37:36 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -846,25 +846,25 @@ model2d_cons_resp &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                model.options = BstsOptions(save.prediction.errors = TRUE),
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 20:11:38 2021
+<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 23:38:36 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Wed Feb 10 20:11:52 2021
+=-=-=-=-= Iteration 3000 Wed Feb 10 23:38:51 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Wed Feb 10 20:12:07 2021
+=-=-=-=-= Iteration 6000 Wed Feb 10 23:39:05 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Wed Feb 10 20:12:21 2021
+=-=-=-=-= Iteration 9000 Wed Feb 10 23:39:20 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Wed Feb 10 20:12:36 2021
+=-=-=-=-= Iteration 12000 Wed Feb 10 23:39:34 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Wed Feb 10 20:12:51 2021
+=-=-=-=-= Iteration 15000 Wed Feb 10 23:39:49 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Wed Feb 10 20:13:05 2021
+=-=-=-=-= Iteration 18000 Wed Feb 10 23:40:03 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Wed Feb 10 20:13:20 2021
+=-=-=-=-= Iteration 21000 Wed Feb 10 23:40:17 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Wed Feb 10 20:13:34 2021
+=-=-=-=-= Iteration 24000 Wed Feb 10 23:40:32 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Wed Feb 10 20:13:49 2021
+=-=-=-=-= Iteration 27000 Wed Feb 10 23:40:46 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -902,25 +902,25 @@ model2d_trauma_hosp &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 20:14:37 2021
+<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 23:41:36 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Wed Feb 10 20:14:53 2021
+=-=-=-=-= Iteration 3000 Wed Feb 10 23:41:50 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Wed Feb 10 20:15:08 2021
+=-=-=-=-= Iteration 6000 Wed Feb 10 23:42:05 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Wed Feb 10 20:15:22 2021
+=-=-=-=-= Iteration 9000 Wed Feb 10 23:42:19 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Wed Feb 10 20:15:37 2021
+=-=-=-=-= Iteration 12000 Wed Feb 10 23:42:34 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Wed Feb 10 20:15:52 2021
+=-=-=-=-= Iteration 15000 Wed Feb 10 23:42:49 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Wed Feb 10 20:16:07 2021
+=-=-=-=-= Iteration 18000 Wed Feb 10 23:43:04 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Wed Feb 10 20:16:22 2021
+=-=-=-=-= Iteration 21000 Wed Feb 10 23:43:19 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Wed Feb 10 20:16:37 2021
+=-=-=-=-= Iteration 24000 Wed Feb 10 23:43:33 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Wed Feb 10 20:16:52 2021
+=-=-=-=-= Iteration 27000 Wed Feb 10 23:43:48 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -978,25 +978,25 @@ model2d1_hosp_resp &lt;-
                niter = clus_iter,
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 20:17:45 2021
+<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 23:44:42 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Wed Feb 10 20:18:00 2021
+=-=-=-=-= Iteration 3000 Wed Feb 10 23:44:57 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Wed Feb 10 20:18:15 2021
+=-=-=-=-= Iteration 6000 Wed Feb 10 23:45:12 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Wed Feb 10 20:18:30 2021
+=-=-=-=-= Iteration 9000 Wed Feb 10 23:45:27 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Wed Feb 10 20:18:45 2021
+=-=-=-=-= Iteration 12000 Wed Feb 10 23:45:42 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Wed Feb 10 20:19:00 2021
+=-=-=-=-= Iteration 15000 Wed Feb 10 23:45:57 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Wed Feb 10 20:19:15 2021
+=-=-=-=-= Iteration 18000 Wed Feb 10 23:46:11 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Wed Feb 10 20:19:30 2021
+=-=-=-=-= Iteration 21000 Wed Feb 10 23:46:26 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Wed Feb 10 20:19:44 2021
+=-=-=-=-= Iteration 24000 Wed Feb 10 23:46:41 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Wed Feb 10 20:20:00 2021
+=-=-=-=-= Iteration 27000 Wed Feb 10 23:46:56 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -1098,25 +1098,25 @@ model2d_ratio &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 20:20:46 2021
+<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 23:47:42 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Wed Feb 10 20:21:02 2021
+=-=-=-=-= Iteration 3000 Wed Feb 10 23:47:58 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Wed Feb 10 20:21:18 2021
+=-=-=-=-= Iteration 6000 Wed Feb 10 23:48:14 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Wed Feb 10 20:21:33 2021
+=-=-=-=-= Iteration 9000 Wed Feb 10 23:48:30 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Wed Feb 10 20:21:49 2021
+=-=-=-=-= Iteration 12000 Wed Feb 10 23:48:46 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Wed Feb 10 20:22:05 2021
+=-=-=-=-= Iteration 15000 Wed Feb 10 23:49:02 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Wed Feb 10 20:22:21 2021
+=-=-=-=-= Iteration 18000 Wed Feb 10 23:49:18 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Wed Feb 10 20:22:36 2021
+=-=-=-=-= Iteration 21000 Wed Feb 10 23:49:34 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Wed Feb 10 20:22:52 2021
+=-=-=-=-= Iteration 24000 Wed Feb 10 23:49:50 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Wed Feb 10 20:23:08 2021
+=-=-=-=-= Iteration 27000 Wed Feb 10 23:50:05 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #              
@@ -1271,25 +1271,25 @@ model2d_ratio_resp &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data1
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 20:24:00 2021
+<pre><code>=-=-=-=-= Iteration 0 Wed Feb 10 23:50:56 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Wed Feb 10 20:24:16 2021
+=-=-=-=-= Iteration 3000 Wed Feb 10 23:51:12 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Wed Feb 10 20:24:32 2021
+=-=-=-=-= Iteration 6000 Wed Feb 10 23:51:28 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Wed Feb 10 20:24:48 2021
+=-=-=-=-= Iteration 9000 Wed Feb 10 23:51:44 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Wed Feb 10 20:25:03 2021
+=-=-=-=-= Iteration 12000 Wed Feb 10 23:51:59 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Wed Feb 10 20:25:19 2021
+=-=-=-=-= Iteration 15000 Wed Feb 10 23:52:15 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Wed Feb 10 20:25:35 2021
+=-=-=-=-= Iteration 18000 Wed Feb 10 23:52:31 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Wed Feb 10 20:25:51 2021
+=-=-=-=-= Iteration 21000 Wed Feb 10 23:52:46 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Wed Feb 10 20:26:07 2021
+=-=-=-=-= Iteration 24000 Wed Feb 10 23:53:02 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Wed Feb 10 20:26:23 2021
+=-=-=-=-= Iteration 27000 Wed Feb 10 23:53:18 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #              
@@ -1626,6 +1626,13 @@ data15a64_rn_ratio %&gt;%
   dplyr::filter(isoweek!=53) %&gt;% 
   dplyr::mutate(did=factor(did)) %&gt;% 
   dplyr::mutate(month=as.numeric(month)) %&gt;% 
+  dplyr::mutate(year=as.numeric(year)) %&gt;% 
+#*Because graphical evidence suggests
+#*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
+#*transformations of scaled time, respectively.
+#*add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
+#cap gen month_sin = sin(month*2*c(pi)/12)
+#cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)  
   dplyr::mutate(month_sin=sin(month*2*pi/12)) %&gt;% 
   dplyr::mutate(month_cos=cos(month*2*pi/12)) %&gt;% 
   dplyr::mutate(tx=factor(tx),txtime=factor(txtime))
@@ -1738,6 +1745,8 @@ Nevertheless, must note that these coefficients are vulnerable to serial correla
 <p><br></p>
 <pre class="stata"><code>clear all 
 
+cd &quot;G:\Mi unidad\paperestallido&quot;
+
 cap ssc install outreg2c
 cap install xtscc
 cap ssc install coefplot
@@ -1752,13 +1761,6 @@ cap ssc install estout
 cap copy &quot;https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true&quot; data15a64_rn_ratio_its_did.dta,replace
 use data15a64_rn_ratio_its_did.dta
 
-gen year2 = real(year)
-drop year
-rename year2 year
-
-gen month2 = real(month)
-drop month
-rename month2 month
 
 xtset year isoweek
 
@@ -1831,7 +1833,7 @@ foreach v of varlist hosp_trauma hosp_resp ///
 *Another way to obtain results
 cap erase fe_results.csv
 esttab xtscc_* ///
-using fe_results.csv, append varlabels(1.txtime &quot;Social Protest&quot;) keep(1.txtime) nobaselevels  ///
+using fe_results.csv, append varlabels(2.txtime &quot;Social Protest&quot;) keep(2.txtime) nobaselevels  ///
      stats(N N_clust r2, fmt(%9.0f %9.0f %4.3f)) ///
      cells(&quot;b(star fmt(3) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))&quot;) ///
      mtitles(&quot;Trauma Hospitalizations-None&quot; &quot;Trauma Hospitalizations-Continuous&quot; &quot;Trauma Hospitalizations-Factor&quot; &quot;Trauma Hospitalizations-Cuadratic&quot; &quot;Trauma Hospitalizations-SinCos&quot; /// 
@@ -1870,32 +1872,32 @@ foreach v of varlist hosp_trauma hosp_resp ///
 *****************************************v**************************************
 ***********TABLES************************v**************************************
 
-qui est table xtreg_hosp_trauma_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui est table xtreg_hosp_trauma_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_a = r(stats)&#39;
 matrix rownames stats_a = &quot;TH-None&quot; &quot;TH-Cont&quot; &quot;TH-Fact&quot; &quot;TH-Cuad&quot; &quot;TH-SinCos&quot;
 svmat stats_a 
-qui est table xtreg_hosp_resp_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui est table xtreg_hosp_resp_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_b = r(stats)&#39;
 matrix rownames stats_b = &quot;RH-None&quot; &quot;RH-Cont&quot; &quot;RH-Fact&quot; &quot;RH-Cuad&quot; &quot;RH-SinCos&quot;
 svmat stats_b
-qui est table xtreg_cons_trauma_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui est table xtreg_cons_trauma_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_c = r(stats)&#39;
 matrix rownames stats_c = &quot;TC-None&quot; &quot;TC-Cont&quot; &quot;TC-Fact&quot; &quot;TC-Cuad&quot; &quot;TC-SinCos&quot;
 svmat stats_c
-qui est table xtreg_cons_resp_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui est table xtreg_cons_resp_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_d = r(stats)&#39;
 matrix rownames stats_d = &quot;RC-None&quot; &quot;RC-Cont&quot; &quot;RC-Fact&quot; &quot;RC-Cuad&quot; &quot;RC-SinCos&quot;
 svmat stats_d
-qui est table xtreg_rate_none xtreg_rate_cont xtreg_rate_fact xtreg_rate_cuad xtreg_rate_sin_cos, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui est table xtreg_rate_none xtreg_rate_cont xtreg_rate_fact xtreg_rate_cuad xtreg_rate_sin_cos, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_e = r(stats)&#39;
 matrix rownames stats_e = &quot;TR-None&quot; &quot;TR-Cont&quot; &quot;TR-Fact&quot; &quot;TR-Cuad&quot; &quot;TR-SinCos&quot;
 svmat stats_e
-qui est table xtreg_rate_resp_*, star b(%7.4f) stats(N r2_a aic bic rmse) keep(1.txtime)
+qui est table xtreg_rate_resp_*, star b(%7.4f) stats(aic bic rmse) keep(2.txtime)
 qui return list
 matrix stats_f = r(stats)&#39;
 matrix rownames stats_f = &quot;RR-None&quot; &quot;RR-Cont&quot; &quot;RR-Fact&quot; &quot;RR-Cuad&quot; &quot;RR-SinCos&quot;
@@ -1903,6 +1905,7 @@ svmat stats_f
 
 matrix comb = (stats_a \ stats_b \ stats_c \ stats_d \ stats_e \ stats_f)
 
+cap erase fe_results_fit.csv
 esttab matrix(comb) ///
 using fe_results_fit.csv
 
@@ -1991,7 +1994,7 @@ cap erase fe_results_selection.csv
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
 xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth ///
 using fe_results_selection.csv, ///
-append varlabels(1.txtime &quot;Social Protest&quot;) keep(1.txtime) nobaselevels  ///
+append varlabels(2.txtime &quot;Social Protest&quot;) keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
      mtitles(&quot;Trauma Hospitalizations-SinCos&quot; &quot;Respiratory Hospitalizations-Factor&quot; &quot;Trauma Consultations-Factor&quot; &quot;Respiratory Consultations-SinCos&quot; ///
@@ -2003,7 +2006,7 @@ append varlabels(1.txtime &quot;Social Protest&quot;) keep(1.txtime) nobaselevel
 
 esttab xtscc_hosp_trauma_sc  xtscc_hosp_resp_mth  ///
 xtscc_cons_trauma_mth  xtscc_cons_resp_sc xtscc_rate_mth xtscc_rate_resp_mth, ///
-varlabels(1.txtime &quot;Social Protest&quot;) keep(1.txtime) nobaselevels  ///
+varlabels(2.txtime &quot;Social Protest&quot;) keep(2.txtime) nobaselevels  ///
      stats(N r2_w, fmt(%9.0f %4.2f)) ///
      cells(b(fmt(2) label(Coef)) ci_l(fmt(2) label(CI95_Lo)) ci_u(fmt(2) label(CI95_Up)) p(fmt(%7.3f) label(p-values))) ///
      mtitles(&quot;TH-SinCos&quot; &quot;RH-Factor&quot; &quot;TC-Factor&quot; &quot;RC-SinCos&quot; ///
@@ -2019,6 +2022,7 @@ varlabels(1.txtime &quot;Social Protest&quot;) keep(1.txtime) nobaselevels  ///
 *#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:#:#:#:#:#:#:##:#:#:#:#:#:#:   
 ** Relative differences:
 
+cap erase log.txt
 log using log.txt, replace text
 di &quot;`=scalar(beti_TH_SinCos)&#39; [`=scalar(CI95_lo_TH_SinCos)&#39;,`=scalar(CI95_up_TH_SinCos)&#39;]&quot; 
 di &quot;`=scalar(beti_RH_Fact)&#39; [`=scalar(CI95_lo_RH_Fact)&#39;,`=scalar(CI95_up_RH_Fact)&#39;]&quot; 
@@ -2027,7 +2031,12 @@ di &quot;`=scalar(beti_RC_SinCos)&#39; [`=scalar(CI95_lo_RC_SinCos)&#39;,`=scala
 di &quot;`=scalar(beti_TR_Fact)&#39; [`=scalar(CI95_lo_TR_Fact)&#39;,`=scalar(CI95_up_TR_Fact)&#39;]&quot; 
 di &quot;`=scalar(beti_RR_Fact)&#39; [`=scalar(CI95_lo_RR_Fact)&#39;,`=scalar(CI95_up_RR_Fact)&#39;]&quot; 
 log close </code></pre>
-<pre><code>Running G:\Mi unidad\paperestallido\profile.do . clear all 
+<pre><code>Running G:\Mi unidad\paperestallido\profile.do type mismatch
+r(109);
+
+
+
+G:\Mi unidad\paperestallido
 
        panel variable:  year (strongly balanced)
         time variable:  isoweek, 1 to 52
@@ -2144,11 +2153,100 @@ log close </code></pre>
 
 
 
-file fe_results_fit.csv already exists
-r(602);
 
-end of do-file
-r(602);</code></pre>
+(output written to fe_results_fit.csv)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(note: file fe_results_selection.csv not found)
+(output written to fe_results_selection.csv)
+
+
+Panel Estimation: Driscoll-Kraay standard errors
+----------------------------------------------------------------------------
+                       (1)       (2)       (3)       (4)       (5)       (6)
+                 TH-SinCos RH-Factor TC-Factor RC-SinCos TR-Factor RR-Factor
+                 Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s
+----------------------------------------------------------------------------
+Social Protest        7.53      0.37   -122.90    -52.01     24.38     86.55
+----------------------------------------------------------------------------
+N                      260       260       260       260       260       260
+r2_w                  0.14      0.26      0.34      0.62      0.17      0.22
+----------------------------------------------------------------------------
+
+
+
+(note: file G:\Mi unidad\paperestallido\log.txt not found)
+-------------------------------------------------------------------------------
+      name:  &lt;unnamed&gt;
+       log:  G:\Mi unidad\paperestallido\log.txt
+  log type:  text
+ opened on:  10 Feb 2021, 23:55:40
+
+11.7 [1.63,21.77]
+
+1.76 [-18.58,22.11]
+
+-16.45 [-25.47,-7.42]
+
+-40.68 [-67.62,-13.74]
+
+27.65 [17.91,37.4]
+
+48.94 [37.5,60.37]
+
+      name:  &lt;unnamed&gt;
+       log:  G:\Mi unidad\paperestallido\log.txt
+  log type:  text
+ closed on:  10 Feb 2021, 23:55:40
+-------------------------------------------------------------------------------</code></pre>
 <pre class="r"><code>fe_results_fit_indices &lt;- 
      readr::read_delim(&quot;fe_results_fit.csv&quot;, 
         &quot;=&quot;, escape_double = FALSE, comment = &quot;\\&quot;, 
@@ -2188,7 +2286,9 @@ fe_results_fit_indices %&gt;%
                                        grepl(&quot;Respiratory Hospitalizations per&quot;,Models)~6
                                        )) %&gt;% 
   dplyr::arrange(varnum,rn) %&gt;% 
-  dplyr::select(-varnum,-rn) 
+  dplyr::select(-varnum,-rn) %&gt;% 
+  dplyr::mutate_at(3:4,~round(.,0)) %&gt;% 
+  dplyr::mutate_at(5,~round(.,2))
 
 fe_results_fit_indices2 %&gt;% 
       knitr::kable(.,format = &quot;html&quot;, format.args = list(decimal.mark = &quot;.&quot;, big.mark = &quot;,&quot;),
@@ -2231,30 +2331,13 @@ Trauma Consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-3,210.104
+3,210
 </td>
 <td style="text-align:center;">
-3,217.225
+3,217
 </td>
 <td style="text-align:center;">
-116.549900
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Trauma Consultations
-</td>
-<td style="text-align:left;">
-Continuous Monthly term
-</td>
-<td style="text-align:center;">
-3,211.833
-</td>
-<td style="text-align:center;">
-3,222.515
-</td>
-<td style="text-align:center;">
-116.719200
+116.55
 </td>
 </tr>
 <tr>
@@ -2262,16 +2345,33 @@ Continuous Monthly term
 Trauma Consultations
 </td>
 <td style="text-align:left;">
+Continuous Monthly term
+</td>
+<td style="text-align:center;">
+3,212
+</td>
+<td style="text-align:center;">
+3,223
+</td>
+<td style="text-align:center;">
+116.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trauma Consultations
+</td>
+<td style="text-align:left;">
 Month as a Factor Variable
 </td>
 <td style="text-align:center;">
-3,124.467
+3,124
 </td>
 <td style="text-align:center;">
-3,170.756
+3,171
 </td>
 <td style="text-align:center;">
-96.878910
+96.88
 </td>
 </tr>
 <tr>
@@ -2282,13 +2382,13 @@ Trauma Consultations
 Month as a Cuadratic Term
 </td>
 <td style="text-align:center;">
-3,211.327
+3,211
 </td>
 <td style="text-align:center;">
-3,222.009
+3,222
 </td>
 <td style="text-align:center;">
-116.605700
+116.61
 </td>
 </tr>
 <tr>
@@ -2299,13 +2399,13 @@ Trauma Consultations
 Sine &amp; Cosine of the Month (Bimonth cyclicity)
 </td>
 <td style="text-align:center;">
-3,153.142
+3,153
 </td>
 <td style="text-align:center;">
-3,167.385
+3,167
 </td>
 <td style="text-align:center;">
-104.067300
+104.07
 </td>
 </tr>
 <tr>
@@ -2316,13 +2416,13 @@ Respiratory Consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-2,771.136
+2,771
 </td>
 <td style="text-align:center;">
-2,778.258
+2,778
 </td>
 <td style="text-align:center;">
-50.106540
+50.11
 </td>
 </tr>
 <tr>
@@ -2333,13 +2433,13 @@ Respiratory Consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-2,757.141
+2,757
 </td>
 <td style="text-align:center;">
-2,767.823
+2,768
 </td>
 <td style="text-align:center;">
-48.684600
+48.68
 </td>
 </tr>
 <tr>
@@ -2350,13 +2450,13 @@ Respiratory Consultations
 Month as a Factor Variable
 </td>
 <td style="text-align:center;">
-2,549.864
+2,550
 </td>
 <td style="text-align:center;">
-2,596.153
+2,596
 </td>
 <td style="text-align:center;">
-32.087160
+32.09
 </td>
 </tr>
 <tr>
@@ -2367,13 +2467,13 @@ Respiratory Consultations
 Month as a Cuadratic Term
 </td>
 <td style="text-align:center;">
-2,771.623
+2,772
 </td>
 <td style="text-align:center;">
-2,782.305
+2,782
 </td>
 <td style="text-align:center;">
-50.059500
+50.06
 </td>
 </tr>
 <tr>
@@ -2384,13 +2484,13 @@ Respiratory Consultations
 Sine &amp; Cosine of the Month (Bimonth cyclicity)
 </td>
 <td style="text-align:center;">
-2,548.325
+2,548
 </td>
 <td style="text-align:center;">
-2,562.568
+2,563
 </td>
 <td style="text-align:center;">
-32.522390
+32.52
 </td>
 </tr>
 <tr>
@@ -2401,13 +2501,13 @@ Trauma Hospitalizations
 No monthly term
 </td>
 <td style="text-align:center;">
-1,952.855
+1,953
 </td>
 <td style="text-align:center;">
-1,959.976
+1,960
 </td>
 <td style="text-align:center;">
-10.386770
+10.39
 </td>
 </tr>
 <tr>
@@ -2418,13 +2518,13 @@ Trauma Hospitalizations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-1,952.465
+1,952
 </td>
 <td style="text-align:center;">
-1,963.147
+1,963
 </td>
 <td style="text-align:center;">
-10.359550
+10.36
 </td>
 </tr>
 <tr>
@@ -2435,13 +2535,13 @@ Trauma Hospitalizations
 Month as a Factor Variable
 </td>
 <td style="text-align:center;">
-1,940.109
+1,940
 </td>
 <td style="text-align:center;">
-1,986.398
+1,986
 </td>
 <td style="text-align:center;">
-9.932887
+9.93
 </td>
 </tr>
 <tr>
@@ -2452,13 +2552,13 @@ Trauma Hospitalizations
 Month as a Cuadratic Term
 </td>
 <td style="text-align:center;">
-1,954.789
+1,955
 </td>
 <td style="text-align:center;">
-1,965.471
+1,965
 </td>
 <td style="text-align:center;">
-10.405960
+10.41
 </td>
 </tr>
 <tr>
@@ -2469,13 +2569,13 @@ Trauma Hospitalizations
 Sine &amp; Cosine of the Month (Bimonth cyclicity)
 </td>
 <td style="text-align:center;">
-1,928.415
+1,928
 </td>
 <td style="text-align:center;">
-1,942.657
+1,943
 </td>
 <td style="text-align:center;">
-9.872893
+9.87
 </td>
 </tr>
 <tr>
@@ -2486,13 +2586,13 @@ Respiratory Hospitalizations
 No monthly term
 </td>
 <td style="text-align:center;">
-1,760.143
+1,760
 </td>
 <td style="text-align:center;">
-1,767.264
+1,767
 </td>
 <td style="text-align:center;">
-7.170197
+7.17
 </td>
 </tr>
 <tr>
@@ -2503,13 +2603,13 @@ Respiratory Hospitalizations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-1,757.440
+1,757
 </td>
 <td style="text-align:center;">
-1,768.122
+1,768
 </td>
 <td style="text-align:center;">
-7.119669
+7.12
 </td>
 </tr>
 <tr>
@@ -2520,13 +2620,13 @@ Respiratory Hospitalizations
 Month as a Factor Variable
 </td>
 <td style="text-align:center;">
-1,704.642
+1,705
 </td>
 <td style="text-align:center;">
-1,750.931
+1,751
 </td>
 <td style="text-align:center;">
-6.315638
+6.32
 </td>
 </tr>
 <tr>
@@ -2537,13 +2637,13 @@ Respiratory Hospitalizations
 Month as a Cuadratic Term
 </td>
 <td style="text-align:center;">
-1,761.735
+1,762
 </td>
 <td style="text-align:center;">
-1,772.418
+1,772
 </td>
 <td style="text-align:center;">
-7.178726
+7.18
 </td>
 </tr>
 <tr>
@@ -2554,13 +2654,13 @@ Respiratory Hospitalizations
 Sine &amp; Cosine of the Month (Bimonth cyclicity)
 </td>
 <td style="text-align:center;">
-1,698.717
+1,699
 </td>
 <td style="text-align:center;">
-1,712.960
+1,713
 </td>
 <td style="text-align:center;">
-6.347534
+6.35
 </td>
 </tr>
 <tr>
@@ -2571,13 +2671,13 @@ Trauma Hospitalizations per 1,000 consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-2,237.280
+2,237
 </td>
 <td style="text-align:center;">
-2,244.402
+2,244
 </td>
 <td style="text-align:center;">
-17.948470
+17.95
 </td>
 </tr>
 <tr>
@@ -2588,13 +2688,13 @@ Trauma Hospitalizations per 1,000 consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-2,237.912
+2,238
 </td>
 <td style="text-align:center;">
-2,248.594
+2,249
 </td>
 <td style="text-align:center;">
-17.936650
+17.94
 </td>
 </tr>
 <tr>
@@ -2605,13 +2705,13 @@ Trauma Hospitalizations per 1,000 consultations
 Month as a Factor Variable
 </td>
 <td style="text-align:center;">
-2,220.060
+2,220
 </td>
 <td style="text-align:center;">
-2,266.349
+2,266
 </td>
 <td style="text-align:center;">
-17.017100
+17.02
 </td>
 </tr>
 <tr>
@@ -2622,13 +2722,13 @@ Trauma Hospitalizations per 1,000 consultations
 Month as a Cuadratic Term
 </td>
 <td style="text-align:center;">
-2,237.593
+2,238
 </td>
 <td style="text-align:center;">
-2,248.275
+2,248
 </td>
 <td style="text-align:center;">
-17.925640
+17.93
 </td>
 </tr>
 <tr>
@@ -2639,13 +2739,13 @@ Trauma Hospitalizations per 1,000 consultations
 Sine &amp; Cosine of the Month (Bimonth cyclicity)
 </td>
 <td style="text-align:center;">
-2,237.414
+2,237
 </td>
 <td style="text-align:center;">
-2,251.657
+2,252
 </td>
 <td style="text-align:center;">
-17.886070
+17.89
 </td>
 </tr>
 <tr>
@@ -2656,13 +2756,13 @@ Respiratory Hospitalizations per 1,000 consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-2,702.764
+2,703
 </td>
 <td style="text-align:center;">
-2,709.885
+2,710
 </td>
 <td style="text-align:center;">
-43.932980
+43.93
 </td>
 </tr>
 <tr>
@@ -2673,13 +2773,13 @@ Respiratory Hospitalizations per 1,000 consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-2,699.463
+2,699
 </td>
 <td style="text-align:center;">
-2,710.145
+2,710
 </td>
 <td style="text-align:center;">
-43.573310
+43.57
 </td>
 </tr>
 <tr>
@@ -2690,13 +2790,13 @@ Respiratory Hospitalizations per 1,000 consultations
 Month as a Factor Variable
 </td>
 <td style="text-align:center;">
-2,690.023
+2,690
 </td>
 <td style="text-align:center;">
-2,736.312
+2,736
 </td>
 <td style="text-align:center;">
-42.013590
+42.01
 </td>
 </tr>
 <tr>
@@ -2707,13 +2807,13 @@ Respiratory Hospitalizations per 1,000 consultations
 Month as a Cuadratic Term
 </td>
 <td style="text-align:center;">
-2,703.315
+2,703
 </td>
 <td style="text-align:center;">
-2,713.997
+2,714
 </td>
 <td style="text-align:center;">
-43.897280
+43.90
 </td>
 </tr>
 <tr>
@@ -2724,13 +2824,13 @@ Respiratory Hospitalizations per 1,000 consultations
 Sine &amp; Cosine of the Month (Bimonth cyclicity)
 </td>
 <td style="text-align:center;">
-2,687.864
+2,688
 </td>
 <td style="text-align:center;">
-2,702.107
+2,702
 </td>
 <td style="text-align:center;">
-42.532670
+42.53
 </td>
 </tr>
 </tbody>
@@ -2794,7 +2894,7 @@ cbind(&quot;Social protests&quot;=c(&quot;Coef&quot;,&quot;CI95-Lo&quot;,&quot;C
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
 #beti_TH_SinCos beti_RH_Fact beti_TC_Fact beti_RC_SinCos beti_TR_Fact beti_RR_Fact
 log &lt;- 
-  readr::read_delim(&quot;~/log.txt&quot;, &quot;\t&quot;, escape_double = FALSE, 
+  readr::read_delim(&quot;log.txt&quot;, &quot;\t&quot;, escape_double = FALSE, 
     col_names = FALSE, comment = &quot;--&quot;, trim_ws = TRUE, 
     skip = 5) %&gt;% 
   dplyr::filter(!grepl(&quot;di &quot;,X1)) %&gt;% 
@@ -3037,9 +3137,9 @@ Month as a Factor Variable
 <pre><code>Document Context: 
 - id:        &#39;9ECFF96C&#39;
 - path:      &#39;G:/Mi unidad/paperestallido/Consolidacion_BDs_FINAL.Rmd&#39;
-- contents:  &lt;1605 rows&gt;
+- contents:  &lt;1611 rows&gt;
 Document Selection:
-- [1597, 25] -- [1597, 25]: &#39;&#39;</code></pre>
+- [1483, 47] -- [1483, 47]: &#39;&#39;</code></pre>
 <pre class="r"><code>      tryCatch(
                      {
       save.image(paste0(getwd(),&quot;/&quot;,&quot;Definitive_models_2021.RData&quot;))

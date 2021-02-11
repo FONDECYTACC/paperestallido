@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  G:\Mi unidad\paperestallido\log.txt
+  log type:  text
+ opened on:  10 Feb 2021, 23:55:40
+
+. di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_
+> TH_SinCos)']" 
+11.7 [1.63,21.77]
+
+. di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_F
+> act)']" 
+1.76 [-18.58,22.11]
+
+. di "`=scalar(beti_TC_Fact)' [`=scalar(CI95_lo_TC_Fact)',`=scalar(CI95_up_TC_F
+> act)']" 
+-16.45 [-25.47,-7.42]
+
+. di "`=scalar(beti_RC_SinCos)' [`=scalar(CI95_lo_RC_SinCos)',`=scalar(CI95_up_
+> RC_SinCos)']" 
+-40.68 [-67.62,-13.74]
+
+. di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_F
+> act)']" 
+27.65 [17.91,37.4]
+
+. di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_F
+> act)']" 
+48.94 [37.5,60.37]
+
+. log close 
+      name:  <unnamed>
+       log:  G:\Mi unidad\paperestallido\log.txt
+  log type:  text
+ closed on:  10 Feb 2021, 23:55:40
+-------------------------------------------------------------------------------

@@ -68,7 +68,7 @@ p.comment {
 ```
 ```{r setup0, include=FALSE}
 rm(list=ls());gc()
-load("G:/Mi unidad/linkabbddyscriptderpaperestallidosocial/Definitive_models_2021.RData")
+load("Definitive_models_2021.RData")
 #xaringan::inf_mr()
 
 if(isTRUE(getOption('knitr.in.progress'))==T){
