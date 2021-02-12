@@ -1621,11 +1621,5 @@ sessionInfo()
 
 #Use any number of times, to revert back to the last commit without deleting any files that you have recently created.
 #git reset --soft HEAD~1
-unlink('Causal_Impact2_hosp_resp_cache', recursive = TRUE)
-unlink('Causal_Impact2_hosp_trauma_cache', recursive = TRUE)
-unlink('Causal_Impact2_cons_resp_cache', recursive = TRUE)
-unlink('Causal_Impact2_cons_trauma_cache', recursive = TRUE)
-unlink('Causal_Impact2_cons_trauma_cache', recursive = TRUE)
-unlink('Plots 2021-01-18_cache', recursive = TRUE)
-unlink('BD_Compilation_cache', recursive = TRUE)
+unlink('*_cache', recursive = T, force=T)
 ```
