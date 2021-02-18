@@ -2680,22 +2680,25 @@ data15a64_rn3<-data15a64_rn2 %>%
 #table(data15a64_rn2$isoweek,data15a64_rn2$did)
 
 dataprep.out <-
-        dataprep(data15a64_rn3,
-          predictors = c("hosp_circ", "hosp_resp","difftrc"),
-          dependent     = "hosp_trauma",
-          unit.variable = "year",
-          time.variable = "isoweek",
-          treatment.identifier  = 2019,
-          special.predictors = list(
-             list("hosp_trauma", 1, "median"),
-             list("hosp_trauma", 11, "median"),
-             list("hosp_trauma", 21, "median"),
-             list("hosp_trauma", 41, "median")),
+        dataprep(
+          foo= covid19_chile_vacuna_vs_confirmados_num,
+          predictors = "Primera",
+          dependent     = "conf",
+          unit.variable = "numreg",
+          unit.names.variable = "Region",
+          time.variable = "numfech",
+          treatment.identifier  = 7,
+          #special.predictors = list(
+          #   list("hosp_trauma", 1, "median"),
+          #   list("hosp_trauma", 11, "median"),
+          #   list("hosp_trauma", 21, "median"),
+          #   list("hosp_trauma", 41, "median")),
           predictors.op="median",
-          time.predictors.prior = c(1:42),
-          time.optimize.ssr= c(1:42),
-          controls.identifier   = c(2015:2018),
-          time.plot             = c(1:52))
+          time.predictors.prior = c(1:52),
+          time.optimize.ssr= c(1:52),
+          controls.identifier   = c(1:6,8:16),
+          time.plot             = c(1:max(covid19_chile_vacuna_vs_confirmados_num$numfech))
+          )
 
 # Run synth
   synth.out <- synth(dataprep.out,method = "All")
