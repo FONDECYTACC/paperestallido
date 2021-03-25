@@ -1,0 +1,1540 @@
+﻿Reference Type:  Web Page
+Record Number: 57
+Author: ABC News
+Year: 2019, December 14
+Title: UN calls for Chile to prosecute police over human rights violations against protesters
+Access Date: 2021, January 15
+Short Title: UN calls for Chile to prosecute police over human rights violations against protesters
+URL: https://www.abc.net.au/news/2019-12-14/un-says-chile-police-committed-human-rights-violations/11800610
+
+
+Reference Type:  Web Page
+Record Number: 91
+Author: Abrahimovic, P.
+Year: 2019, December 06
+Title: 'The rapist is you': Chile anthem against sexual violence goes viral
+Publisher: ABS-CBN News
+Access Date: 2021, January 20
+Short Title: 'The rapist is you': Chile anthem against sexual violence goes viral
+URL: https://news.abs-cbn.com/overseas/12/06/19/the-rapist-is-you-chile-anthem-against-sexual-violence-goes-viral
+
+
+Reference Type:  Web Page
+Record Number: 87
+Author: Agence France-Presse
+Year: 2019, December 7
+Title: Protesters clash with police as Chile unrest enters 50th day
+Publisher: New Straits Times
+Access Date: 2021, January 20
+Short Title: Protesters clash with police as Chile unrest enters 50th day
+URL: https://www.nst.com.my/world/world/2019/12/545665/protesters-clash-police-chile-unrest-enters-50th-day
+
+
+Reference Type:  Web Page
+Record Number: 88
+Author: Agence France-Presse
+Year: 2019, December 28
+Title: Chile convulsed by new round of violent clashes
+Publisher: The New Strait Times
+Short Title: Chile convulsed by new round of violent clashes
+URL: https://www.nst.com.my/world/world/2019/12/551468/chile-convulsed-new-round-violent-clashes
+
+
+Reference Type:  Journal Article
+Record Number: 40
+Author: Arbak, Peri, Başer, Ilknur, Kumbasar, Özlem Ozdemir, Ülger, Füsun, Kılıçaslan, Zeki and Evyapan, Fatma
+Year: 2014
+Title: Long term effects of tear gases on respiratory system: analysis of 93 cases
+Journal: TheScientificWorldJournal
+Volume: 2014
+Pages: 963638-963638
+Epub Date: 2014/07/22
+Short Title: Long term effects of tear gases on respiratory system: analysis of 93 cases
+Alternate Journal: ScientificWorldJournal
+ISSN: 1537-744X
+2356-6140
+DOI: 10.1155/2014/963638
+Accession Number: 25152930
+Keywords: Case-Control Studies
+Humans
+Male
+Odds Ratio
+*Public Health Surveillance
+Respiratory Function Tests
+Respiratory System/*drug effects
+Tear Gases/*adverse effects
+Time Factors
+Abstract: AIM: This study aimed to assess the long-term respiratory effects of tear gases among the subjects with history of frequent exposure. MATERIALS AND METHODS: A questionnaire by NIOSH and pulmonary function tests was performed in 93 males exposed to the tear gases frequently and 55 nonexposed subjects. RESULTS: The mean numbers of total exposure and last 2 years exposure were 8.4 ± 6.4 times, 5.6 ± 5.8 times, respectively. Tear gas exposed subjects were presented with a higher rate for cough and phlegm more than 3 months (24.7% versus 11.3%, P > 0.05). Mean FEV1/FVC and % predicted MMFR in smoker exposed subjects are significantly lower than those in smoker controls (81.7% versus 84.1%, P = 0.046 and 89.9% versus 109.6%, P = 0.0004, resp.). % predicted MMFR in nonsmoker exposed subjects is significantly lower than that in nonsmoker controls (99.4% versus 113.1%, P = 0.05). Odds ratios for chest tightness, exercise dyspnea, dyspnea on level ground, winter morning cough, phlegm, and daily phlegm were increased almost 2 to 2.5 folds among tear gas exposed subjects. CONCLUSION: The rates for respiratory complaints were high in the case of the exposure to the tear gases previously. Tears gas exposed subjects were found to be under the risk for chronic bronchitis.
+Notes: 25152930[pmid]
+PMC4132311[pmcid]
+URL: https://pubmed.ncbi.nlm.nih.gov/25152930
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4132311/
+Name of Database: PubMed
+Language: eng
+
+Reference Type:  Web Page
+Record Number: 78
+Author: Associated Press
+Year: 2019, October 21
+Title: Chile: protests rage as president extends state of emergency
+Publisher: The Guardian
+Access Date: 2021, January 19
+Short Title: Chile: protests rage as president extends state of emergency
+URL: https://www.theguardian.com/world/2019/oct/20/chiles-president-reverses-fare-increase-as-unrest-continues
+
+
+Reference Type:  Web Page
+Record Number: 72
+Author: Baeza, A.
+Year: 2019, Octubre 11
+Title: Evasión masiva de alumnos del Instituto Nacional en el Metro termina con denuncia en Fiscalía y medidas de contención
+Publisher: La Tercera
+Access Date: 2021, January 19
+Short Title: Evasión masiva de alumnos del Instituto Nacional en el Metro termina con denuncia en Fiscalía y medidas de contención
+URL: https://www.latercera.com/nacional/noticia/evasion-masiva-alumnos-del-instituto-nacional-metro-termina-denuncia-fiscalia-medidas-contencion/857409/
+
+
+Reference Type:  Journal Article
+Record Number: 34
+Author: Ballantyne, B.
+Title: Medical management of the traumatic consequences of civil unrest incidents: causation, clinical approaches, needs and advanced planning criteria
+Issue: 1176-2551 (Print)
+Short Title: Medical management of the traumatic consequences of civil unrest incidents: causation, clinical approaches, needs and advanced planning criteria
+Abstract: In the context of this review, civil unrest is defined as disharmony, expressive dissatisfaction and/or disagreement between members of a community, which leads to a situation of competitive aggression that may find expression as disruption of organisation, conflicts, damage to property and injuries. Such a breakdown of harmonious relationships, which may result in property damage and human injuries that may be threatening to life, varies in magnitude from participation of a very few individuals up to the involvement of large crowds of people, which may evolve into a full-scale riot. It is the latter situation often involving demonstrators, opposing groups and law enforcement personnel that can result in multiple casualties and present a very significant challenge to the resources of local healthcare institutions. The causation of civil unrest incidents is multifactorial and has generic, specific and potentiating elements. With the current national and international societal, political and discriminatory problems, it is likely that civil unrest incidents on both small and large scales will continue to occur at a high and possibly increasing rate on a worldwide basis, and for these not infrequent incidents, the medical community should be in a state of informed preparation. The circumstances of civil unrest incidents are very variable with respect to causation, overall magnitude, frequency, timing, geographical location, numbers of persons involved, demographics of participants, influence of extremists, confrontation with opposing groups and control measures used by law enforcement agencies. Methods used by police and security forces for the control of civil unrest incidents, if advanced negotiations with organisers and verbal warnings have failed, fall basically into two categories: physical and chemical measures. Physical methods include restraint holds, truncheons, batons, mounted horses, projectiles (such as bean bags, plastic and rubber bullets), water cannons, tasers and (rarely) live ammunition. All of these physical measures are associated with pain and immobilisation, and there is a high potential for soft tissue and bone injuries. Some of the more severe physical methods, including plastic and rubber bullets, may cause lethal injuries. The basis for using chemicals in civil unrest incidents is that they cause distraction, transient harassment and incapacitation, temporary impairment of the conduct of coordinated tasks and cause a desire to vacate the area of unrest. Although screening smokes and malodors have sometimes been employed, the major group of chemicals used are peripheral chemosensory irritants (PCSIs), which reversibly interact with sensory nerve receptors in exposed skin and mucosal surfaces, resulting in the production of local uncomfortable sensations and associated reflexes. Major effects are on the eye, respiratory tract and (to a lesser degree) skin. Thus, the induced transient pain and discomfort in the eye, respiratory tract and skin, together with associated lacrimation, blepharospasm, rhinorrhoea, sialorrhoea, cough and breathing difficulties, produce temporary incapacitation and interference with the conduct of coordinated tasks, and form the basis for harassment of malefactors. Currently used peripheral chemosensory irritants are 1-chloroacetophenone, 2-chlorobenzylidene malononitrile, dibenz(b.f)-1,4-oxazepine, oleoresin capsicum and pelargonic acid vanillylamide. Depending on operational circumstances, irritants may be dispersed as a smoke, powder cloud, aerosol, vapour, or in solution; the mode of generation and dispersion of irritant can influence hazard. Brief acute exposure to chemosensory irritants produces effects that generally resolve within an hour, leaving no long-term sequelae. However, sustained exposure to high concentrations may produce tissue injury, notably to the eye, respiratory tract and skin. With solutions of sensory irritants, other formulation constituents may enhance PCSI toxicity or introduce additional local and/or systemic toxicity. By the very circumstances of civil unrest incidents, injuries are inevitable, particularly when emotions are heightened and police and security forces have to resort to various chemical and/or physical means of control. Trauma may include slight to severe physical and/or chemical injuries, psychological problems and occasional deaths. Hospitals should be prepared for a wide range of casualties, and the fact that those seeking help will constitute a heterogeneous group, including wide age range, male, female, and individuals with pre-existing ill health. A major civil unrest incident necessitates that the local receiving hospital should be prepared and equipped for decontamination and triage processes. It is necessary to reassure patients who have been exposed to sensory irritants that the signs and symptoms are rapidly reversible, and do not result in long-term sequelae. With respect to chemical exposures, detailed evaluation should be given to possible ocular, cutaneous, respiratory and gastrointestinal effects. Also, exposure to chemosensory irritants results in transient increases in blood pressure, bradycardia and increased intraocular pressure. This indicates that those with cardiovascular diseases and glaucoma may be at increased risk for the development of complications. This article details the pharmacological, toxicological and clinical effects of chemicals used in civil disturbance control and discusses the management of contaminated individuals. Additionally, the potential for adverse effects from delivery systems and other physical restraint procedures is summarised. Due to the emergency and specialised circumstances and conditions of a civil unrest incident, there is a clear need for advanced planning by healthcare institutions in the event that such an incident occurs in their catchment area. This should include ensuring a good information base, preparations for medical and support staff readiness, and availability of required equipment and medications. Ideally, planning, administration and coordination should be undertaken at both local (regional) and central (governmental) centres. Regional centres should have responsibilities for education, training, ensuring facilities and staffing are appropriate, and that adequate equipment and medicines are available. There should be cooperative interactions and communications with local police and other emergency services. Centrally directed functions should include ensuring adequacy of the information base, coordinating activities and agreeing approaches between the regional centres, and periodic audits of regional centres with respect to the staffing, facility, equipment and training needs. Also, there is a need for most countries to introduce detailed guidelines and formal (regulatory) schemes for the assessment of the safety-in-use of chemicals and the delivery systems that are to be used against heterogeneous human populations for the control of civil unrest incidents. Such regulatory approval schemes should also cover advisory functions for safe use and any required restrictions. FAU - Ballantyne, Bryan
+Research Notes: 0 (Riot Control Agents, Chemical)
+Author Address: Occupational and Clinical Toxicology, Charleston, West Virginia 25304, USA.
+Translated Author: Toxicol, Rev
+Database Provider: 2006
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 36
+Author: Balouris, C. A.
+Title: Rubber and plastic bullet eye injuries in Palestine
+Issue: 0140-6736 (Print)
+Short Title: Rubber and plastic bullet eye injuries in Palestine
+Translated Author: Lancet
+Database Provider: 1990 Feb 17
+Language: eng
+
+Reference Type:  Web Page
+Record Number: 74
+Author: Bartlett, J.
+Year: 2019, October 18
+Title: Chile students' mass fare-dodging expands into city-wide protest
+Publisher: The Guardian
+Access Date: 2021, January 19
+Short Title: Chile students' mass fare-dodging expands into city-wide protest
+URL: https://www.theguardian.com/world/2019/oct/18/chile-students-mass-fare-dodging-expands-into-city-wide-protest
+
+
+Reference Type:  Web Page
+Record Number: 94
+Author: Bartlett, J. and Miller, L.
+Year: 2019, November 25
+Title: Chile security forces' crackdown leaves toll of death and broken bodies
+Publisher: The Guardian
+Access Date: 2021, January 20
+Short Title: Chile security forces' crackdown leaves toll of death and broken bodies
+URL: https://www.theguardian.com/world/2019/nov/25/chile-protester-killed-mother-army-police-romario-veloz
+
+
+Reference Type:  Web Page
+Record Number: 95
+Author: BBC News
+Year: 2019, November 21
+Title: Amnesty International: Chile using violence as a deterrent
+Publisher: BBC News
+Access Date: 2021, January 20
+Short Title: Amnesty International: Chile using violence as a deterrent
+URL: https://www.bbc.com/news/world-latin-america-50512093 
+
+
+Reference Type:  Web Page
+Record Number: 64
+Author: BBC News
+Year: 2019, October 19
+Title: Chile protests: Unrest in Santiago over metro fare increase
+Publisher: BBC News
+Access Date: 2021, January 14
+Short Title: Chile protests: Unrest in Santiago over metro fare increase
+URL: https://www.bbc.com/news/world-latin-america-50106743
+
+
+Reference Type:  Web Page
+Record Number: 65
+Author: BBC News
+Year: 2019, October 26
+Title: Chile protests: One million join peaceful march for reform
+Publisher: BBC
+Access Date: 2021, January 15
+Short Title: Chile protests: One million join peaceful march for reform
+URL: https://www.bbc.com/news/world-latin-america-50191746
+
+
+Reference Type:  Book Section
+Record Number: 19
+Author: Berger, Stefan and Nehring, Holger
+Year: 2017
+Title: Introduction: Towards a Global History of Social Movements
+Pages: 1-35
+Short Title: Introduction: Towards a Global History of Social Movements
+ISBN: 978-1-137-30425-4
+DOI: 10.1057/978-1-137-30427-8_1
+
+
+Reference Type:  Journal Article
+Record Number: 39
+Author: Blain, P. G.
+Title: Tear gases and irritant incapacitants. 1-chloroacetophenone, 2-chlorobenzylidene malononitrile and dibenz[b,f]-1,4-oxazepine
+Issue: 1176-2551 (Print)
+Short Title: Tear gases and irritant incapacitants. 1-chloroacetophenone, 2-chlorobenzylidene malononitrile and dibenz[b,f]-1,4-oxazepine
+Abstract: Irritant incapacitants, also called riot control agents, lacrimators and tear gases, are aerosol-dispersed chemicals that produce eye, nose, mouth, skin and respiratory tract irritation. Tear gas is the common name for substances that, in low concentrations, cause pain in the eyes, flow of tears and difficulty in keeping the eyes open. Only three agents are likely to be deployed: (i) 1-chloroacetophenone (CN); (ii) 2-chlorobenzylidene malononitrile (CS); or (iii) dibenz[b,f]-1,4-oxazepine (CR). CN is the most toxic lacrimator and at high concentrations has caused corneal epithelial damage and chemosis. It has accounted for at least five deaths, which have resulted from pulmonary injury and/or asphyxia. CS is a 10-times more potent lacrimator than CN but is less systemically toxic. CR is the most potent lacrimator with the least systemic toxicity and is highly stable. CN, CS and CR cause almost instant pain in the eyes, excessive flow of tears and closure of the eyelids, and incapacitation of exposed individuals. Apart from the effects on the eyes, these agents also cause irritation in the nose and mouth, throat and airways and sometimes to the skin, particularly in moist and warm areas. In situations of massive exposure, tear gas, which is swallowed, may cause vomiting. Serious systemic toxicity is rare and occurs most frequently with CN; it is most likely to occur when these agents are used in very high concentrations within confined non-ventilated spaces. Based on the available toxicological and medical evidence, CS and CR have a large safety margin for life-threatening or irreversible toxic effects. There is no evidence that a healthy individual will experience long-term health effects from open-air exposures to CS or CR, although contamination with CR is less easy to remove. FAU - Blain, Peter G
+Research Notes: 0 (Dibenzoxazepines)
+0 (Irritants)
+0 (Riot Control Agents, Chemical)
+0 (Tear Gases)
+2698-41-1 (o-Chlorobenzylidenemalonitrile)
+88B5039IQG (omega-Chloroacetophenone)
+C1Q77A87V1 (dibenz(b,f)(1,4)oxazepine)
+Author Address: Department of Environmental and Occupational Medicine, Medical School, University of Newcastle-upon-Tyne, Newcastle upon Tyne, UK.
+Translated Author: Toxicol, Rev
+Database Provider: 2003
+Language: eng
+
+Reference Type:  Web Page
+Record Number: 81
+Author: Bonnefoy, P. and Krauss, C.
+Year: 2019, October 20
+Title: Chile Unrest Spreads, With 15 Deaths Reported in Violence
+Publisher: New York Times
+Short Title: Chile Unrest Spreads, With 15 Deaths Reported in Violence
+Date Cited: 2021, January 19
+URL: https://www.nytimes.com/2019/10/20/world/americas/chile-protests-riots.html
+
+
+Reference Type:  Press Release
+Record Number: 24
+Author: Bonnefoy, P. and Krauss, C.
+Year: 2019, October 25
+Title: La cronología de los hechos que detonaron la crisis social y los días de estado de emergencia en el país [The chronology of the events that triggered the social crisis and the days of state of emergency in the country]
+Secondary Title: El Mercurio
+Place Published: Chile
+Short Title: La cronología de los hechos que detonaron la crisis social y los días de estado de emergencia en el país [The chronology of the events that triggered the social crisis and the days of state of emergency in the country]
+URL: https://www.emol.com/noticias/Nacional/2019/10/23/965179/Cronologia-Crisis-Social-Evasion-Protestas.html
+Access Date: August, 11, 2019
+
+
+Reference Type:  Journal Article
+Record Number: 6
+Author: Brodersen, Kay H., Gallusser, Fabian, Koehler, Jim, Remy, Nicolas and Scott, Steven L.
+Year: 2015
+Title: Inferring causal impact using Bayesian structural time-series models
+Journal: Ann. Appl. Stat.
+Volume: 9
+Issue: 1
+Pages: 247-274
+Date: 2015/03
+Short Title: Inferring causal impact using Bayesian structural time-series models
+ISSN: 1932-6157
+DOI: 10.1214/14-AOAS788
+Keywords: Causal inference
+counterfactual
+synthetic control
+observational
+difference in differences
+econometrics
+advertising
+market research
+Abstract: An important problem in econometrics and marketing is to infer the causal impact that a designed market intervention has exerted on an outcome metric over time. This paper proposes to infer causal impact on the basis of a diffusion-regression state-space model that predicts the counterfactual market response in a synthetic control that would have occurred had no intervention taken place. In contrast to classical difference-in-differences schemes, state-space models make it possible to (i) infer the temporal evolution of attributable impact, (ii) incorporate empirical priors on the parameters in a fully Bayesian treatment, and (iii) flexibly accommodate multiple sources of variation, including local trends, seasonality and the time-varying influence of contemporaneous covariates. Using a Markov chain Monte Carlo algorithm for posterior inference, we illustrate the statistical properties of our approach on simulated data. We then demonstrate its practical utility by estimating the causal effect of an online advertising campaign on search-related site visits. We discuss the strengths and limitations of state-space models in enabling causal attribution in those settings where a randomised experiment is unavailable. The CausalImpact R package provides an implementation of our approach.
+URL: https://projecteuclid.org:443/euclid.aoas/1430226092
+Language: en
+
+Reference Type:  Web Page
+Record Number: 77
+Author: Bunyan, R.
+Year: 2019, October 25
+Title: 18 Killed as Hundreds of Thousands of Protestors Take to the Streets in Chile
+Publisher: Time
+Access Date: 2021, January 19
+Short Title: 18 Killed as Hundreds of Thousands of Protestors Take to the Streets in Chile
+URL: https://time.com/5710268/chile-protests/
+
+
+Reference Type:  Web Page
+Record Number: 12
+Author: Centers for Disease Control and Prevention
+Year: 2018
+Title: Interim document: Facts About Riot Control Agents
+Access Year: 2020
+Access Date: October 30
+Last Update Date: April 4, 2018
+Short Title: Interim document: Facts About Riot Control Agents
+URL: https://emergency.cdc.gov/agent/riotcontrol/factsheet.asp
+
+
+Reference Type:  Journal Article
+Record Number: 54
+Author: Chan, E. Y. Y., Hung, K. K. C., Hung, H. H. Y. and Graham, C. A.
+Year: 2019
+Title: Use of tear gas for crowd control in Hong Kong
+Journal: Lancet
+Volume: 394
+Issue: 10208
+Pages: 1517-1518
+Epub Date: 2019/10/19
+Date: Oct 26
+Short Title: Use of tear gas for crowd control in Hong Kong
+ISSN: 0140-6736
+DOI: 10.1016/s0140-6736(19)32326-8
+Accession Number: 31623895
+Keywords: Death
+Hong Kong
+Humans
+*Irritants
+*Tear Gases
+Notes: 1474-547x
+Chan, Emily Ying Yang
+Hung, Kevin Kei Ching
+Hung, Heidi Hoi Yi
+Graham, Colin A
+Comment
+Letter
+England
+Lancet. 2019 Oct 26;394(10208):1517-1518. doi: 10.1016/S0140-6736(19)32326-8. Epub 2019 Oct 14.
+Author Address: Collaborating Centre for Oxford University and CUHK for Disaster and Medical Humanitarian Response, School of Public Health and Primary Care, Prince of Wales Hospital, Sha tin, Hong Kong. Electronic address: emily.chan@cuhk.edu.hk.
+Accident and Emergency Medicine Academic Unit, Prince of Wales Hospital, Sha tin, Hong Kong.
+School of Public Health and Primary Care, Prince of Wales Hospital, Sha tin, Hong Kong.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Web Page
+Record Number: 70
+Author: Charner, F.
+Year: 2019, November 22
+Title: Beaten and blinded, Chile's protesters face "policy of punishment," says Amnesty International
+Publisher: CNN
+Access Date: 2021, January 15
+Short Title: Beaten and blinded, Chile's protesters face "policy of punishment," says Amnesty International
+URL: https://edition.cnn.com/2019/11/22/world/amnesty-report-chile-protest-charner-intl/index.html
+
+
+Reference Type:  Web Page
+Record Number: 68
+Author: Chemnick, J.
+Year: 2019, October 30
+Title: Unrest in Chile prompts cancellation of U.N. climate conference
+Publisher: Science Magazine
+Access Date: 2021, January 16
+Short Title: Unrest in Chile prompts cancellation of U.N. climate conference
+URL: https://www.sciencemag.org/news/2019/10/unrest-chile-prompts-cancellation-un-climate-conference
+
+
+Reference Type:  Web Page
+Record Number: 63
+Author: Chesterman, B.
+Year: 2019, October 23
+Title: Chile president announces social measures to stem street violence
+Publisher: Yahoo News
+Short Title: Chile president announces social measures to stem street violence
+Date Cited: 2021, January 14
+URL: https://sg.news.yahoo.com/chile-president-announces-social-measures-stem-street-violence-033315790.html
+
+
+Reference Type:  Web Page
+Record Number: 61
+Author: Ciudadanía Inteligente
+Year: n.d.
+Title: Chronology on Chile’s inequality crisis
+Access Date: 2021, January 15
+Short Title: Chronology on Chile’s inequality crisis
+URL: https://ciudadaniai.org/en/chile.html
+
+
+Reference Type:  Web Page
+Record Number: 89
+Author: Cooperativa.cl
+Year: 2019, December 13
+Title: Chile entra en su novena semana de protestas
+Publisher: Cooperativa
+Access Date: 2021, January 20
+Short Title: Chile entra en su novena semana de protestas
+URL: https://www.cooperativa.cl/noticias/pais/manifestaciones/chile-entra-en-su-novena-semana-de-protestas/2019-12-09/061301.html
+
+
+Reference Type:  Journal Article
+Record Number: 16
+Author: Crispi, Francisca, Cherla, Avi, Vivaldi, Ennio and Mossialos, Elias
+Year: 2020
+Title: Rebuilding the broken health contract in Chile
+Journal: The Lancet
+Volume: 395
+Pages: 1342
+Date: 04/01
+Short Title: Rebuilding the broken health contract in Chile
+DOI: 10.1016/S0140-6736(20)30228-2
+
+
+Reference Type:  Web Page
+Record Number: 93
+Author: Cuffe, S.
+Year: 2019, November 19
+Title: One month on: Protests in Chile persist despite gov’t concessions
+Publisher: Aljazeera
+Access Date: 2021, January 20
+Short Title: One month on: Protests in Chile persist despite gov’t concessions
+URL: https://www.aljazeera.com/news/2019/11/19/one-month-on-protests-in-chile-persist-despite-govt-concessions
+
+
+Reference Type:  Journal Article
+Record Number: 26
+Author: Dangmann, Cecilie R., Solberg, Øivind, Steffenak, Anne K. M., Høye, Sevald and Andersen, Per N.
+Year: 2020
+Title: Health-related quality of life in young Syrian refugees recently resettled in Norway
+Journal: Scandinavian journal of public health
+Volume: 48
+Issue: 7
+Pages: 688-698
+Epub Date: 2020/07/02
+Short Title: Health-related quality of life in young Syrian refugees recently resettled in Norway
+Alternate Journal: Scand J Public Health
+ISSN: 1651-1905
+1403-4948
+DOI: 10.1177/1403494820929833
+Accession Number: 32613905
+Keywords: KIDSCREEN-27
+Refugee
+Syria
+adolescent
+friends
+health-related quality of life
+parents
+physical well-being
+psychological well-being
+school
+Abstract: Aims: Millions have fled from the civil unrest in Syria, and half of these are children and youth. Although they are a population with an elevated risk of health problems due to adverse pre-migratory and post-migratory experiences, few studies have explored their health-related quality of life (HRQoL). This is considered a fundamental construct in public health and might provide complementary descriptions of their health and well-being after resettling in a new country. Methods: This was a cross-sectional study of 160 Syrian youth aged 13-24 years. Using KIDSCREEN-27, the results for five dimensions of HRQoL was compared to population norm data. Demographic factors and war-related adverse events were used to predict HRQoL in hierarchical regression. Results: For most participants, the overall HRQoL was good, but it was lower in the dimensions for friends, physical well-being and psychological well-being compared to population norms. Scores in the dimensions for autonomy/parental relation and the school environment were high and were the main contributors to a positive HRQoL. Age and number of reported stressful events (SE) had the greatest impact on HRQoL, but the final regression model only accounted for 21% of the total variance. Conclusions: HRQoL is a relevant and non-invasive measure for refugee youth. Contributors to lower scores in physical and psychological well-being should be explored further and indicate the potential for future interventions focussing on general psychological well-being and networks, regardless of the SE that have been experienced. These interventions could potentially be based in schools or in families in order to benefit from these being seemingly safe environments for the majority of the group.
+Notes: 32613905[pmid]
+PMC7604933[pmcid]
+URL: https://pubmed.ncbi.nlm.nih.gov/32613905
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7604933/
+Name of Database: PubMed
+Language: eng
+
+Reference Type:  Web Page
+Record Number: 59
+Author: Deutsche Welle
+Year: 2019, November 09
+Title: Chile: Protesters burn university, loot church
+Publisher: Deutsche Welle
+Short Title: Chile: Protesters burn university, loot church
+URL: https://p.dw.com/p/3Sjav
+
+
+Reference Type:  Web Page
+Record Number: 66
+Author: Deutsche Welle
+Year: 2019, November 27
+Title: Chile protests: 'Serious' human rights violations by police, says HRW
+Publisher: Deutsche Welle
+Access Year: Deutsche Welle
+Access Date: 2021, January 15
+Short Title: Chile protests: 'Serious' human rights violations by police, says HRW
+URL: https://p.dw.com/p/3ToXB
+
+
+Reference Type:  Web Page
+Record Number: 82
+Author: Deutsche Welle
+Year: 2019, October 24
+Title: Chile general strike goes ahead despite Pinera reforms
+Publisher: Deutsche Welle
+Access Date: 2021, January 19
+Short Title: Chile general strike goes ahead despite Pinera reforms
+URL: https://www.dw.com/en/chile-general-strike-goes-ahead-despite-pinera-reforms/a-50958823
+
+
+Reference Type:  Journal Article
+Record Number: 42
+Author: Diani, Mario
+Year: 1992
+Title: The Concept of Social Movement
+Journal: The Sociological Review
+Volume: 40
+Issue: 1
+Pages: 1-25
+Date: 1992/02/01
+Short Title: The Concept of Social Movement
+ISSN: 0038-0261
+DOI: 10.1111/j.1467-954X.1992.tb02943.x
+Abstract: Recent developments in social movement research have evidenced a greater underlying consensus in the field than one might have assumed. Efforts have been made to bridge different perspectives and merge them into a new synthesis. Yet, comparative discussion of the concept of ?social movement? has been largely neglected so far. This article reviews and contrasts systematically the definitions of ?social movement? formulated by some of the most influential authors in the field. A substantial convergence may be detected between otherwise very different approaches on three points at least. Social movements are defined as networks of informal interactions between a plurality of individuals, groups and/or organizations, engaged in political or cultural conflicts, on the basis of shared collective identities. It is argued that the concept is sharp enough a) to differentiate social movements from related concepts such as interest groups, political parties, protest events and coalitions; b) to identify a specific area of investigation and theorising for social movement research.
+URL: https://doi.org/10.1111/j.1467-954X.1992.tb02943.x
+Access Date: 2020/12/05
+
+
+Reference Type:  Journal Article
+Record Number: 47
+Author: Driscoll, John and Kraay, A. C.
+Year: 1998
+Title: Consistent covariance matrix estimation with spatially dependent data
+Journal: Rev. Econ. Stat.
+Volume: 80
+Pages: 549-560
+Date: 01/01
+Short Title: Consistent covariance matrix estimation with spatially dependent data
+
+
+Reference Type:  Web Page
+Record Number: 86
+Author: Egypt Independent
+Year: 2019, December 28
+Title: Violent clashes in new round of Chile protests
+Publisher: Egypt Independent
+Access Date: 2021, January 20
+Short Title: Violent clashes in new round of Chile protests
+URL: https://egyptindependent.com/violent-clashes-in-new-round-of-chile-protests/
+
+
+Reference Type:  Journal Article
+Record Number: 98
+Author: El Warea, Mohamad, Sasso, Roula, Bachir, Rana and El Sayed, Mazen
+Year: 2019
+Title: Riots in Beirut: Description of the Impact of a New Type of Mass Casualty Event on the Emergency System in Lebanon
+Journal: Disaster Medicine and Public Health Preparedness
+Volume: 13
+Issue: 5-6
+Pages: 849-852
+Epub Date: 2019/06/06
+Short Title: Riots in Beirut: Description of the Impact of a New Type of Mass Casualty Event on the Emergency System in Lebanon
+ISSN: 1935-7893
+DOI: 10.1017/dmp.2018.162
+Keywords: riot
+prehospital care
+mass casualty
+emergency medicine
+Abstract: Introduction:In the summer of 2015, Beirut experienced a garbage crisis that led to rioting. Riot control measures resulted in multiple casualties. This study examines injury patterns of riot victims presenting to the emergency department of a tertiary care center in a developing country.Methods:A retrospective study was conducted in the emergency department of the American University of Beirut Medical Center between August 22 and August 30, 2015. Patients seen in the emergency department with riot injuries were included. Patient characteristics, injuries, and resources utilized in the emergency department were analyzed.Results:Ninety-five patients were identified. Most patients presented to the emergency department within a short time period. The mean age of the patients was 28.0 ± 8.7 years. Most (90.5%) of the patients were males and 92.6% were protestors. Emergency medical services were utilized by 41.0% of patients. Laceration was the most common presenting complaint (28.5%), and blunt trauma was the most common type of injury (50.5%). The head/face/neck was the most common injured body region (55.8%). Most patients did not require blood tests or procedures (91.6% and 61.0%, respectively), and 91.2% of patients were treated in the emergency department and discharged. One patient required intensive care unit admission and another was dead on arrival.Conclusions:Most patients had mild injuries on presentation. The emergency department experienced a high influx of patients. Complications and deaths can occur from seemingly nonlethal weapons used during riots and warrant effective prehospital and hospital disaster planning.
+URL: https://www.cambridge.org/core/article/riots-in-beirut-description-of-the-impact-of-a-new-type-of-mass-casualty-event-on-the-emergency-system-in-lebanon/7710BD93E7C73E7E6FF6D26D1DB9D554
+Name of Database: Cambridge Core
+Database Provider: Cambridge University Press
+
+
+Reference Type:  Journal Article
+Record Number: 23
+Author: Elm, Erik, Madrid Aris, Eva and Urrútia, Gerard
+Year: 2019
+Title: Chile: civil unrest and Cochrane Colloquium cancelled
+Journal: The Lancet
+Volume: 394
+Issue: 10210
+Start Page: e35
+Date: 11/01
+Short Title: Chile: civil unrest and Cochrane Colloquium cancelled
+DOI: 10.1016/S0140-6736(19)32678-9
+
+
+Reference Type:  Journal Article
+Record Number: 27
+Author: Evans, C. A., Jr.
+Year: 1993
+Title: Public health impact of the 1992 Los Angeles civil unrest
+Journal: Public health reports (Washington, D.C. : 1974)
+Volume: 108
+Issue: 3
+Pages: 265-272
+Date: May-Jun
+Short Title: Public health impact of the 1992 Los Angeles civil unrest
+Alternate Journal: Public Health Rep
+ISSN: 0033-3549
+1468-2877
+Accession Number: 8497562
+Keywords: Continental Population Groups
+Crime/statistics & numerical data
+Environmental Health
+Female
+Firesetting Behavior
+*Health Planning
+Health Services/statistics & numerical data
+Health Services Needs and Demand
+Humans
+Los Angeles/epidemiology
+Male
+*Public Health
+*Riots
+Wounds and Injuries/epidemiology
+Abstract: The Los Angeles civil unrest in April 1992 stunned the nation. The days of violence resulted in 53 deaths, 2,325 reported injuries, more than 600 buildings completely destroyed by fire, and approximately $735 million in total damages. The purpose of this paper is to give an overview of the activities of the Public Health Programs and Services Branch of the Los Angeles County Department of Health Services during and after the civil unrest and to illustrate the types of public health issues and problems that may result from large-scale civil disturbance. Public health agencies and jurisdictions should consider these issues in their disaster planning. Public Health Programs and Services Branch activities were directly affected by the violence and destruction. Women, Infants and Children Program vouchering sites and 20 drug program and alcohol recovery sites were damaged or burned and 15 county health centers closed during the unrest. At least 38 private medical and dental offices and 45 pharmacies were destroyed or damaged. County health authorities offered facilities to house relocated private care providers and filled prescriptions for medications where needed. The environmental health impact required the inspection of 2,827 burned and damaged sites for hazardous waste including asbestos; at 9 percent of the inspected sites, waste required special disposal. More than 1,000 food facilities suffered damage and required inspection before reopening. In the 3 months following the unrest, a 20-percent increase in disposal capacity was authorized at four county landfills to accommodate the disposal of debris. Violence was a public health issue of particular concern. The Centers for Disease Control and Prevention sent a team to study the violence from an epidemiologic perspective. The Federal agency also provided funding for televised children's talk shows dealing with reactions to the violence.
+Notes: 8497562[pmid]
+PMC1403375[pmcid]
+URL: https://pubmed.ncbi.nlm.nih.gov/8497562
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1403375/
+Name of Database: PubMed
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 53
+Author: Feder, K. A., Mojtabai, R., Stuart, E. A., Musci, R. and Letourneau, E. J.
+Year: 2020
+Title: Florida's Opioid Crackdown and Mortality From Drug Overdose, Motor Vehicle Crashes, and Suicide: A Bayesian Interrupted Time-Series Analysis
+Journal: Am J Epidemiol
+Volume: 189
+Issue: 9
+Pages: 885-893
+Epub Date: 2020/02/23
+Date: Sep 1
+Short Title: Florida's Opioid Crackdown and Mortality From Drug Overdose, Motor Vehicle Crashes, and Suicide: A Bayesian Interrupted Time-Series Analysis
+ISSN: 0002-9262 (Print)
+0002-9262
+DOI: 10.1093/aje/kwaa015
+PMCID: PMC7443765
+Accession Number: 32077469
+Keywords: Accidents, Traffic/*mortality
+Analgesics, Opioid/*poisoning
+Bayes Theorem
+Cause of Death
+Drug Monitoring/*methods
+Drug Overdose/*mortality
+Drug and Narcotic Control/*legislation & jurisprudence
+Female
+Florida/epidemiology
+Humans
+Interrupted Time Series Analysis
+Law Enforcement
+Male
+Pain Clinics/legislation & jurisprudence
+Practice Patterns, Physicians'/legislation & jurisprudence
+Suicide/*statistics & numerical data
+*drug policy
+*interrupted time series
+*mortality
+*opioids
+Abstract: In 2011, Florida established a prescription drug monitoring program and adopted new regulations for independent pain-management clinics. We examined the association of those reforms with drug overdose deaths and other injury fatalities. Florida's postreform monthly mortality rates-for drug-involved deaths, motor vehicle crashes, and suicide by means other than poisoning-were compared with a counterfactual estimate of what those rates would have been absent reform. The counterfactual was estimated using a Bayesian structural time-series model based on mortality trends in similar states. By December 2013, drug overdose deaths were down 17% (95% credible interval: -21, -12), motor vehicle crash deaths were down 9% (95% credible interval: -14, -4), and suicide deaths were unchanged compared with what would be expected in the absence of reform. Florida's opioid prescribing reform substantially reduced drug overdose deaths. Reforms may also have reduced motor vehicle crash deaths but were not associated with a change in suicides. More research is needed to understand these patterns. Bayesian structural time-series modeling is a promising new approach to interrupted time-series studies.
+Notes: 1476-6256
+Feder, Kenneth A
+Mojtabai, Ramin
+Stuart, Elizabeth A
+Musci, Rashelle
+Letourneau, Elizabeth J
+F31 DA044699/DA/NIDA NIH HHS/United States
+Journal Article
+Research Support, N.I.H., Extramural
+Am J Epidemiol. 2020 Sep 1;189(9):885-893. doi: 10.1093/aje/kwaa015.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 2
+Author: Fragoso, Tiago M., Bertoli, Wesley and Louzada, Francisco
+Year: 2018
+Title: Bayesian Model Averaging: A Systematic Review and Conceptual Classification
+Journal: International Statistical Review
+Volume: 86
+Issue: 1
+Pages: 1-28
+Date: 2018/04/01
+Short Title: Bayesian Model Averaging: A Systematic Review and Conceptual Classification
+ISSN: 0306-7734
+DOI: 10.1111/insr.12243
+Keywords: Bayesian model averaging
+systematic review
+conceptual classification scheme
+qualitative content analysis
+Abstract: Summary Bayesian model averaging (BMA) provides a coherent and systematic mechanism for accounting for model uncertainty. It can be regarded as an direct application of Bayesian inference to the problem of model selection, combined estimation and prediction. BMA produces a straightforward model choice criterion and less risky predictions. However, the application of BMA is not always straightforward, leading to diverse assumptions and situational choices on its different aspects. Despite the widespread application of BMA in the literature, there were not many accounts of these differences and trends besides a few landmark revisions in the late 1990s and early 2000s, therefore not accounting for advancements made in the last decades. In this work, we present an account of these developments through a careful content analysis of 820 articles in BMA published between 1996 and 2016. We also develop a conceptual classification scheme to better describe this vast literature, understand its trends and future directions and provide guidance for the researcher interested in both the application and development of the methodology. The results of the classification scheme and content review are then used to discuss the present and future of the BMA literature.
+URL: https://doi.org/10.1111/insr.12243
+Access Date: 2020/10/21
+
+
+Reference Type:  Journal Article
+Record Number: 52
+Author: Ganesan, Kamalanathan, Saraiva, João and Bessa, Ricardo
+Year: 2019
+Title: On the Use of Causality Inference in Designing Tariffs to Implement More Effective Behavioral Demand Response Programs
+Journal: Energies
+Volume: 12
+Pages: 2666
+Date: 07/11
+Short Title: On the Use of Causality Inference in Designing Tariffs to Implement More Effective Behavioral Demand Response Programs
+DOI: 10.3390/en12142666
+
+
+Reference Type:  Journal Article
+Record Number: 29
+Author: Gonzalez, Ricardo and Morán, Carmen Le Foulon
+Year: 2020
+Title: The 2019–2020 Chilean protests: A first look at their causes and participants
+Journal: International Journal of Sociology
+Volume: 50
+Issue: 3
+Pages: 227-235
+Date: 2020/05/03
+Short Title: The 2019–2020 Chilean protests: A first look at their causes and participants
+ISSN: 0020-7659
+DOI: 10.1080/00207659.2020.1752499
+URL: https://doi.org/10.1080/00207659.2020.1752499
+
+
+Reference Type:  Journal Article
+Record Number: 14
+Author: Haar, Rohini J., Iacopino, Vincent, Ranadive, Nikhil, Weiser, Sheri D. and Dandu, Madhavi
+Year: 2017
+Title: Health impacts of chemical irritants used for crowd control: a systematic review of the injuries and deaths caused by tear gas and pepper spray
+Journal: BMC Public Health
+Volume: 17
+Issue: 1
+Pages: 831
+Date: 2017/10/19
+Short Title: Health impacts of chemical irritants used for crowd control: a systematic review of the injuries and deaths caused by tear gas and pepper spray
+ISSN: 1471-2458
+DOI: 10.1186/s12889-017-4814-6
+Abstract: Chemical irritants used in crowd control, such as tear gases and pepper sprays, are generally considered to be safe and to cause only transient pain and lacrimation. However, there are numerous reports that use and misuse of these chemicals may cause serious injuries. We aimed to review documented injuries from chemical irritants to better understand the morbidity and mortality associated with these weapons.
+URL: https://doi.org/10.1186/s12889-017-4814-6
+
+
+Reference Type:  Journal Article
+Record Number: 1
+Author: Harvey, Andrew C., Trimbur, Thomas M. and Van Dijk, Herman K.
+Year: 2007
+Title: Trends and cycles in economic time series: A Bayesian approach
+Journal: Journal of Econometrics
+Volume: 140
+Issue: 2
+Pages: 618-649
+Date: 2007/10/01/
+Short Title: Trends and cycles in economic time series: A Bayesian approach
+ISSN: 0304-4076
+DOI: https://doi.org/10.1016/j.jeconom.2006.07.006
+Keywords: Output gap
+Kalman filter
+Markov chain Monte Carlo
+Real-time estimation
+Turning points
+Unobserved components
+Abstract: Trends and cyclical components in economic time series are modeled in a Bayesian framework. This enables prior notions about the duration of cycles to be used, while the generalized class of stochastic cycles employed allows the possibility of relatively smooth cycles being extracted. The posterior distributions of such underlying cycles can be very informative for policy makers, particularly with regard to the size and direction of the output gap and potential turning points. From the technical point of view a contribution is made in investigating the most appropriate prior distributions for the parameters in the cyclical components and in developing Markov chain Monte Carlo methods for both univariate and multivariate models. Applications to US macroeconomic series are presented.
+URL: http://www.sciencedirect.com/science/article/pii/S0304407606001497
+
+
+Reference Type:  Journal Article
+Record Number: 55
+Author: Heisler, Michele, Hampton, Kathryn and McKay, Donna
+Year: 2020
+Title: Dangerous use of crowd-control weapons against medics and protesters in Portland, OR
+Journal: Lancet (London, England)
+Volume: 396
+Issue: 10259
+Pages: e59-e60
+Short Title: Dangerous use of crowd-control weapons against medics and protesters in Portland, OR
+Alternate Journal: Lancet
+ISSN: 1474-547X
+0140-6736
+DOI: 10.1016/S0140-6736(20)32080-8
+Accession Number: 33038945
+Notes: 33038945[pmid]
+PMC7544454[pmcid]
+S0140-6736(20)32080-8[PII]
+URL: https://pubmed.ncbi.nlm.nih.gov/33038945
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7544454/
+Name of Database: PubMed
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 45
+Author: Hoechle, Daniel
+Year: 2007
+Title: Robust Standard Errors for Panel Regressions With Cross-Sectional Dependence
+Journal: Stata Journal
+Volume: 7
+Pages: 281-312
+Date: 02/01
+Short Title: Robust Standard Errors for Panel Regressions With Cross-Sectional Dependence
+DOI: 10.1177/1536867X0700700301
+
+
+Reference Type:  Web Page
+Record Number: 58
+Author: Holland, A.
+Year: 2019, November 01
+Title: Chile’s streets are filled with protests. How did a 4 percent fare hike set off such rage?
+Publisher: The Washington Post
+Access Date: 2021, January 16
+Short Title: Chile’s streets are filled with protests. How did a 4 percent fare hike set off such rage?
+URL: https://www.washingtonpost.com/politics/2019/11/01/chiles-streets-are-fire-with-protests-how-did-percent-fare-hike-set-off-such-rage/
+
+
+Reference Type:  Web Page
+Record Number: 67
+Author: Human Rights Investigations Lab for the Americas  and Human Rights Center
+Year: 2020, October 13
+Title: Human Rights Crisis in Chile: A Digital Inquiry
+Publisher: UC Santa Cruz & UC Berkeley
+Access Date: 2021, January 15
+Short Title: Human Rights Crisis in Chile: A Digital Inquiry
+URL: https://storymaps.arcgis.com/stories/1ee6a10615944aeab3be4fce51c03989
+
+
+Reference Type:  Web Page
+Record Number: 96
+Author: Human Rights Watch
+Year: 2019, November 26
+Title: Chile: Police Reforms Needed in the Wake of Protests
+Access Date: 2021, January 20
+Short Title: Chile: Police Reforms Needed in the Wake of Protests
+URL: https://www.hrw.org/news/2019/11/26/chile-police-reforms-needed-wake-protests
+
+
+Reference Type:  Discussion Forum
+Record Number: 50
+Author: Humanity, Vision of
+Year: 2020
+Title of Message: Global Peace Index 2020: Measuring Peace in a Complex World
+Short Title: Global Peace Index 2020: Measuring Peace in a Complex World
+URL: https://visionofhumanity.org/wp-content/uploads/2020/10/GPI_2020_web.pdf
+Access Date: Dec 08, 2020
+
+
+Reference Type:  Web Page
+Record Number: 90
+Author: Inter-American Commission on Human Rights
+Year: 2019, December 06
+Title: CIDH condena el uso excesivo de la fuerza en el contexto de las protestas sociales en Chile, expresa su grave preocupación por el elevado número de denuncias y rechaza toda forma de violencia
+Publisher: Organization of American States (OAS)
+Access Date: 2021, January 20
+Short Title: CIDH condena el uso excesivo de la fuerza en el contexto de las protestas sociales en Chile, expresa su grave preocupación por el elevado número de denuncias y rechaza toda forma de violencia
+URL: https://www.oas.org/es/cidh/prensa/comunicados/2019/317.asp
+
+
+Reference Type:  Social Media
+Record Number: 43
+Username: Johanson, Mark
+Year: 2019, October 29
+Post Text: How a $0.04 metro fare price hike sparked massive unrest in Chile
+Full Post Text: Vox
+Short Title: How a $0.04 metro fare price hike sparked massive unrest in Chile
+URL: https://www.vox.com/world/2019/10/29/20938402/santiago-chile-protests-2019-riots-metro-fare-pinera
+Access Date: August, 11, 2019
+
+
+Reference Type:  Journal Article
+Record Number: 32
+Author: Jones, A. P., Bentham, G. and Horwell, C.
+Year: 1999
+Title: Health service accessibility and deaths from asthma
+Journal: Int J Epidemiol
+Volume: 28
+Issue: 1
+Pages: 101-5
+Epub Date: 1999/04/09
+Date: Feb
+Short Title: Health service accessibility and deaths from asthma
+ISSN: 0300-5771 (Print)
+0300-5771
+DOI: 10.1093/ije/28.1.101
+Accession Number: 10195672
+Keywords: Asthma/*mortality
+England/epidemiology
+*Health Services Accessibility
+Humans
+Poisson Distribution
+Regression Analysis
+Retrospective Studies
+Risk
+Abstract: BACKGROUND: Good access to health services may be important for effective asthma management amongst patients, thus preventing unnecessary deaths. In a previous study, we found elevated levels of asthma mortality in English local authority districts with poor access to acute hospitals. Here, the relationship between asthma mortality and access to primary and secondary services within the rural region of East Anglia is examined. METHODS: A geographically based descriptive study, within 536 electoral wards in the region of East Anglia, England. Regression analysis was used to examine the relationship between health service accessibility, and mortality from asthma during the period January 1985 to December 1995. RESULTS: After controlling for confounding factors, there was a significant tendency for asthma mortality to increase with travel time to hospital, with a relative risk of 1.07 for each 10-minute increase in journey time (P = 0.04). There was no consistent trend for mortality to increase with travel time to general practitioner surgeries. CONCLUSIONS: The results of this study support the conclusions of earlier work that inaccessibility of acute hospital services may increase the risk of asthma mortality. The provision of good access to these facilities may be one factor in reducing the burden of avoidable deaths from asthma.
+Notes: Jones, A P
+Bentham, G
+Horwell, C
+Journal Article
+Research Support, Non-U.S. Gov't
+England
+Int J Epidemiol. 1999 Feb;28(1):101-5. doi: 10.1093/ije/28.1.101.
+Author Address: School of Environmental Sciences, University of East Anglia, Norwich, Norfolk, UK.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 48
+Author: Keele, Luke
+Year: 2015
+Title: The Statistics of Causal Inference: A View from Political Methodology
+Journal: Political Analysis
+Volume: 23
+Issue: 3
+Pages: 313-335
+Epub Date: 2017/01/04
+Short Title: The Statistics of Causal Inference: A View from Political Methodology
+ISSN: 1047-1987
+DOI: 10.1093/pan/mpv007
+Abstract: Many areas of political science focus on causal questions. Evidence from statistical analyses is often used to make the case for causal relationships. While statistical analyses can help establish causal relationships, it can also provide strong evidence of causality where none exists. In this essay, I provide an overview of the statistics of causal inference. Instead of focusing on specific statistical methods, such as matching, I focus more on the assumptions needed to give statistical estimates a causal interpretation. Such assumptions are often referred to as identification assumptions, and these assumptions are critical to any statistical analysis about causal effects. I outline a wide range of identification assumptions and highlight the design-based approach to causal inference. I conclude with an overview of statistical methods that are frequently used for causal inference.
+URL: https://www.cambridge.org/core/article/statistics-of-causal-inference-a-view-from-political-methodology/314EFF877ECB1B90A1452D10D4E24BB3
+Name of Database: Cambridge Core
+Database Provider: Cambridge University Press
+
+
+Reference Type:  Journal Article
+Record Number: 15
+Author: Koopman, Siem Jan and Durbin, J.
+Year: 2000
+Title: Time series analysis of non-Gaussian observations based on state space models from both classical and Bayesian perspectives. (With discussion)
+Journal: Journal of the Royal Statistical Society Series B
+Volume: 62
+Pages: 3-56
+Date: 02/01
+Short Title: Time series analysis of non-Gaussian observations based on state space models from both classical and Bayesian perspectives. (With discussion)
+DOI: 10.1111/1467-9868.00218
+
+
+Reference Type:  Journal Article
+Record Number: 10
+Author: Kruschke, John K. and Liddell, Torrin M.
+Year: 2018
+Title: The Bayesian New Statistics: Hypothesis testing, estimation, meta-analysis, and power analysis from a Bayesian perspective
+Journal: Psychonomic Bulletin & Review
+Volume: 25
+Issue: 1
+Pages: 178-206
+Date: 2018/02/01
+Short Title: The Bayesian New Statistics: Hypothesis testing, estimation, meta-analysis, and power analysis from a Bayesian perspective
+ISSN: 1531-5320
+DOI: 10.3758/s13423-016-1221-4
+Abstract: In the practice of data analysis, there is a conceptual distinction between hypothesis testing, on the one hand, and estimation with quantified uncertainty on the other. Among frequentists in psychology, a shift of emphasis from hypothesis testing to estimation has been dubbed “the New Statistics” (Cumming 2014). A second conceptual distinction is between frequentist methods and Bayesian methods. Our main goal in this article is to explain how Bayesian methods achieve the goals of the New Statistics better than frequentist methods. The article reviews frequentist and Bayesian approaches to hypothesis testing and to estimation with confidence or credible intervals. The article also describes Bayesian approaches to meta-analysis, randomized controlled trials, and power analysis.
+URL: https://doi.org/10.3758/s13423-016-1221-4
+
+
+Reference Type:  Newspaper Article
+Record Number: 22
+Reporter: Krygier, R.
+Year: 2020, February 1
+Title: Chile is preparing to rewrite its constitution. Why are people still protesting?
+Newspaper: The Washington Post
+Section: The Americas
+Short Title: Chile is preparing to rewrite its constitution. Why are people still protesting?
+URL: https://www.washingtonpost.com/world/the_americas/chile-is-preparing-to-rewrite-its-constitution-why-are-people-still-protesting/2020/02/01/eb7ee6b2-43cc-11ea-99c7-1dfd4241a2fe_story.html
+Access Date: August 11, 2020
+
+
+Reference Type:  Web Page
+Record Number: 62
+Author: Krygier, R. and Bartlett, J.
+Year: 2019, October 21
+Title: Chile is the latest Latin American country to erupt in violent protest. Here’s why.
+Publisher: The Washington Post
+Access Date: 2021, January 15
+Short Title: Chile is the latest Latin American country to erupt in violent protest. Here’s why.
+URL: https://www.washingtonpost.com/world/the_americas/chile-is-the-latest-latin-american-country-to-erupt-in-violent-protest-heres-why/2019/10/21/6331d278-f382-11e9-b2d2-1f37c9d82dbb_story.html
+
+
+Reference Type:  Web Page
+Record Number: 75
+Author: Laing, A. and Cambero, F.
+Year: 2019, October 21
+Title: Chile's deadly weekend of fire as youth anger ignites
+Publisher: Reuters
+Short Title: Chile's deadly weekend of fire as youth anger ignites
+URL: https://www.reuters.com/article/us-chile-protests-scenes/chiles-deadly-weekend-of-fire-as-youth-anger-ignites-idUSKBN1X009A
+
+
+Reference Type:  Web Page
+Record Number: 60
+Author: Lara, E.
+Year: 2019, October 20
+Title: Chile crisis: 7 dead, curfew imposed in 14 cities as Government tries to face riots, looting, arson
+Publisher: Bío-Bío Chile
+Access Date: 2021, January 16
+Short Title: Chile crisis: 7 dead, curfew imposed in 14 cities as Government tries to face riots, looting, arson
+URL: https://www.biobiochile.cl/noticias/biobiochile-english/english-chile/2019/10/20/chile-crisis-7-dead-curfew-imposed-in-14-cities-as-government-tries-to-face-riots-looting-arson.shtml
+
+
+Reference Type:  Web Page
+Record Number: 79
+Author: McDonald, B.
+Year: 2019, November 19
+Title: A Bullet to the Eye Is the Price of Protesting in Chile
+Publisher: New York Times
+Short Title: A Bullet to the Eye Is the Price of Protesting in Chile
+URL: https://www.nytimes.com/2019/11/19/world/americas/chile-protests-eye-injuries.html
+
+
+Reference Type:  Web Page
+Record Number: 92
+Author: McGowan, C.
+Year: 2019, December 06
+Title: Chilean anti-rape anthem becomes international feminist phenomenon
+Publisher: The Guardian
+Access Date: 2021, January 20
+Short Title: Chilean anti-rape anthem becomes international feminist phenomenon
+URL: https://www.theguardian.com/world/2019/dec/06/chilean-anti-rape-anthem-becomes-international-feminist-phenomenon
+
+
+Reference Type:  Journal Article
+Record Number: 9
+Author: McQuire, Cheryl, Tilling, Kate, Hickman, Matthew and de Vocht, Frank
+Year: 2019
+Title: Forecasting the 2021 local burden of population alcohol-related harms using Bayesian structural time–series
+Journal: Addiction
+Volume: 114
+Issue: 6
+Pages: 994-1003
+Short Title: Forecasting the 2021 local burden of population alcohol-related harms using Bayesian structural time–series
+ISSN: 0965-2140
+DOI: 10.1111/add.14568
+Abstract: Abstract Background and aims Harmful alcohol use places a significant burden on health services. Sophisticated nowcasting and forecasting methods could support service planning, but their use in public health has been limited. We aimed to use a novel analysis framework, combined with routine public health data, to improve now- and forecasting of alcohol-related harms. Design We used Bayesian structural time–series models to forecast alcohol-related hospital admissions for 2020/21 (from 2015 to 2016). Setting England. Participants We developed separate models for each English lower-tier local authority. Measurements Our primary outcome was alcohol-related hospital admissions. Model covariates were population size and age-structure. Findings Nowcasting validation indicated adequate accuracy, with 5-year nowcasts underestimating admissions by 2.2% nationally and 3.3% locally, on average. Forecasts indicated a 3.3% increase in national admissions in 2020/21, corresponding to a 0.2% reduction in the crude rate of new admissions, due to population size changes. Locally, the largest increases were forecast in urban, industrial and coastal areas and the largest decreases in university towns and ethnically diverse areas. Conclusions In 2020/21, alcohol-related hospital admissions are expected to increase in urban and coastal areas and decrease in areas associated with inward migration of younger people, including university towns and areas with greater ethnic diversity. Bayesian structural time–series models enable investigation of the future impacts of alcohol-related harms in population subgroups and could improve service planning and the evaluation of natural experiments on the impact of interventions to reduce the societal impacts of alcohol.
+URL: https://onlinelibrary.wiley.com/doi/abs/10.1111/add.14568
+
+
+Reference Type:  Newspaper Article
+Record Number: 51
+Reporter: McVeigh, Karen
+Year: 2020, July, 17
+Title: Protests predicted to surge globally as Covid-19 drives unrest
+Newspaper: The Guardian
+Section: Global development
+Short Title: Protests predicted to surge globally as Covid-19 drives unrest
+URL: https://www.theguardian.com/global-development/2020/jul/17/protests-predicted-to-surge-globally-as-covid-19-drives-unrest
+Access Date: 2020, December 06
+
+
+Reference Type:  Web Page
+Record Number: 56
+Author: Ministerio de Transportes y Telecomunicaciones [@MTTChile]
+Year: 2019, October 04
+Title: "Segun informó el Panel de Expertos del Transporte Público, a partir de este domingo las tarifas de @metrodesantiago , @Trencentral  y los buses de @Red_Movilidad se incrementarán."
+Access Date: 2021, January 15
+Short Title: "Segun informó el Panel de Expertos del Transporte Público, a partir de este domingo las tarifas de @metrodesantiago , @Trencentral  y los buses de @Red_Movilidad se incrementarán."
+URL: https://twitter.com/MTTChile/status/1180268266067025922
+
+
+Reference Type:  Journal Article
+Record Number: 44
+Author: Ni, Michael Y., Kim, Yoona, McDowell, Ian, Wong, Suki, Qiu, Hong, Wong, Irene O. L., Galea, Sandro and Leung, Gabriel M.
+Year: 2020
+Title: Mental health during and after protests, riots and revolutions: A systematic review
+Journal: Australian & New Zealand Journal of Psychiatry
+Volume: 54
+Issue: 3
+Pages: 232-243
+Date: 2020/03/01
+Short Title: Mental health during and after protests, riots and revolutions: A systematic review
+ISSN: 0004-8674
+DOI: 10.1177/0004867419899165
+Abstract: Objectives:Protests, riots and revolutions have long been a part of human history and are increasing globally, yet their impact on mental health remains largely unknown. We therefore systematically reviewed studies on collective actions and mental health.Method:We searched PubMed, Web of Science, PsycINFO and CINAHL Plus for published studies from their inception until 1 January 2018. Study quality was rated using the Newcastle?Ottawa Scale.Results:We identified 52 studies (n = 57,487 participants) from 20 countries/regions. The prevalence of post-traumatic stress disorder ranged from 4% to 41% in riot-affected areas. Following a major protest, the prevalence of probable major depression increased by 7%, regardless of personal involvement in the protests, suggestive of community spillover effects. Risk factors for poorer mental health included female sex, lower socioeconomic status, exposure to violence, interpersonal conflicts, frequent social media use and lower resilience and social support. Nevertheless, two studies suggested that collective actions may reduce depression and suicide, possibly due to a collective cathartic experience and greater social cohesion within subpopulations.Conclusion:We present the first systematic review of collective actions and mental health, showing compelling evidence that protests even when nonviolent can be associated with adverse mental health outcomes. Health care professionals therefore need to be vigilant to the mental and psychological sequelae of protests, riots and revolutions. Further research on this emerging sociopolitical determinant of mental health is warranted.
+URL: https://doi.org/10.1177/0004867419899165
+Access Date: 2020/12/05
+
+
+Reference Type:  Journal Article
+Record Number: 33
+Author: Nicholl, J., West, J., Goodacre, S. and Turner, J.
+Year: 2007
+Title: The relationship between distance to hospital and patient mortality in emergencies: an observational study
+Journal: Emergency Medicine Journal
+Volume: 24
+Pages: 665 - 668
+Short Title: The relationship between distance to hospital and patient mortality in emergencies: an observational study
+
+
+Reference Type:  Book
+Record Number: 21
+Author: Opp, Karl-Dieter
+Year: 2009
+Title: Theories of Political Protest and Social Movements: A Multidisciplinary Introduction, Critique, and Synthesis
+Series Title: Political Science
+Place Published: London
+Publisher: Routledge
+Edition: 1st ed.
+Short Title: Theories of Political Protest and Social Movements: A Multidisciplinary Introduction, Critique, and Synthesis
+DOI: 10.4324/9780203883846
+
+
+Reference Type:  Journal Article
+Record Number: 76
+Author: Palacios-Valladares, I.
+Year: 2020
+Title: Chile's 2019 October Protests and the Student Movement: Eventful Mobilization?
+Journal: Rev. cienc. polít.
+Volume: 40
+Issue: 2
+Pages: 215-234
+Short Title: Chile's 2019 October Protests and the Student Movement: Eventful Mobilization?
+
+
+Reference Type:  Web Page
+Record Number: 69
+Author: Phillips, T., Watts, J. and Franklin, J.
+Year: 2019, October 30
+Title: Chilean president cancels Apec and climate summits amid wave of unrest
+Access Date: 2021, January 15
+Short Title: Chilean president cancels Apec and climate summits amid wave of unrest
+URL: https://www.theguardian.com/world/2019/oct/30/chile-protests-president-sebastian-pinera-protest-unrest
+
+
+Reference Type:  Journal Article
+Record Number: 4
+Author: Pinilla, Jaime, Negrín, Miguel, González-López-Valcárcel, Beatriz and Vázquez-Polo, Francisco-José
+Year: 2018
+Title: Using a Bayesian Structural Time–Series Model to Infer the Causal Impact on Cigarette Sales of Partial and Total Bans on Public Smoking
+Journal: Jahrbücher für Nationalökonomie und Statistik
+Volume: 238
+Issue: 5
+Pages: 423
+Date: 01 Sep. 2018
+Short Title: Using a Bayesian Structural Time–Series Model to Infer the Causal Impact on Cigarette Sales of Partial and Total Bans on Public Smoking
+ISSN: 0021-4027
+DOI: https://doi.org/10.1515/jbnst-2017-0125
+URL: https://www.degruyter.com/view/journals/jbnst/238/5/article-p423.xml
+Language: English
+
+Reference Type:  Journal Article
+Record Number: 97
+Author: Puga, Ismael and Soto, Daniela
+Year: 2018
+Title: Social Capital and Women’s Labor Force Participation in Chile
+Journal: Feminist Economics
+Volume: 24
+Issue: 4
+Pages: 131-158
+Date: 2018/10/02
+Short Title: Social Capital and Women’s Labor Force Participation in Chile
+ISSN: 1354-5701
+DOI: 10.1080/13545701.2018.1481990
+URL: https://doi.org/10.1080/13545701.2018.1481990
+
+
+Reference Type:  Web Page
+Record Number: 85
+Author: Ramos, N. and Laing, A.
+Year: 2019, December 23
+Title: Chile's Pinera inks law for vote on new constitution
+Publisher: Reuters
+Access Date: 2021, January 20
+Short Title: Chile's Pinera inks law for vote on new constitution
+URL: https://www.reuters.com/article/us-chile-protests-constitution/chiles-pinera-inks-law-for-vote-on-new-constitution-idUSKBN1YR1S8
+
+
+Reference Type:  Journal Article
+Record Number: 49
+Author: Ramos Perkis, J. P., Achurra Tirado, P., Raykar, N., Zinco Acosta, A., Muñoz Alarcon, C., Puyana, J. C. and Ottolino Lavarte, P.
+Year: 2020
+Title: Different Crises, Different Patterns of Trauma. The Impact of a Social Crisis and the COVID-19 Health Pandemic on a High Violence Area
+Journal: World J Surg
+Pages: 1-7
+Epub Date: 2020/11/14
+Date: Nov 13
+Short Title: Different Crises, Different Patterns of Trauma. The Impact of a Social Crisis and the COVID-19 Health Pandemic on a High Violence Area
+ISSN: 0364-2313 (Print)
+0364-2313
+DOI: 10.1007/s00268-020-05860-0
+PMCID: PMC7664169 manuscript.
+Accession Number: 33185723
+Abstract: BACKGOUND: Santiago, Chile underwent two separate periods of crisis over the past year. The first period, the 'social crisis,' extended over thirteen weeks in late 2019 into early 2020 due to protests over income inequality and the government response to social unrest. The second period, the 'health crisis,' began in March 2020 with Chile's first case of COVID-19 and escalated rapidly to include 'stay at home orders,' traffic restrictions, and the shuttering of most businesses. We wished to evaluate the impact of these crisis periods on trauma epidemiology. METHODS: We performed a retrospective review of the South-East Metropolitan Health Service Trauma Registry. Trauma admissions, operative volume, and in-hospital mortality were evaluated during the crisis period and the year prior. RESULTS: The social crisis saw increased levels of trauma, both blunt and penetrating, relative to the time period immediately preceding. The health crisis saw an increase in penetrating trauma with a concomitant decline in blunt trauma. Both crisis periods had decreased levels of trauma, overall, compared to the year prior. There were no statistically significant differences in in-hospital trauma mortality. CONCLUSION: Different crises may have different patterns of trauma. Crisis periods that include extended periods of lockdown and curfew may lead to increasing penetrating trauma volume. Governments and health officials should anticipate the aggregate impact of these measures on public health and develop strategies to actively mitigate them. LEVEL OF EVIDENCE: III.
+Notes: 1432-2323
+Ramos Perkis, Juan Pablo
+Orcid: 0000-0001-9698-7572
+Achurra Tirado, Pablo
+Raykar, Nakul
+Zinco Acosta, Analía
+Muñoz Alarcon, Carolina
+Puyana, Juan Carlos
+Ottolino Lavarte, Pablo
+Journal Article
+World J Surg. 2020 Nov 13:1-7. doi: 10.1007/s00268-020-05860-0.
+Author Address: Servicio de Cirugía, Unidad de Trauma y Urgencia, Hospital Dr. Sótero del Río, Santiago, Chile. jramos.med@gmail.com.
+Gastrointestinal Surgery Department, Pontificia Universidad Católica de Chile, Santiago, Chile.
+Department of Surgery, University of Pittsburgh, Pittsburgh, PA, USA.
+Servicio de Cirugía, Unidad de Trauma y Urgencia, Hospital Dr. Sótero del Río, Santiago, Chile.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Web Page
+Record Number: 80
+Author: Reuters
+Year: 2019, October 21
+Title: Chilean state of emergency extended around country after deadly riots
+Publisher: France 24
+Short Title: Chilean state of emergency extended around country after deadly riots
+URL: https://www.france24.com/en/20191021-chile-extends-state-of-emergency-around-country-after-deadly-riots-1
+
+
+Reference Type:  Journal Article
+Record Number: 37
+Author: Robb Jd Fau - Matthews, J. G. and Matthews, J. G.
+Title: The injuries and management of riot casualties admitted to the Belfast hospital wards, August to October, 1969
+Issue: 0007-1323 (Print)
+Short Title: The injuries and management of riot casualties admitted to the Belfast hospital wards, August to October, 1969
+Research Notes: 0 (Anti-Bacterial Agents)
+Translated Author: Br, J. Surg
+Database Provider: 1971 Jun
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 28
+Author: Robertson, E.
+Year: 2014
+Title: Venezuelan unrest increases pressure on health services
+Journal: Lancet
+Volume: 383
+Issue: 9921
+Pages: 942
+Epub Date: 2014/03/19
+Date: Mar 15
+Short Title: Venezuelan unrest increases pressure on health services
+ISSN: 0140-6736
+DOI: 10.1016/s0140-6736(14)60467-0
+Accession Number: 24639992
+Keywords: *Civil Disorders
+Delivery of Health Care/standards
+Health Services/*standards
+Humans
+Pharmaceutical Preparations/supply & distribution
+Venezuela
+Notes: 1474-547x
+Robertson, Ewan
+News
+England
+Lancet. 2014 Mar 15;383(9921):942. doi: 10.1016/s0140-6736(14)60467-0.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 35
+Author: Rodríguez, Álvaro, Peña, Sebastián, Cavieres, Isabel, Vergara, María José, Pérez, Marcela, Campos, Miguel, Peredo, Daniel, Jorquera, Patricio, Palma, Rodrigo, Cortés, Dennis, López, Mauricio and Morales, Sergio
+Year: 2020
+Title: Ocular trauma by kinetic impact projectiles during civil unrest in Chile
+Journal: Eye
+Date: 2020/08/24
+Short Title: Ocular trauma by kinetic impact projectiles during civil unrest in Chile
+ISSN: 1476-5454
+DOI: 10.1038/s41433-020-01146-w
+Abstract: The use of kinetic impact projectiles (KIPs) for crowd-control has increased worldwide. Despite having been created as non-lethal weapons, significant damage to several organs, including the eye, has been reported. In this study, we investigated cases of ocular trauma from KIPs during the civil unrest in Chile. To our knowledge, this is the largest case series recorded in international literature.
+URL: https://doi.org/10.1038/s41433-020-01146-w
+
+
+Reference Type:  Journal Article
+Record Number: 13
+Author: Rothenberg, Craig, Achanta, Satyanarayana, Svendsen, Erik R. and Jordt, Sven-Eric
+Year: 2016
+Title: Tear gas: an epidemiological and mechanistic reassessment
+Journal: Annals of the New York Academy of Sciences
+Volume: 1378
+Issue: 1
+Pages: 96-107
+Date: 2016/08/01
+Short Title: Tear gas: an epidemiological and mechanistic reassessment
+ISSN: 0077-8923
+DOI: 10.1111/nyas.13141
+Keywords: tear gas
+pepper spray
+capsaicin
+chlorobenzalmalononitrile
+CS
+CN
+CR
+TRPV1
+TRPA1
+Abstract: Deployments of tear gas and pepper spray have rapidly increased worldwide. Large amounts of tear gas have been used in densely populated cities, including Cairo, Istanbul, Rio de Janeiro, Manama (Bahrain), and Hong Kong. In the United States, tear gas was used extensively during recent riots in Ferguson, Missouri. Whereas tear gas deployment systems have rapidly improved?with aerial drone systems tested and requested by law enforcement?epidemiological and mechanistic research have lagged behind and have received little attention. Case studies and recent epidemiological studies revealed that tear gas agents can cause lung, cutaneous, and ocular injuries, with individuals affected by chronic morbidities at high risk for complications. Mechanistic studies identified the ion channels TRPV1 and TRPA1 as targets of capsaicin in pepper spray, and of the tear gas agents chloroacetophenone, CS, and CR. TRPV1 and TRPA1 localize to pain-sensing peripheral sensory neurons and have been linked to acute and chronic pain, cough, asthma, lung injury, dermatitis, itch, and neurodegeneration. In animal models, transient receptor potential inhibitors show promising effects as potential countermeasures against tear gas injuries. On the basis of the available data, a reassessment of the health risks of tear gas exposures in the civilian population is advised, and development of new countermeasures is proposed.
+URL: https://doi.org/10.1111/nyas.13141
+Access Date: 2020/10/30
+
+
+Reference Type:  Journal Article
+Record Number: 31
+Author: Rust, G., Ye, J., Baltrus, P., Daniels, E., Adesunloye, B. and Fryer, G. E.
+Year: 2008
+Title: Practical barriers to timely primary care access: impact on adult use of emergency department services
+Journal: Arch Intern Med
+Volume: 168
+Issue: 15
+Pages: 1705-10
+Epub Date: 2008/08/13
+Date: Aug 11
+Short Title: Practical barriers to timely primary care access: impact on adult use of emergency department services
+ISSN: 0003-9926
+DOI: 10.1001/archinte.168.15.1705
+Accession Number: 18695087
+Keywords: Adolescent
+Adult
+Aged
+Aged, 80 and over
+Appointments and Schedules
+Continental Population Groups/statistics & numerical data
+Crowding
+Educational Status
+Emergency Service, Hospital/*statistics & numerical data
+Female
+*Health Services Accessibility
+Health Status
+Health Surveys
+Humans
+Income
+Male
+Middle Aged
+*Primary Health Care
+Transportation
+United States/epidemiology
+Abstract: BACKGROUND: Most Americans report having a usual source of medical care, but many also report significant barriers to timely access to such care. This can lead patients to use the emergency department (ED) as a ready alternative to their usual source of medical care, even when such care could be provided more cost-effectively in a primary care setting. The purpose of this study was to examine the relationship between ED visits and perceived barriers to receiving timely primary care. METHODS: Among 30,677 adults 18 years or older participating in the adult sample section of the National Health Interview Survey, 23,413 who reported having a usual source of medical care other than the ED and answered the questions related to barriers were included in our analyses. Associations between perceived timely access barriers and reported use of ED in the previous 12 months were examined using logistic regression to control for covariates that also affect ED use. RESULTS: For those reporting no access barriers, 1 in 5 adult Americans in the noninstitutionalized civilian population visited an ED at least once during the preceding year. For those reporting 1 or more barriers, the proportion having an ED visit was 1 in 3. Four of the 5 following timely access barriers was independently associated with ED use, even after adjusting for other socioeconomic and health-related factors: (1) "couldn't get through on phone" (OR [odds ratio], 1.27; 95% confidence interval [CI], 1.02-1.59); (2) "couldn't get appointment soon enough" (OR, 1.45; 95% CI, 1.21-1.75); (3) "waiting too long in doctor's office" (OR, 1.20; 95% CI, 1.02-1.41); (4) "not open when you could go" (OR, 1.24; 95% CI, 0.99-1.55); and (5) "no transportation" (OR, 1.88; 95% CI, 1.50-2.35). CONCLUSIONS: The benefits of having a usual source of medical care are diminished by barriers that limit effective and timely access to such care. Interventions to improve effective access to medical care such as open access scheduling might have benefits not only for individual patients and practices but also for health policy related to cost-effective health care delivery systems and our need to relieve overcrowded conditions at EDs.
+Notes: 1538-3679
+Rust, George
+Ye, Jiali
+Baltrus, Peter
+Daniels, Elvan
+Adesunloye, Bamidele
+Fryer, George Edward
+5P20MD000272-05/MD/NIMHD NIH HHS/United States
+Journal Article
+Research Support, N.I.H., Extramural
+Research Support, U.S. Gov't, Non-P.H.S.
+United States
+Arch Intern Med. 2008 Aug 11;168(15):1705-10. doi: 10.1001/archinte.168.15.1705.
+Author Address: National Center for Primary Care, Morehouse School of Medicine, 720 Westview Dr, Atlanta, GA 30310, USA. GRust@msm.edu
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Book
+Record Number: 20
+Author: Scott, J. and Marshall, G.
+Year: 2009
+Title: A Dictionary of Sociology
+Publisher: Oxford University Press
+Edition: 3rd ed.
+Short Title: A Dictionary of Sociology
+DOI: 10.1093/acref/9780199533008.001.0001
+
+
+Reference Type:  Computer Program
+Record Number: 11
+Programmer: Scott, Steven L
+Year: 2020
+Title: bsts: Bayesian Structural Time Series
+Version: R package version 0.9.5
+Short Title: bsts: Bayesian Structural Time Series
+URL: https://CRAN.R-project.org/package=bsts
+
+
+Reference Type:  Report
+Record Number: 3
+Author: Scott, Steven L and Varian, Hal R
+Year: 2013
+Title: Bayesian variable selection for nowcasting economic time series
+Institution: National Bureau of Economic Research
+Short Title: Bayesian variable selection for nowcasting economic time series
+Report Number: 0898-2937
+
+
+Reference Type:  Journal Article
+Record Number: 7
+Author: Scott, Steven L and Varian, Hal R
+Year: 2014
+Title: Predicting the present with bayesian structural time series
+Journal: International Journal of Mathematical Modelling and Numerical Optimisation
+Volume: 5
+Issue: 1-2
+Pages: 4-23
+Short Title: Predicting the present with bayesian structural time series
+ISSN: 2040-3607
+
+
+Reference Type:  Web Page
+Record Number: 71
+Author: Sepulveda, M. and Wissenstein, M.
+Year: 2019, October 31
+Title: Thousands march in Chile protest after summit cancellations
+Publisher: FOX 44 News
+Access Date: 2021, January 15
+Short Title: Thousands march in Chile protest after summit cancellations
+URL: https://www.fox44news.com/news/thousands-march-in-chile-protest-after-summit-cancellations/
+
+
+Reference Type:  Journal Article
+Record Number: 38
+Author: Sheridan, Sean M. and Whitlock, Roy I. H.
+Year: 1983
+Title: Plastic baton round injuries
+Journal: British Journal of Oral Surgery
+Volume: 21
+Issue: 4
+Pages: 259-267
+Date: 1983/12/01/
+Short Title: Plastic baton round injuries
+ISSN: 0007-117X
+DOI: https://doi.org/10.1016/0007-117X(83)90014-8
+Abstract: In February 1976, ‘plastic bullets’ were introduced into Northern Ireland as a means of riot control by the Security Forces. Some of the injuries to the oral and maxillo-facial region caused by these weapons are described.
+URL: http://www.sciencedirect.com/science/article/pii/0007117X83900148
+
+
+Reference Type:  Web Page
+Record Number: 84
+Author: Sherwood, D. and Ramos, N.
+Year: 2019, October 25
+Title: One million Chileans march in Santiago, city grinds to halt
+Publisher: Reuters
+Short Title: One million Chileans march in Santiago, city grinds to halt
+URL: https://www.reuters.com/article/us-chile-protests/one-million-chileans-march-in-santiago-city-grinds-to-halt-idUSKBN1X4225
+
+
+Reference Type:  Journal Article
+Record Number: 17
+Author: Somma, Nicolás M., Bargsted, Matías, Disi Pavlic, Rodolfo and Medel, Rodrigo M.
+Year: 2020
+Title: No water in the oasis: the Chilean Spring of 2019–2020
+Journal: Social Movement Studies
+Pages: 1-8
+Short Title: No water in the oasis: the Chilean Spring of 2019–2020
+ISSN: 1474-2837
+DOI: 10.1080/14742837.2020.1727737
+URL: https://doi.org/10.1080/14742837.2020.1727737
+
+
+Reference Type:  Computer Program
+Record Number: 46
+Programmer: StataCorp
+Year: 2019
+Title: Stata Statistical Software
+Series Editor: LLC., StataCorp
+Place Published: TX
+Publisher: College Station
+Edition: Release 16
+Short Title: Stata Statistical Software
+
+
+Reference Type:  Journal Article
+Record Number: 99
+Author: Suyama, J., Panagos, P. D., Sztajnkrycer, M. D., FitzGerald, D. J. and Barnes, D.
+Year: 2003
+Title: Injury patterns related to use of less-lethal weapons during a period of civil unrest
+Journal: J Emerg Med
+Volume: 25
+Issue: 2
+Pages: 219-27
+Epub Date: 2003/08/07
+Date: Aug
+Short Title: Injury patterns related to use of less-lethal weapons during a period of civil unrest
+ISSN: 0736-4679 (Print)
+0736-4679
+DOI: 10.1016/s0736-4679(03)00179-3
+Accession Number: 12902015
+Keywords: Adult
+*Civil Disorders
+Emergencies
+Female
+Humans
+Male
+Middle Aged
+Retrospective Studies
+United States
+Wounds and Injuries/*etiology
+Abstract: This case series documents injury patterns related to beanbag and other less-lethal (LL) weapons during a period of civil unrest in a major U.S. city. A retrospective review of injuries related to LL weapons usage presenting to an urban Emergency Department (ED) from April 10, 2001 to April 18, 2001 was performed. Patients under 18 years of age and those without signed consent to treat were excluded. Twenty-seven patients were identified. Two were excluded due to lack of signed consent for treatment. Mean age was 28.4 +/- 11.7 years; 76% of patients were male. Significant morbidity was found in 7 (28%) cases with no fatalities. Three (12%) individuals, with the diagnoses of pulmonary contusion, liver laceration, and Achilles tendon rupture, required admission. Two (8%) individuals had delayed complications of pneumonia and post-concussive syndrome. Reports of injury patterns associated with beanbag munitions in the medical literature are limited. Physicians should be aware of the injuries and delayed sequelae associated with their use.
+Notes: Suyama, Joe
+Panagos, Peter D
+Sztajnkrycer, Matthew D
+FitzGerald, Denis J
+Barnes, Dawn
+Case Reports
+Journal Article
+United States
+J Emerg Med. 2003 Aug;25(2):219-27. doi: 10.1016/s0736-4679(03)00179-3.
+Author Address: Department of Emergency Medicine, University of Cincinnati Medical Center, Cincinnati, Ohio, USA.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 30
+Author: The Lancet, Oncology
+Year: 2020
+Title: Hong Kong: long civil unrest with long-term consequences
+Journal: Lancet Oncol
+Volume: 21
+Issue: 1
+Pages: 1
+Epub Date: 2020/01/08
+Date: Jan
+Short Title: Hong Kong: long civil unrest with long-term consequences
+ISSN: 1470-2045
+DOI: 10.1016/s1470-2045(19)30815-0
+Accession Number: 31908292
+Keywords: Biomedical Research/*statistics & numerical data
+Civil Disorders/*statistics & numerical data/trends
+*Health Services Needs and Demand
+Hong Kong/epidemiology
+Humans
+Neoplasms/*epidemiology
+Prevalence
+*Severity of Illness Index
+Notes: 1474-5488
+The Lancet Oncology
+Editorial
+England
+Lancet Oncol. 2020 Jan;21(1):1. doi: 10.1016/S1470-2045(19)30815-0.
+Database Provider: NLM
+Language: eng
+
+Reference Type:  Journal Article
+Record Number: 41
+Author: Uslu, Eda, Ozkan, Gulcihan, Uyanusta Kucuk, Cagla, Onaran, Hilal, Tastan Uzunmehmetoglu, Cagla Pinar, Ilgaz, Aslihan, Ayar, Gamze, Akbay, Makbule Ozlem, Firat, Hikmet, Ulukavak Ciftci, Tansu, Akpinar, Serdar, Ciftci, Bulent, Firat Guven, Selma, Bilekli, Selen, Muezzinoglu, Arif, Torlak, Fatih, Arbak, Peri and Dagli, Elif
+Year: 2014
+Title: Respiratory effects of tear gas inhalation
+Journal: European Respiratory Journal
+Volume: 44
+Issue: Suppl 58
+Pages: P4958
+Short Title: Respiratory effects of tear gas inhalation
+Abstract: On limited data on healthy volunteers and experimental animals, tear gas is accepted as a safe crowd control agent. There is not adequate information about the respiratory effects of recurrent tear gas inhalation.The aim of this study is to investigate the frequency and duration of acute respiratory symptoms developed after the use of crowd control gases on public.A face-to-face questionnaire survey was carried out among individuals who had involuntarily inhaled tear gas during public protests in June 2013 in Turkey.Of those 546 people who participated in the survey 86 had been exposed to tear gas in Ankara and 460 in Istanbul. The average age was 31.2 years, 48% female, 52% male, 52% university graduates, 21%university students, 62% smokers. 40% was exposed to tear gas outdoors in close proximity, 24% were exposed indoors. 70% reported to have respiratory difficulty, 80% cough, 45% sputum production, 43% chest pain, 3% hemoptysis. The symptoms of nasal discharge were reported in 72% and eye redness in 81%, skin irritation in 44%. The median duration of symptoms were for respiratory difficulty 2 days, cough 15 days, sputum 14 days, hemoptysis 14 days, chest pain 15 days, nasal discharge 13 days, eye redness 14 days, skin irritation 15 days.Tear gas was found to cause severe acute upper and lower airway symptoms in the study group with a high smoking rate. Contrast to the previous knowledge about the safety and short-time effects of crowd control agents, the symptoms were reported to last up to 2 weeks. Recurrent, indoor and short distance exposure in real life may have significant impact on respiratory system especially among smokers. The use of tear gas on humans should not be allowed unless safety can be proven by further studies.
+URL: http://erj.ersjournals.com/content/44/Suppl_58/P4958.abstract
+
+
+Reference Type:  Web Page
+Record Number: 73
+Author: Vega, M.
+Year: 2019, October 14
+Title: Grupo de 300 estudiantes invaden estación Pedro de Valdivia del Metro: protestan por alza de pasajes
+Publisher: Bío-Bío Chile
+Access Date: 2021, January 19
+Short Title: Grupo de 300 estudiantes invaden estación Pedro de Valdivia del Metro: protestan por alza de pasajes
+URL: https://www.biobiochile.cl/noticias/nacional/region-metropolitana/2019/10/14/grupo-de-300-estudiantes-invaden-estacion-pedro-de-valdivia-del-metro-protestan-por-alza-de-pasajes.shtml
+
+
+Reference Type:  Book Section
+Record Number: 18
+Author: Vergara, L.
+Year: 2016
+Title: World social science report, 2016: Challenging inequalities, pathways to a just world
+Place Published: Paris, France
+Pages: 250-53
+Short Title: World social science report, 2016: Challenging inequalities, pathways to a just world
+
+
+Reference Type:  Journal Article
+Record Number: 25
+Author: Yimgang, Doris P., Wang, Yan, Paik, Grace, Hager, Erin R. and Black, Maureen M.
+Year: 2017
+Title: Civil Unrest in the Context of Chronic Community Violence: Impact on Maternal Depressive Symptoms
+Journal: American journal of public health
+Volume: 107
+Issue: 9
+Pages: 1455-1462
+Epub Date: 2017/07/20
+Short Title: Civil Unrest in the Context of Chronic Community Violence: Impact on Maternal Depressive Symptoms
+Alternate Journal: Am J Public Health
+ISSN: 1541-0048
+0090-0036
+DOI: 10.2105/AJPH.2017.303876
+Accession Number: 28727535
+Keywords: Adult
+African Americans/psychology/*statistics & numerical data
+Baltimore/epidemiology
+Child, Preschool
+Civil Disorders/*ethnology
+Cross-Sectional Studies
+Depression/epidemiology/ethnology/*psychology
+Emergency Service, Hospital
+Female
+Humans
+Infant
+Infant, Newborn
+Maternal-Child Health Services/statistics & numerical data
+Mothers/psychology/*statistics & numerical data
+Public Health
+Residence Characteristics
+Surveys and Questionnaires
+Violence/*ethnology
+Abstract: OBJECTIVES: To examine changes in maternal-child health surrounding the April 2015 civil unrest in Baltimore, Maryland, following Freddie Gray's death while in police custody. METHODS: We conducted cross-sectional Children's HealthWatch surveys January 2014 through December 2015 in pediatric emergency departments and primary care clinics on maternal-child health and June 2015 through October 2015 on daily and community routines. We used trend analysis and piecewise logistic regression to examine effects of time, residential proximity moderation, and mediation analysis to assess proximity and maternal-child health relations via maternal concerns. RESULTS: Participants comprised 1095 mothers, 93% of whom were African American and 100% of whom had public or no insurance; 73% of participants' children were younger than 24 months. Following the unrest, prevalence of maternal depressive symptoms increased significantly in proximal, but not distal, neighborhoods (b = 0.41; 95% confidence interval [CI] = 0.03, 0.79; P = .03). Maternal concerns were elevated in proximal neighborhoods and associated with depressive symptoms; mediation through maternal concern was not significant. Five months after the unrest, depressive symptoms returned to previous levels. CONCLUSIONS: Civil unrest has an acute effect on maternal depressive symptoms in neighborhoods proximal to unrest. Public Health Implications. To mitigate depressive symptoms associated with civil unrest, maintain stability of community routines, screen for maternal depressive symptoms, and provide parent-child nurturing programs.
+Notes: 28727535[pmid]
+PMC5551437[pmcid]
+URL: https://pubmed.ncbi.nlm.nih.gov/28727535
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5551437/
+Name of Database: PubMed
+Language: eng
+
