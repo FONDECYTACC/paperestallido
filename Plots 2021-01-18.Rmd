@@ -68,9 +68,10 @@ p.comment {
 ```
 ```{r setup0, include=T}
 rm(list=ls());gc()
-load("Definitive_models_2021.RData")
+load("G:/Mi unidad/paperestallido/Definitive_models_2021.RData")
 #xaringan::inf_mr()
-
+#setwd("C:/Users/CISS Fondecyt/Pictures")
+#C:\Users\CISS Fondecyt\Pictures
 ```
 
 ```{r setup, include=T, message=F, warning=F}
@@ -194,11 +195,11 @@ plot(impact3d_hosp_trauma, "original")$data %>%
   geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
+          axis.text.y = ggtext::element_markdown(size=height_y),
           axis.title.y = element_blank(),
           axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+          plot.title = ggtext::element_markdown(size=size_title),
+          plot.caption = ggtext::element_markdown(hjust = 0, face= "italic",size=9))+
   ggtitle("c) Trauma Hospitalizations")
 
 hosp_resp_plot_red<-
@@ -214,11 +215,11 @@ plot(impact3d1_hosp_resp, "original")$data %>%
   geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
-          axis.text.y = element_text(size=height_y),
+          axis.text.y = ggtext::element_markdown(size=height_y),
           axis.title.y = element_blank(),
           axis.title.x = element_blank(),
-          plot.title = element_text(size=size_title),
-          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+          plot.title = ggtext::element_markdown(size=size_title),
+          plot.caption = ggtext::element_markdown(hjust = 0, face= "italic",size=9))+
   ggtitle("d) Respiratory Hospitalizations")
 
 cons_trauma_plot_red<-
@@ -300,6 +301,7 @@ plot(impact3d_ratio_resp, "original")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")
+
 
 
 #:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
@@ -440,7 +442,6 @@ plot_grid(
 ggdraw(plot1b_red)+
    theme(plot.background = element_rect(fill=NA, color = NA))
 
-
 dont_show=1
 if(dont_show==0){
   pdf("_Fig1.pdf", height = 14, width = 23)
@@ -483,6 +484,26 @@ if(dont_show==0){
 #plot2 <- cowplot::ggdraw(grid.arrange(p14, p21,p212,p32,p42,p52,p57, ncol = 2, nrow = 4)) + 
   # same plot.background should be in the theme of p1 and p2 as mentioned above
 #  theme(plot.background = element_rect(fill=NA, color = NA))
+
+cairo_ps("_FigS1_final.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot1b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_FigS1_final.ps", plot =
+          ggdraw(plot1b_red)+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
 ```
 
 ```{r pointwise_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 12. Estimated Trends of the Outcomes"}
@@ -786,7 +807,31 @@ if(dont_show==0){
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
 }
+    
+
+cairo_ps("_Fig1_final.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot2b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_Fig1_final.ps", plot =
+          ggdraw(plot2b_red)+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
+ 
 ```
+
+\
 
 ```{r cumulative_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 13. Estimated Trends of the Outcomes"}
 
@@ -1083,4 +1128,26 @@ if(dont_show==0){
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
 }
+
+
+cairo_ps("_Fig2_final.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot3b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_Fig2_final.ps", plot =
+          ggdraw(plot3b_red)+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
+
 ```
