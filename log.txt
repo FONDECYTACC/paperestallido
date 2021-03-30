@@ -2,35 +2,35 @@
       name:  <unnamed>
        log:  G:\Mi unidad\paperestallido\log.txt
   log type:  text
- opened on:  11 Feb 2021, 12:08:41
+ opened on:  30 Mar 2021, 10:55:02
 
 . di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_
 > TH_SinCos)']" 
-11.7 [1.63,21.77]
+11.65 [1.65,21.66]
 
 . di "`=scalar(beti_RH_Fact)' [`=scalar(CI95_lo_RH_Fact)',`=scalar(CI95_up_RH_F
 > act)']" 
-1.76 [-18.58,22.11]
+1.5 [-17.72,20.72]
 
 . di "`=scalar(beti_TC_Fact)' [`=scalar(CI95_lo_TC_Fact)',`=scalar(CI95_up_TC_F
 > act)']" 
--16.45 [-25.47,-7.42]
+-15.54 [-24.43,-6.65]
 
 . di "`=scalar(beti_RC_Fact)' [`=scalar(CI95_lo_RC_Fact)',`=scalar(CI95_up_RC_F
 > act)']" 
--44.3 [-72.83,-15.78]
+-41.16 [-69.44,-12.87]
 
 . di "`=scalar(beti_TR_Fact)' [`=scalar(CI95_lo_TR_Fact)',`=scalar(CI95_up_TR_F
 > act)']" 
-27.65 [17.91,37.4]
+26.41 [17.31,35.52]
 
 . di "`=scalar(beti_RR_Fact)' [`=scalar(CI95_lo_RR_Fact)',`=scalar(CI95_up_RR_F
 > act)']" 
-48.94 [37.5,60.37]
+46.43 [33.77,59.08]
 
 . log close 
       name:  <unnamed>
        log:  G:\Mi unidad\paperestallido\log.txt
   log type:  text
- closed on:  11 Feb 2021, 12:08:41
+ closed on:  30 Mar 2021, 10:55:02
 -------------------------------------------------------------------------------

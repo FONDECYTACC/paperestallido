@@ -286,6 +286,34 @@ div.tocify {
 
 
 <style type="text/css">
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+    // onClick function for all plots (img's)
+
+    $('img:not(.zoomImg)').click(function() {
+
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+
+    });
+
+    // onClick function for zoomImg
+
+    $('img.zoomImg').click(function() {
+
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+
+    });
+
+  });
+</script>
+<style type="text/css">
 .tablelines table, .tablelines td, .tablelines th {
   border: 1px solid black;
   }
@@ -337,9 +365,9 @@ p.comment {
 </style>
 <pre class="r"><code>rm(list=ls());gc()</code></pre>
 <pre><code>##          used (Mb) gc trigger (Mb) max used (Mb)
-## Ncells 412441 22.1     854175 45.7   648454 34.7
-## Vcells 766745  5.9    8388608 64.0  1661381 12.7</code></pre>
-<pre class="r"><code>unlink(&#39;Consolidacion_BDs_cache&#39;, recursive = TRUE)
+## Ncells 427951 22.9     898490   48   648454 34.7
+## Vcells 776833  6.0    8388608   64  1661560 12.7</code></pre>
+<pre class="r"><code>unlink(&#39;*_cache&#39;, recursive = TRUE)
 unlink(&#39;Consolidacion_BDs_FINAL_cache&#39;, recursive = TRUE)
 #load(url(&quot;https://drive.google.com/uc?export=download&amp;id=1zLfLpJjGCfMSfwrtTnaOdBSgGg2ZCqjR&quot;))
 load(paste0(getwd(),&quot;/&quot;,&quot;Procesos hasta 4_2.RData&quot;))
@@ -347,11 +375,11 @@ load(paste0(getwd(),&quot;/&quot;,&quot;Procesos hasta 4_2.RData&quot;))
 #xaringan::inf_mr()
 
 if(isTRUE(getOption(&#39;knitr.in.progress&#39;))==T){
-    clus_iter=30000
+    clus_iter=40000
 } else {
   input &lt;- readline(&#39;¿Are you gonna run the dataset with the whole iterations? (Si/No): &#39;)
   if(input==&quot;Si&quot;){
-    clus_iter=30000
+    clus_iter=40000
   } else {
     clus_iter=1000
   }
@@ -617,7 +645,7 @@ During social protests
 <td style="text-align:left;font-style: italic;border-bottom: 1px solid grey">
 </td>
 <td style="text-align:center;font-style: italic;border-bottom: 1px solid grey">
-N=252
+N=250
 </td>
 <td style="text-align:center;font-style: italic;border-bottom: 1px solid grey">
 N=10
@@ -628,7 +656,7 @@ N=10
 Total Consultations
 </td>
 <td style="text-align:center;">
-3137 [2924;3361]
+3132 [2929;3364]
 </td>
 <td style="text-align:center;">
 2854 [2754;2898]
@@ -639,7 +667,7 @@ Total Consultations
 Trauma Consultations
 </td>
 <td style="text-align:center;">
-802 [728;888]
+806 [733;888]
 </td>
 <td style="text-align:center;">
 786 [752;801]
@@ -650,7 +678,7 @@ Trauma Consultations
 Respiratory Consultations
 </td>
 <td style="text-align:center;">
-143 [120;183]
+143 [120;184]
 </td>
 <td style="text-align:center;">
 96.0 [77.5;103]
@@ -661,7 +689,7 @@ Respiratory Consultations
 Circulatory Consultations
 </td>
 <td style="text-align:center;">
-102 [87.0;125]
+102 [87.0;126]
 </td>
 <td style="text-align:center;">
 90.5 [87.5;95.8]
@@ -694,7 +722,7 @@ Trauma Hospitalizations
 Respiratory Hospitalizations
 </td>
 <td style="text-align:center;">
-19.5 [15.0;23.2]
+19.5 [16.0;23.8]
 </td>
 <td style="text-align:center;">
 22.0 [15.5;24.0]
@@ -716,7 +744,7 @@ Circulatory Hospitalizations
 Rate of Trauma Hospitalizations per Trauma Consultations (x1,000 population)
 </td>
 <td style="text-align:center;">
-73.0 [64.0;86.2]
+73.0 [63.9;86.3]
 </td>
 <td style="text-align:center;">
 102 [84.2;113]
@@ -727,7 +755,7 @@ Rate of Trauma Hospitalizations per Trauma Consultations (x1,000 population)
 Respiratory Hospitalizations per Respiratory Consultations (x1,000 population)
 </td>
 <td style="text-align:center;">
-131 [107;160]
+132 [108;160]
 </td>
 <td style="text-align:center;">
 233 [189;270]
@@ -744,7 +772,7 @@ Respiratory Hospitalizations per Respiratory Consultations (x1,000 population)
 </table>
 </div>
 <p><br></p>
-<p>A total of 28,155 ED consultations and 3,022 hospitalizations were observed from October 21 of 2019 to December 31, 2019. Overall, during 2015-2019 trauma cases represent the 26% of total consultation and 21% of total hospitalizations, and respiratory represents the 5% and 7%, respectively .</p>
+<p>A total of 28,155 ED consultations and 3,022 hospitalizations were observed from October 21 of 2019 to December 29, 2019. Overall, during 2015-2019 trauma cases represent the 26% of total consultation and 21% of total hospitalizations, and respiratory represents the 5% and 7%, respectively .</p>
 <p><br></p>
 </div>
 <div id="bayesian-structural-time-series-models" class="section level1" number="2">
@@ -786,25 +814,25 @@ model2d1_cons_trauma &lt;-  bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(da
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Thu Feb 11 11:49:08 2021
+<pre><code>=-=-=-=-= Iteration 0 Tue Mar 30 10:29:25 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Thu Feb 11 11:49:24 2021
+=-=-=-=-= Iteration 4000 Tue Mar 30 10:29:43 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Thu Feb 11 11:49:39 2021
+=-=-=-=-= Iteration 8000 Tue Mar 30 10:30:02 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Thu Feb 11 11:49:54 2021
+=-=-=-=-= Iteration 12000 Tue Mar 30 10:30:21 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Thu Feb 11 11:50:09 2021
+=-=-=-=-= Iteration 16000 Tue Mar 30 10:30:40 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Thu Feb 11 11:50:24 2021
+=-=-=-=-= Iteration 20000 Tue Mar 30 10:30:58 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Thu Feb 11 11:50:40 2021
+=-=-=-=-= Iteration 24000 Tue Mar 30 10:31:17 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Thu Feb 11 11:50:55 2021
+=-=-=-=-= Iteration 28000 Tue Mar 30 10:31:36 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Thu Feb 11 11:51:10 2021
+=-=-=-=-= Iteration 32000 Tue Mar 30 10:31:56 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Thu Feb 11 11:51:26 2021
+=-=-=-=-= Iteration 36000 Tue Mar 30 10:32:15 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -827,8 +855,8 @@ model2d1_cons_trauma_resp_traj&lt;-(ComputeResponseTrajectories(model2d1_cons_tr
 <pre class="r"><code>plot(impact3d1_cons_trauma)+
   xlab(&quot;Date&quot;)+
   ylab(&quot;Consultations&quot;)+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),&quot;date&quot;])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),&quot;year_week&quot;])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= &quot;italic&quot;,size=9))+
   labs(caption=&quot;Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.&quot;)</code></pre>
@@ -862,25 +890,25 @@ model2d_cons_resp &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                model.options = BstsOptions(save.prediction.errors = TRUE),
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Thu Feb 11 11:52:22 2021
+<pre><code>=-=-=-=-= Iteration 0 Tue Mar 30 10:33:29 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Thu Feb 11 11:52:36 2021
+=-=-=-=-= Iteration 4000 Tue Mar 30 10:33:48 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Thu Feb 11 11:52:50 2021
+=-=-=-=-= Iteration 8000 Tue Mar 30 10:34:08 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Thu Feb 11 11:53:04 2021
+=-=-=-=-= Iteration 12000 Tue Mar 30 10:34:27 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Thu Feb 11 11:53:18 2021
+=-=-=-=-= Iteration 16000 Tue Mar 30 10:34:47 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Thu Feb 11 11:53:32 2021
+=-=-=-=-= Iteration 20000 Tue Mar 30 10:35:06 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Thu Feb 11 11:53:46 2021
+=-=-=-=-= Iteration 24000 Tue Mar 30 10:35:26 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Thu Feb 11 11:54:00 2021
+=-=-=-=-= Iteration 28000 Tue Mar 30 10:35:45 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Thu Feb 11 11:54:14 2021
+=-=-=-=-= Iteration 32000 Tue Mar 30 10:36:04 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Thu Feb 11 11:54:28 2021
+=-=-=-=-= Iteration 36000 Tue Mar 30 10:36:24 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -918,25 +946,25 @@ model2d_trauma_hosp &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Thu Feb 11 11:55:17 2021
+<pre><code>=-=-=-=-= Iteration 0 Tue Mar 30 10:37:29 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Thu Feb 11 11:55:31 2021
+=-=-=-=-= Iteration 4000 Tue Mar 30 10:37:49 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Thu Feb 11 11:55:45 2021
+=-=-=-=-= Iteration 8000 Tue Mar 30 10:38:08 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Thu Feb 11 11:55:59 2021
+=-=-=-=-= Iteration 12000 Tue Mar 30 10:38:27 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Thu Feb 11 11:56:13 2021
+=-=-=-=-= Iteration 16000 Tue Mar 30 10:38:47 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Thu Feb 11 11:56:28 2021
+=-=-=-=-= Iteration 20000 Tue Mar 30 10:39:06 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Thu Feb 11 11:56:42 2021
+=-=-=-=-= Iteration 24000 Tue Mar 30 10:39:26 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Thu Feb 11 11:56:56 2021
+=-=-=-=-= Iteration 28000 Tue Mar 30 10:39:45 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Thu Feb 11 11:57:10 2021
+=-=-=-=-= Iteration 32000 Tue Mar 30 10:40:04 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Thu Feb 11 11:57:24 2021
+=-=-=-=-= Iteration 36000 Tue Mar 30 10:40:23 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -962,8 +990,8 @@ model2d_trauma_hosp_resp_traj&lt;-(ComputeResponseTrajectories(model2d_trauma_ho
 <pre class="r"><code>plot(impact3d_hosp_trauma)+
   xlab(&quot;Date&quot;)+
   ylab(&quot;Hospitalizations&quot;)+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),&quot;date&quot;])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),&quot;year_week&quot;])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= &quot;italic&quot;,size=9))+
   labs(caption=&quot;Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.&quot;)</code></pre>
@@ -994,25 +1022,25 @@ model2d1_hosp_resp &lt;-
                niter = clus_iter,
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Thu Feb 11 11:58:18 2021
+<pre><code>=-=-=-=-= Iteration 0 Tue Mar 30 10:41:33 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Thu Feb 11 11:58:33 2021
+=-=-=-=-= Iteration 4000 Tue Mar 30 10:41:53 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Thu Feb 11 11:58:47 2021
+=-=-=-=-= Iteration 8000 Tue Mar 30 10:42:14 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Thu Feb 11 11:59:02 2021
+=-=-=-=-= Iteration 12000 Tue Mar 30 10:42:34 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Thu Feb 11 11:59:17 2021
+=-=-=-=-= Iteration 16000 Tue Mar 30 10:42:54 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Thu Feb 11 11:59:32 2021
+=-=-=-=-= Iteration 20000 Tue Mar 30 10:43:14 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Thu Feb 11 11:59:47 2021
+=-=-=-=-= Iteration 24000 Tue Mar 30 10:43:35 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Thu Feb 11 12:00:01 2021
+=-=-=-=-= Iteration 28000 Tue Mar 30 10:43:55 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Thu Feb 11 12:00:16 2021
+=-=-=-=-= Iteration 32000 Tue Mar 30 10:44:15 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Thu Feb 11 12:00:31 2021
+=-=-=-=-= Iteration 36000 Tue Mar 30 10:44:36 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #               dynamic.regression=T)
@@ -1031,16 +1059,16 @@ burn2d1 &lt;- SuggestBurn(0.1, model2d1_hosp_resp)
 <pre class="r"><code>plot(impact3d1_hosp_resp)+
   xlab(&quot;Date&quot;)+
   ylab(&quot;Hospitalizations&quot;)+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),&quot;date&quot;])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),&quot;year_week&quot;])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= &quot;italic&quot;,size=9))+
   labs(caption=&quot;Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.&quot;)</code></pre>
 <pre class="r"><code>plot(impact3d_cons_resp)+
   xlab(&quot;Date&quot;)+
   ylab(&quot;Consultations&quot;)+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),&quot;date&quot;])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),&quot;year_week&quot;])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= &quot;italic&quot;,size=9))+
   labs(caption=&quot;Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.&quot;)</code></pre>
@@ -1113,25 +1141,25 @@ model2d_ratio &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data15a64_
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Thu Feb 11 12:01:18 2021
+<pre><code>=-=-=-=-= Iteration 0 Tue Mar 30 10:45:34 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Thu Feb 11 12:01:33 2021
+=-=-=-=-= Iteration 4000 Tue Mar 30 10:45:55 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Thu Feb 11 12:01:47 2021
+=-=-=-=-= Iteration 8000 Tue Mar 30 10:46:15 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Thu Feb 11 12:02:02 2021
+=-=-=-=-= Iteration 12000 Tue Mar 30 10:46:35 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Thu Feb 11 12:02:17 2021
+=-=-=-=-= Iteration 16000 Tue Mar 30 10:46:55 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Thu Feb 11 12:02:32 2021
+=-=-=-=-= Iteration 20000 Tue Mar 30 10:47:15 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Thu Feb 11 12:02:47 2021
+=-=-=-=-= Iteration 24000 Tue Mar 30 10:47:35 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Thu Feb 11 12:03:02 2021
+=-=-=-=-= Iteration 28000 Tue Mar 30 10:47:56 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Thu Feb 11 12:03:18 2021
+=-=-=-=-= Iteration 32000 Tue Mar 30 10:48:16 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Thu Feb 11 12:03:34 2021
+=-=-=-=-= Iteration 36000 Tue Mar 30 10:48:36 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #              
@@ -1148,8 +1176,8 @@ burn2d &lt;- SuggestBurn(0.1, model2d_ratio)
 <pre class="r"><code>plot(impact3d_ratio)+
   xlab(&quot;Date&quot;)+
   ylab(&quot;Ratio&quot;)+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
-                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),&quot;date&quot;])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),&quot;year_week&quot;])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= &quot;italic&quot;,size=9))+
   #scale_y_continuous(labels=scales::percent)+
@@ -1251,7 +1279,7 @@ cbind.data.frame(model2d_rate_trauma_resp_traj_df_melt_final,
   #               breaks = &quot;3 months&quot;)
   #facet_zoom(xlim = c(253, nrow(actual_vs_fitted_and_forecast_arima)))
 plot_comp_fit_actual_ratio+
-    ggforce::facet_zoom(x = date&gt;=as.Date(&quot;2019-10-01&quot;) &amp; date&lt;=as.Date(&quot;2019-12-31&quot;),shrink=F,zoom.size = .5)+
+    ggforce::facet_zoom(x = date&gt;=as.Date(&quot;2019-10-01&quot;) &amp; date&lt;=as.Date(&quot;2019-12-23&quot;),shrink=F,zoom.size = .5)+
     geom_vline(xintercept = as.Date(&quot;2019-10-21&quot;), col = 2, lty = 2, size=1)+
   labs(caption=&quot;Note. Vertical Line, Social Protests;\nBlack Line= Actual Trend; Blue Line= Average Estimations&quot;)
 
@@ -1285,25 +1313,25 @@ model2d_ratio_resp &lt;- bsts(c(as.numeric(unlist(data15a64_rn_ratio[which(data1
                niter = clus_iter, 
               # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
                seed= 2125)</code></pre>
-<pre><code>=-=-=-=-= Iteration 0 Thu Feb 11 12:04:21 2021
+<pre><code>=-=-=-=-= Iteration 0 Tue Mar 30 10:49:37 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 3000 Thu Feb 11 12:04:36 2021
+=-=-=-=-= Iteration 4000 Tue Mar 30 10:49:57 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 6000 Thu Feb 11 12:04:51 2021
+=-=-=-=-= Iteration 8000 Tue Mar 30 10:50:18 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 9000 Thu Feb 11 12:05:06 2021
+=-=-=-=-= Iteration 12000 Tue Mar 30 10:50:39 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 12000 Thu Feb 11 12:05:21 2021
+=-=-=-=-= Iteration 16000 Tue Mar 30 10:50:59 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 15000 Thu Feb 11 12:05:36 2021
+=-=-=-=-= Iteration 20000 Tue Mar 30 10:51:19 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 18000 Thu Feb 11 12:05:51 2021
+=-=-=-=-= Iteration 24000 Tue Mar 30 10:51:39 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 21000 Thu Feb 11 12:06:06 2021
+=-=-=-=-= Iteration 28000 Tue Mar 30 10:51:59 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 24000 Thu Feb 11 12:06:21 2021
+=-=-=-=-= Iteration 32000 Tue Mar 30 10:52:19 2021
  =-=-=-=-=
-=-=-=-=-= Iteration 27000 Thu Feb 11 12:06:36 2021
+=-=-=-=-= Iteration 36000 Tue Mar 30 10:52:38 2021
  =-=-=-=-=</code></pre>
 <pre class="r"><code>#,
 #              
@@ -1320,8 +1348,8 @@ burn2d &lt;- SuggestBurn(0.1, model2d_ratio_resp)
 <pre class="r"><code>plot(impact3d_ratio_resp)+
   xlab(&quot;Date&quot;)+
   ylab(&quot;Ratio&quot;)+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
-                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),&quot;date&quot;])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),&quot;year_week&quot;])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= &quot;italic&quot;,size=9))+
   #scale_y_continuous(labels=scales::percent)+
@@ -1423,7 +1451,7 @@ cbind.data.frame(model2d_rate_resp_traj_df_melt_final,
   #               breaks = &quot;3 months&quot;)
   #facet_zoom(xlim = c(253, nrow(actual_vs_fitted_and_forecast_arima)))
 plot_comp_fit_actual_ratio+
-    ggforce::facet_zoom(x = date&gt;=as.Date(&quot;2019-10-01&quot;) &amp; date&lt;=as.Date(&quot;2019-12-31&quot;),shrink=F,zoom.size = .5)+
+    ggforce::facet_zoom(x = date&gt;=as.Date(&quot;2019-10-01&quot;) &amp; date&lt;=as.Date(&quot;2019-12-23&quot;),shrink=F,zoom.size = .5)+
     geom_vline(xintercept = as.Date(&quot;2019-10-21&quot;), col = 2, lty = 2, size=1)+
   labs(caption=&quot;Note. Vertical Line, Social Protests;\nBlack Line= Actual Trend; Blue Line= Average Estimations&quot;)
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_</code></pre>
@@ -1451,7 +1479,7 @@ df_results_bsts %&gt;%
 Effect&quot;,&quot;95%Credible Interval&quot;, &quot;P- Value&quot;,&quot;Relative Effect(%)&quot;,&quot;95%Credible Interval&quot;),
                align =rep(&#39;c&#39;, 101)) %&gt;%
     kableExtra::kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;),font_size= 11) %&gt;% 
-  kableExtra::add_footnote(c(&quot;a- Each model had a structure of studentized distribution of errors, and a conservative prior standard deviation of .1&quot;,&quot;b- Models also included circulatory hospitalizations as a control variable.&quot;,&quot;c- Models also included circulatory consultations as a control variable.&quot;, &quot;d- Models also included the proportion of circulatory hospitalizations of circulatory consultations (x 1,000 population) as a control variable.&quot;),
+  kableExtra::add_footnote(c(&quot;a- Each model had a structure of studentized distribution of errors, and a conservative prior standard deviation of .1&quot;),
                              notation = &quot;none&quot;)%&gt;%
   kableExtra::scroll_box(width = &quot;100%&quot;, height = &quot;375px&quot;)</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:375px; overflow-x: scroll; width:100%; ">
@@ -1487,19 +1515,19 @@ Relative Effect(%)
 Trauma Consultations
 </td>
 <td style="text-align:center;">
--144.58
+-136.76
 </td>
 <td style="text-align:center;">
--405.43, 114.89
+-379.56, 108.88
 </td>
 <td style="text-align:center;">
-0.133
+0.134
 </td>
 <td style="text-align:center;">
--15.19
+-14.49
 </td>
 <td style="text-align:center;">
--42.61, 12.08
+-40.22, 11.54
 </td>
 </tr>
 <tr>
@@ -1507,19 +1535,19 @@ Trauma Consultations
 Respiratory Consultations
 </td>
 <td style="text-align:center;">
--77.62
+-39.24
 </td>
 <td style="text-align:center;">
--161.06, 6.60
+-116.74, 39.39
 </td>
 <td style="text-align:center;">
-0.034
+0.160
 </td>
 <td style="text-align:center;">
--45.92
+-30.04
 </td>
 <td style="text-align:center;">
--95.29, 3.90
+-89.36, 30.15
 </td>
 </tr>
 <tr>
@@ -1527,19 +1555,19 @@ Respiratory Consultations
 Trauma Hospitalizations
 </td>
 <td style="text-align:center;">
-11.95
+10.40
 </td>
 <td style="text-align:center;">
-3.39, 20.23
+2.85, 18.75
 </td>
 <td style="text-align:center;">
-0.005
+0.003
 </td>
 <td style="text-align:center;">
-17.21
+14.65
 </td>
 <td style="text-align:center;">
-4.89, 29.13
+4.01, 26.41
 </td>
 </tr>
 <tr>
@@ -1547,19 +1575,19 @@ Trauma Hospitalizations
 Respiratory Hospitalizations
 </td>
 <td style="text-align:center;">
--4.00
+-1.48
 </td>
 <td style="text-align:center;">
--13.62, 5.53
+-9.59, 6.76
 </td>
 <td style="text-align:center;">
-0.202
+0.354
 </td>
 <td style="text-align:center;">
--16.33
+-6.75
 </td>
 <td style="text-align:center;">
--55.60, 22.56
+-43.63, 30.76
 </td>
 </tr>
 <tr>
@@ -1567,19 +1595,19 @@ Respiratory Hospitalizations
 Trauma Hospitalizations per 1,000 consultations
 </td>
 <td style="text-align:center;">
-29.49
+28.90
 </td>
 <td style="text-align:center;">
-8.03, 50.12
+9.56, 49.75
 </td>
 <td style="text-align:center;">
-0.006
+0.003
 </td>
 <td style="text-align:center;">
-40.65
+39.53
 </td>
 <td style="text-align:center;">
-11.08, 69.10
+13.07, 68.04
 </td>
 </tr>
 <tr>
@@ -1587,19 +1615,19 @@ Trauma Hospitalizations per 1,000 consultations
 Respiratory Hospitalizations per 1,000 consultations
 </td>
 <td style="text-align:center;">
-96.10
+85.50
 </td>
 <td style="text-align:center;">
-49.05, 143.53
+42.65, 127.52
 </td>
 <td style="text-align:center;">
 &lt;0.001
 </td>
 <td style="text-align:center;">
-71.41
+58.90
 </td>
 <td style="text-align:center;">
-36.45, 106.66
+29.38, 87.85
 </td>
 </tr>
 </tbody>
@@ -1607,21 +1635,6 @@ Respiratory Hospitalizations per 1,000 consultations
 <tr>
 <td style="padding: 0; border:0;" colspan="100%">
 <sup></sup> a- Each model had a structure of studentized distribution of errors, and a conservative prior standard deviation of .1
-</td>
-</tr>
-<tr>
-<td style="padding: 0; border:0;" colspan="100%">
-<sup></sup> b- Models also included circulatory hospitalizations as a control variable.
-</td>
-</tr>
-<tr>
-<td style="padding: 0; border:0;" colspan="100%">
-<sup></sup> c- Models also included circulatory consultations as a control variable.
-</td>
-</tr>
-<tr>
-<td style="padding: 0; border:0;" colspan="100%">
-<sup></sup> d- Models also included the proportion of circulatory hospitalizations of circulatory consultations (x 1,000 population) as a control variable.
 </td>
 </tr>
 </tfoot>
@@ -1640,7 +1653,8 @@ data15a64_rn_ratio %&gt;%
   dplyr::filter(isoweek!=53) %&gt;% 
   dplyr::mutate(did=factor(did)) %&gt;% 
   dplyr::mutate(month=as.numeric(month)) %&gt;% 
-  dplyr::mutate(year=as.numeric(year)) %&gt;% 
+  #2021-03-30 replace year  variable for isoyear
+  dplyr::mutate(year=as.numeric(isoyear)) %&gt;% 
 #*Because graphical evidence suggests
 #*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
 #*transformations of scaled time, respectively.
@@ -1650,6 +1664,10 @@ data15a64_rn_ratio %&gt;%
   dplyr::mutate(month_sin=sin(month*2*pi/12)) %&gt;% 
   dplyr::mutate(month_cos=cos(month*2*pi/12)) %&gt;% 
   dplyr::mutate(tx=factor(tx),txtime=factor(txtime))
+
+attr(data15a64_rn_rdata15a64_rn_ratio_itsatio$month_sin,&quot;label&quot;) &lt;- &quot;Sine of the month scaled to the range (0, 2π)&quot;</code></pre>
+<pre><code>Error in attr(data15a64_rn_rdata15a64_rn_ratio_itsatio$month_sin, &quot;label&quot;) &lt;- &quot;Sine of the month scaled to the range (0, 2p)&quot;: objeto &#39;data15a64_rn_rdata15a64_rn_ratio_itsatio&#39; no encontrado</code></pre>
+<pre class="r"><code>attr(data15a64_rn_ratio_its$month_cos,&quot;label&quot;) &lt;- &quot;Cosine of the month scaled to the range (0, 2π)&quot;
 
 rio::export(data15a64_rn_ratio_its,&quot;data15a64_rn_ratio_its.dta&quot;)
 
@@ -1779,7 +1797,7 @@ use data15a64_rn_ratio_its_did.dta
 xtset year isoweek
 
 replace did=0 if year!=2019
-replace did=0 if year==2019 &amp; isoweek&lt;43
+replace did=0 if year&gt;=2019 &amp; isoweek&lt;43
 generate byte didf=recode(did,0,1)
 drop did
 gen did= didf
@@ -1796,8 +1814,6 @@ gen did= didf
 *add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
 cap gen month_sin = sin(month*2*c(pi)/12)
 cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)
-
-
 
 cap drop fe_*
 cap drop xtscc_*
@@ -1863,7 +1879,6 @@ using fe_results.csv, append varlabels(2.txtime &quot;Social Protest&quot;) keep
 *******************************************************************************
 **** XTREG LET ME ESTIMATE AIC &amp; BIC, SHOULD NOT DIFFER WITH XTSCC
 *******************************************************************************
-
 
 local name `&quot; &quot;Trauma,Hospitalizations&quot; &quot;Respiratory,Hospitalizations&quot; &quot;Trauma,Consultations&quot; &quot;Respiratory,Consultations&quot; &quot;Trauma Hospitalizations,per Consultations (x1000)&quot; &quot;Respiratory Hospitalizations,per Consultations (x1000)&quot; &quot;&#39; 
 foreach v of varlist hosp_trauma hosp_resp ///
@@ -2052,11 +2067,11 @@ r(109);
 
 G:\Mi unidad\paperestallido
 
-       panel variable:  year (strongly balanced)
+       panel variable:  year (unbalanced)
         time variable:  isoweek, 1 to 52
                 delta:  1 unit
 
-(208 real changes made)
+(207 real changes made)
 
 (42 real changes made)
 
@@ -2229,10 +2244,10 @@ Panel Estimation: Driscoll-Kraay standard errors
                  TH-SinCos RH-Factor TC-Factor RC-Factor TR-Factor RR-Factor
                  Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s Coef/CI~s
 ----------------------------------------------------------------------------
-Social Protest        7.53      0.37   -122.90    -55.74     24.38     86.55
+Social Protest        7.50      0.31   -116.61    -52.60     23.17     81.19
 ----------------------------------------------------------------------------
-N                      260       260       260       260       260       260
-r2_w                  0.14      0.26      0.34      0.64      0.17      0.22
+N                      259       259       259       259       259       259
+r2_w                  0.14      0.26      0.35      0.64      0.17      0.22
 ----------------------------------------------------------------------------
 
 
@@ -2242,24 +2257,24 @@ r2_w                  0.14      0.26      0.34      0.64      0.17      0.22
       name:  &lt;unnamed&gt;
        log:  G:\Mi unidad\paperestallido\log.txt
   log type:  text
- opened on:  11 Feb 2021, 12:08:41
+ opened on:  30 Mar 2021, 10:55:02
 
-11.7 [1.63,21.77]
+11.65 [1.65,21.66]
 
-1.76 [-18.58,22.11]
+1.5 [-17.72,20.72]
 
--16.45 [-25.47,-7.42]
+-15.54 [-24.43,-6.65]
 
--44.3 [-72.83,-15.78]
+-41.16 [-69.44,-12.87]
 
-27.65 [17.91,37.4]
+26.41 [17.31,35.52]
 
-48.94 [37.5,60.37]
+46.43 [33.77,59.08]
 
       name:  &lt;unnamed&gt;
        log:  G:\Mi unidad\paperestallido\log.txt
   log type:  text
- closed on:  11 Feb 2021, 12:08:41
+ closed on:  30 Mar 2021, 10:55:02
 -------------------------------------------------------------------------------</code></pre>
 <pre class="r"><code>fe_results_fit_indices &lt;- 
      readr::read_delim(&quot;fe_results_fit.csv&quot;, 
@@ -2345,13 +2360,13 @@ Trauma Consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-3,210
+3,192
 </td>
 <td style="text-align:center;">
-3,217
+3,199
 </td>
 <td style="text-align:center;">
-116.55
+115.21
 </td>
 </tr>
 <tr>
@@ -2362,13 +2377,13 @@ Trauma Consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-3,212
+3,193
 </td>
 <td style="text-align:center;">
-3,223
+3,204
 </td>
 <td style="text-align:center;">
-116.72
+115.32
 </td>
 </tr>
 <tr>
@@ -2379,13 +2394,13 @@ Trauma Consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-3,124
+3,102
 </td>
 <td style="text-align:center;">
-3,171
+3,149
 </td>
 <td style="text-align:center;">
-96.88
+95.03
 </td>
 </tr>
 <tr>
@@ -2396,13 +2411,13 @@ Trauma Consultations
 Month as a Quadratic Term
 </td>
 <td style="text-align:center;">
-3,211
+3,193
 </td>
 <td style="text-align:center;">
-3,222
+3,204
 </td>
 <td style="text-align:center;">
-116.61
+115.33
 </td>
 </tr>
 <tr>
@@ -2413,13 +2428,13 @@ Trauma Consultations
 Sine &amp; Cosine of the month scaled to the range 0,1p
 </td>
 <td style="text-align:center;">
-3,153
+3,131
 </td>
 <td style="text-align:center;">
-3,167
+3,145
 </td>
 <td style="text-align:center;">
-104.07
+102.03
 </td>
 </tr>
 <tr>
@@ -2430,13 +2445,13 @@ Respiratory Consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-2,771
+2,760
 </td>
 <td style="text-align:center;">
-2,778
+2,767
 </td>
 <td style="text-align:center;">
-50.11
+50.08
 </td>
 </tr>
 <tr>
@@ -2447,13 +2462,13 @@ Respiratory Consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-2,757
+2,753
 </td>
 <td style="text-align:center;">
-2,768
+2,763
 </td>
 <td style="text-align:center;">
-48.68
+49.28
 </td>
 </tr>
 <tr>
@@ -2464,13 +2479,13 @@ Respiratory Consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-2,550
+2,543
 </td>
 <td style="text-align:center;">
-2,596
+2,590
 </td>
 <td style="text-align:center;">
-32.09
+32.29
 </td>
 </tr>
 <tr>
@@ -2481,13 +2496,13 @@ Respiratory Consultations
 Month as a Quadratic Term
 </td>
 <td style="text-align:center;">
-2,772
+2,762
 </td>
 <td style="text-align:center;">
-2,782
+2,773
 </td>
 <td style="text-align:center;">
-50.06
+50.17
 </td>
 </tr>
 <tr>
@@ -2498,13 +2513,13 @@ Respiratory Consultations
 Sine &amp; Cosine of the month scaled to the range 0,1p
 </td>
 <td style="text-align:center;">
-2,548
+2,541
 </td>
 <td style="text-align:center;">
-2,563
+2,555
 </td>
 <td style="text-align:center;">
-32.52
+32.68
 </td>
 </tr>
 <tr>
@@ -2515,13 +2530,13 @@ Trauma Hospitalizations
 No monthly term
 </td>
 <td style="text-align:center;">
-1,953
+1,939
 </td>
 <td style="text-align:center;">
-1,960
+1,946
 </td>
 <td style="text-align:center;">
-10.39
+10.25
 </td>
 </tr>
 <tr>
@@ -2530,32 +2545,32 @@ Trauma Hospitalizations
 </td>
 <td style="text-align:left;">
 Continuous Monthly term
-</td>
-<td style="text-align:center;">
-1,952
-</td>
-<td style="text-align:center;">
-1,963
-</td>
-<td style="text-align:center;">
-10.36
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Trauma Hospitalizations
-</td>
-<td style="text-align:left;">
-11 dummy variables of the month
 </td>
 <td style="text-align:center;">
 1,940
 </td>
 <td style="text-align:center;">
-1,986
+1,950
 </td>
 <td style="text-align:center;">
-9.93
+10.25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trauma Hospitalizations
+</td>
+<td style="text-align:left;">
+11 dummy variables of the month
+</td>
+<td style="text-align:center;">
+1,924
+</td>
+<td style="text-align:center;">
+1,970
+</td>
+<td style="text-align:center;">
+9.77
 </td>
 </tr>
 <tr>
@@ -2566,13 +2581,13 @@ Trauma Hospitalizations
 Month as a Quadratic Term
 </td>
 <td style="text-align:center;">
-1,955
+1,941
 </td>
 <td style="text-align:center;">
-1,965
+1,951
 </td>
 <td style="text-align:center;">
-10.41
+10.27
 </td>
 </tr>
 <tr>
@@ -2583,13 +2598,13 @@ Trauma Hospitalizations
 Sine &amp; Cosine of the month scaled to the range 0,1p
 </td>
 <td style="text-align:center;">
-1,928
+1,913
 </td>
 <td style="text-align:center;">
-1,943
+1,927
 </td>
 <td style="text-align:center;">
-9.87
+9.72
 </td>
 </tr>
 <tr>
@@ -2600,13 +2615,13 @@ Respiratory Hospitalizations
 No monthly term
 </td>
 <td style="text-align:center;">
-1,760
+1,752
 </td>
 <td style="text-align:center;">
-1,767
+1,759
 </td>
 <td style="text-align:center;">
-7.17
+7.15
 </td>
 </tr>
 <tr>
@@ -2617,13 +2632,13 @@ Respiratory Hospitalizations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-1,757
+1,750
 </td>
 <td style="text-align:center;">
-1,768
+1,761
 </td>
 <td style="text-align:center;">
-7.12
+7.11
 </td>
 </tr>
 <tr>
@@ -2632,49 +2647,49 @@ Respiratory Hospitalizations
 </td>
 <td style="text-align:left;">
 11 dummy variables of the month
+</td>
+<td style="text-align:center;">
+1,697
+</td>
+<td style="text-align:center;">
+1,743
+</td>
+<td style="text-align:center;">
+6.30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Respiratory Hospitalizations
+</td>
+<td style="text-align:left;">
+Month as a Quadratic Term
+</td>
+<td style="text-align:center;">
+1,754
+</td>
+<td style="text-align:center;">
+1,764
+</td>
+<td style="text-align:center;">
+7.16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Respiratory Hospitalizations
+</td>
+<td style="text-align:left;">
+Sine &amp; Cosine of the month scaled to the range 0,1p
+</td>
+<td style="text-align:center;">
+1,691
 </td>
 <td style="text-align:center;">
 1,705
 </td>
 <td style="text-align:center;">
-1,751
-</td>
-<td style="text-align:center;">
-6.32
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Respiratory Hospitalizations
-</td>
-<td style="text-align:left;">
-Month as a Quadratic Term
-</td>
-<td style="text-align:center;">
-1,762
-</td>
-<td style="text-align:center;">
-1,772
-</td>
-<td style="text-align:center;">
-7.18
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Respiratory Hospitalizations
-</td>
-<td style="text-align:left;">
-Sine &amp; Cosine of the month scaled to the range 0,1p
-</td>
-<td style="text-align:center;">
-1,699
-</td>
-<td style="text-align:center;">
-1,713
-</td>
-<td style="text-align:center;">
-6.35
+6.33
 </td>
 </tr>
 <tr>
@@ -2685,13 +2700,13 @@ Trauma Hospitalizations per 1,000 consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-2,237
+2,231
 </td>
 <td style="text-align:center;">
-2,244
+2,238
 </td>
 <td style="text-align:center;">
-17.95
+18.04
 </td>
 </tr>
 <tr>
@@ -2702,13 +2717,13 @@ Trauma Hospitalizations per 1,000 consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-2,238
+2,233
 </td>
 <td style="text-align:center;">
-2,249
+2,243
 </td>
 <td style="text-align:center;">
-17.94
+18.06
 </td>
 </tr>
 <tr>
@@ -2719,13 +2734,13 @@ Trauma Hospitalizations per 1,000 consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-2,220
+2,214
 </td>
 <td style="text-align:center;">
-2,266
+2,261
 </td>
 <td style="text-align:center;">
-17.02
+17.11
 </td>
 </tr>
 <tr>
@@ -2736,13 +2751,13 @@ Trauma Hospitalizations per 1,000 consultations
 Month as a Quadratic Term
 </td>
 <td style="text-align:center;">
-2,238
+2,233
 </td>
 <td style="text-align:center;">
-2,248
+2,243
 </td>
 <td style="text-align:center;">
-17.93
+18.05
 </td>
 </tr>
 <tr>
@@ -2753,13 +2768,13 @@ Trauma Hospitalizations per 1,000 consultations
 Sine &amp; Cosine of the month scaled to the range 0,1p
 </td>
 <td style="text-align:center;">
-2,237
+2,232
 </td>
 <td style="text-align:center;">
-2,252
+2,246
 </td>
 <td style="text-align:center;">
-17.89
+17.99
 </td>
 </tr>
 <tr>
@@ -2770,13 +2785,13 @@ Respiratory Hospitalizations per 1,000 consultations
 No monthly term
 </td>
 <td style="text-align:center;">
-2,703
+2,691
 </td>
 <td style="text-align:center;">
-2,710
+2,698
 </td>
 <td style="text-align:center;">
-43.93
+43.82
 </td>
 </tr>
 <tr>
@@ -2787,13 +2802,13 @@ Respiratory Hospitalizations per 1,000 consultations
 Continuous Monthly term
 </td>
 <td style="text-align:center;">
-2,699
+2,691
 </td>
 <td style="text-align:center;">
-2,710
+2,702
 </td>
 <td style="text-align:center;">
-43.57
+43.73
 </td>
 </tr>
 <tr>
@@ -2804,13 +2819,13 @@ Respiratory Hospitalizations per 1,000 consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-2,690
+2,682
 </td>
 <td style="text-align:center;">
-2,736
+2,728
 </td>
 <td style="text-align:center;">
-42.01
+42.18
 </td>
 </tr>
 <tr>
@@ -2821,10 +2836,10 @@ Respiratory Hospitalizations per 1,000 consultations
 Month as a Quadratic Term
 </td>
 <td style="text-align:center;">
-2,703
+2,693
 </td>
 <td style="text-align:center;">
-2,714
+2,704
 </td>
 <td style="text-align:center;">
 43.90
@@ -2838,13 +2853,13 @@ Respiratory Hospitalizations per 1,000 consultations
 Sine &amp; Cosine of the month scaled to the range 0,1p
 </td>
 <td style="text-align:center;">
-2,688
+2,675
 </td>
 <td style="text-align:center;">
-2,702
+2,690
 </td>
 <td style="text-align:center;">
-42.53
+42.36
 </td>
 </tr>
 </tbody>
@@ -2981,22 +2996,22 @@ Trauma Consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
--122.90
+-116.61
 </td>
 <td style="text-align:center;">
--186.99,-58.80
+-180.39,-52.84
 </td>
 <td style="text-align:center;">
--16.45
+-15.54
 </td>
 <td style="text-align:center;">
--25.47,-7.42
+-24.43,-6.65
 </td>
 <td style="text-align:center;">
-&lt;0.001
+0.001
 </td>
 <td style="text-align:center;">
-0.34
+0.35
 </td>
 </tr>
 <tr>
@@ -3007,19 +3022,19 @@ Respiratory Consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
--55.74
+-52.60
 </td>
 <td style="text-align:center;">
--85.64,-25.84
+-83.16,-22.03
 </td>
 <td style="text-align:center;">
--44.30
+-41.16
 </td>
 <td style="text-align:center;">
--72.83,-15.78
+-69.44,-12.87
 </td>
 <td style="text-align:center;">
-&lt;0.001
+0.001
 </td>
 <td style="text-align:center;">
 0.64
@@ -3033,16 +3048,16 @@ Trauma Hospitalizations
 Sine &amp; Cosine of the month scaled to the range 0,1p
 </td>
 <td style="text-align:center;">
-7.53
+7.50
 </td>
 <td style="text-align:center;">
-0.53,14.52
+0.55,14.45
 </td>
 <td style="text-align:center;">
-11.70
+11.65
 </td>
 <td style="text-align:center;">
-1.63,21.77
+1.65,21.66
 </td>
 <td style="text-align:center;">
 0.035
@@ -3059,19 +3074,19 @@ Respiratory Hospitalizations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-0.37
+0.31
 </td>
 <td style="text-align:center;">
--3.98,4.72
+-3.80,4.42
 </td>
 <td style="text-align:center;">
-1.76
+1.50
 </td>
 <td style="text-align:center;">
--18.58,22.11
+-17.72,20.72
 </td>
 <td style="text-align:center;">
-0.867
+0.880
 </td>
 <td style="text-align:center;">
 0.26
@@ -3085,16 +3100,16 @@ Trauma Hospitalizations per 1,000 consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-24.38
+23.17
 </td>
 <td style="text-align:center;">
-14.29,34.46
+13.84,32.49
 </td>
 <td style="text-align:center;">
-27.65
+26.41
 </td>
 <td style="text-align:center;">
-17.91,37.4
+17.31,35.52
 </td>
 <td style="text-align:center;">
 &lt;0.001
@@ -3111,16 +3126,16 @@ Respiratory Hospitalizations per 1,000 consultations
 11 dummy variables of the month
 </td>
 <td style="text-align:center;">
-86.55
+81.19
 </td>
 <td style="text-align:center;">
-60.30,112.79
+53.15,109.23
 </td>
 <td style="text-align:center;">
-48.94
+46.43
 </td>
 <td style="text-align:center;">
-37.5,60.37
+33.77,59.08
 </td>
 <td style="text-align:center;">
 &lt;0.001
@@ -3151,11 +3166,11 @@ Respiratory Hospitalizations per 1,000 consultations
 <pre><code>[1] &quot;C:/Users/CISS Fondecyt/OneDrive/Documentos/R/win-library/4.0&quot;</code></pre>
 <pre class="r"><code>rstudioapi::getSourceEditorContext()</code></pre>
 <pre><code>Document Context: 
-- id:        &#39;9ECFF96C&#39;
+- id:        &#39;F3A7F1BE&#39;
 - path:      &#39;G:/Mi unidad/paperestallido/Consolidacion_BDs_FINAL.Rmd&#39;
-- contents:  &lt;1631 rows&gt;
+- contents:  &lt;1657 rows&gt;
 Document Selection:
-- [814, 1] -- [814, 1]: &#39;&#39;</code></pre>
+- [116, 17] -- [116, 17]: &#39;&#39;</code></pre>
 <pre class="r"><code>      tryCatch(
                      {
       save.image(paste0(getwd(),&quot;/&quot;,&quot;Definitive_models_2021.RData&quot;))
@@ -3169,7 +3184,7 @@ Document Selection:
 sessionInfo()</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 18363)
+Running under: Windows 10 x64 (build 19042)
 
 Matrix products: default
 
@@ -3255,13 +3270,7 @@ loaded via a namespace (and not attached):
 [139] performance_0.4.8       blob_1.2.1              latticeExtra_0.6-29    </code></pre>
 <pre class="r"><code>#Use any number of times, to revert back to the last commit without deleting any files that you have recently created.
 #git reset --soft HEAD~1
-unlink(&#39;Causal_Impact2_hosp_resp_cache&#39;, recursive = TRUE)
-unlink(&#39;Causal_Impact2_hosp_trauma_cache&#39;, recursive = TRUE)
-unlink(&#39;Causal_Impact2_cons_resp_cache&#39;, recursive = TRUE)
-unlink(&#39;Causal_Impact2_cons_trauma_cache&#39;, recursive = TRUE)
-unlink(&#39;Causal_Impact2_cons_trauma_cache&#39;, recursive = TRUE)
-unlink(&#39;Plots 2021-01-18_cache&#39;, recursive = TRUE)
-unlink(&#39;BD_Compilation_cache&#39;, recursive = TRUE)</code></pre>
+unlink(&#39;*_cache&#39;, recursive = T, force=T)</code></pre>
 </div>
 
 

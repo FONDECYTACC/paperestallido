@@ -1,7 +1,7 @@
 ---
 title: "BSTS Selected Models"
 author: "ags"
-date: "2021-01-20"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     code_folding: hide
@@ -13,6 +13,37 @@ output:
     toc_float: yes
     number_sections: yes
 ---
+
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+    // onClick function for all plots (img's)
+
+    $('img:not(.zoomImg)').click(function() {
+
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+
+    });
+
+    // onClick function for zoomImg
+
+    $('img.zoomImg').click(function() {
+
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+
+    });
+
+  });
+```
 
 ```{=html}
 <style type="text/css">
@@ -78,11 +109,11 @@ load(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
 #xaringan::inf_mr()
 
 if(isTRUE(getOption('knitr.in.progress'))==T){
-    clus_iter=30000
+    clus_iter=40000
 } else {
   input <- readline('¿Are you gonna run the dataset with the whole iterations? (Si/No): ')
   if(input=="Si"){
-    clus_iter=30000
+    clus_iter=40000
   } else {
     clus_iter=1000
   }
@@ -347,7 +378,7 @@ The model of Bayesian Structural Time Series (BSTS) with Causal Impact Analysis 
 
 <br>
 
-Previously, we selected those specifications on time series that showed less cumulative errors for each outcome. Here, we defined the final models by controlling **only with circulatory system hospitalizations**. We discarded other covariates, because we suspected that respiratory hospitalizations or consultations, trauma hospitalizations or consultations, and total consultations or total hospitalizations (composed by respiratory and trauma) may also be affected by social protests. 
+Previously, we selected those specifications on time series that showed less cumulative errors for each outcome. We discarded covariates, because we suspected that respiratory hospitalizations or consultations, trauma hospitalizations or consultations, and total consultations or total hospitalizations (composed by respiratory and trauma) may also be affected by social protests, as well as circulatory system hospitalizations and consultations. 
 
 <br>
 
@@ -804,7 +835,7 @@ cbind.data.frame(model2d_rate_trauma_resp_traj_df_melt_final,
   #               breaks = "3 months")
   #facet_zoom(xlim = c(253, nrow(actual_vs_fitted_and_forecast_arima)))
 plot_comp_fit_actual_ratio+
-    ggforce::facet_zoom(x = date>=as.Date("2019-10-01") & date<=as.Date("2019-12-31"),shrink=F,zoom.size = .5)+
+    ggforce::facet_zoom(x = date>=as.Date("2019-10-01") & date<=as.Date("2019-12-23"),shrink=F,zoom.size = .5)+
     geom_vline(xintercept = as.Date("2019-10-21"), col = 2, lty = 2, size=1)+
   labs(caption="Note. Vertical Line, Social Protests;\nBlack Line= Actual Trend; Blue Line= Average Estimations")
 
@@ -971,7 +1002,7 @@ cbind.data.frame(model2d_rate_resp_traj_df_melt_final,
   #               breaks = "3 months")
   #facet_zoom(xlim = c(253, nrow(actual_vs_fitted_and_forecast_arima)))
 plot_comp_fit_actual_ratio+
-    ggforce::facet_zoom(x = date>=as.Date("2019-10-01") & date<=as.Date("2019-12-31"),shrink=F,zoom.size = .5)+
+    ggforce::facet_zoom(x = date>=as.Date("2019-10-01") & date<=as.Date("2019-12-23"),shrink=F,zoom.size = .5)+
     geom_vline(xintercept = as.Date("2019-10-21"), col = 2, lty = 2, size=1)+
   labs(caption="Note. Vertical Line, Social Protests;\nBlack Line= Actual Trend; Blue Line= Average Estimations")
 #_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
@@ -1011,10 +1042,9 @@ Effect","95%Credible Interval", "P- Value","Relative Effect(%)","95%Credible Int
 
 # Difference-in-differences
 
-
 <br>
 
-Data is available in the following  [link]("https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true") (https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true).
+Data is available in the following <a href="https://github.com/FONDECYTACC/paperestallido/blob/main/data15a64_rn_ratio_its.dta?raw=true">link</a>.
 
 <br>
 
@@ -1025,7 +1055,8 @@ data15a64_rn_ratio %>%
   dplyr::filter(isoweek!=53) %>% 
   dplyr::mutate(did=factor(did)) %>% 
   dplyr::mutate(month=as.numeric(month)) %>% 
-  dplyr::mutate(year=as.numeric(year)) %>% 
+  #2021-03-30 replace year  variable for isoyear
+  dplyr::mutate(year=as.numeric(isoyear)) %>% 
 #*Because graphical evidence suggests
 #*a periodic behavior, the analysis includes the sin1 and cos1 variables, which are sine and cosine
 #*transformations of scaled time, respectively.
@@ -1035,6 +1066,9 @@ data15a64_rn_ratio %>%
   dplyr::mutate(month_sin=sin(month*2*pi/12)) %>% 
   dplyr::mutate(month_cos=cos(month*2*pi/12)) %>% 
   dplyr::mutate(tx=factor(tx),txtime=factor(txtime))
+
+attr(data15a64_rn_rdata15a64_rn_ratio_itsatio$month_sin,"label") <- "Sine of the month scaled to the range 0,1π"
+attr(data15a64_rn_ratio_its$month_cos,"label") <- "Cosine of the month scaled to the range 0,1π"
 
 rio::export(data15a64_rn_ratio_its,"data15a64_rn_ratio_its.dta")
 
@@ -1181,7 +1215,7 @@ use data15a64_rn_ratio_its_did.dta
 xtset year isoweek
 
 replace did=0 if year!=2019
-replace did=0 if year==2019 & isoweek<43
+replace did=0 if year>=2019 & isoweek<43
 generate byte didf=recode(did,0,1)
 drop did
 gen did= didf
@@ -1198,8 +1232,6 @@ gen did= didf
 *add a fixed seasonality component based on the cosine of the season (month of year) scaled to the range (0, 2π) 
 cap gen month_sin = sin(month*2*c(pi)/12)
 cap gen month_cos = cos(month*2*c(pi)/12) //*(month*2*c(pi)
-
-
 
 cap drop fe_*
 cap drop xtscc_*
@@ -1265,7 +1297,6 @@ using fe_results.csv, append varlabels(2.txtime "Social Protest") keep(2.txtime)
 *******************************************************************************
 **** XTREG LET ME ESTIMATE AIC & BIC, SHOULD NOT DIFFER WITH XTSCC
 *******************************************************************************
-
 
 local name `" "Trauma,Hospitalizations" "Respiratory,Hospitalizations" "Trauma,Consultations" "Respiratory,Consultations" "Trauma Hospitalizations,per Consultations (x1000)" "Respiratory Hospitalizations,per Consultations (x1000)" "' 
 foreach v of varlist hosp_trauma hosp_resp ///
@@ -1506,10 +1537,9 @@ fe_results_fit_indices2 %>%
 
 <br>
 
-We selected the models with the best fit indices for each outcome.
+We selected the models with the best fit indices for each outcome, but favoring RMSEA.
 
 <br>
-
 
 ```{r 10_3_did_table_formal, messages=T, eval=T, warnings=T}
 fe_results_selection <- 
@@ -1524,8 +1554,6 @@ fe_results_selection <-
       )
   )%>% 
   dplyr::slice(-1)
-
-
 
 fe_results_selection_fmt<-
 cbind("Social protests"=c("Coef","CI95-Lo","CI95-Up","p-value","N","R-square",""),
@@ -1602,7 +1630,6 @@ cbind.data.frame(fe_results_selection_fmt,log) %>%
 ```
 
 # Session Info
-
 
 ```{r save, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
 Sys.getenv("R_LIBS_USER")

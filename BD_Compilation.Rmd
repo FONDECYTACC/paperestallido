@@ -1,7 +1,7 @@
 ---
 title: "Compilation"
 author: "ags"
-date: "03-02-2021"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     code_folding: hide
@@ -13,6 +13,38 @@ output:
     toc_float: yes
     number_sections: yes
 ---
+
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+    // onClick function for all plots (img's)
+
+    $('img:not(.zoomImg)').click(function() {
+
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+
+    });
+
+    // onClick function for zoomImg
+
+    $('img.zoomImg').click(function() {
+
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+
+    });
+
+  });
+```
+
 
 <style type="text/css">
 .tablelines table, .tablelines td, .tablelines th {
@@ -1825,12 +1857,12 @@ data15a64_rn_ratio<- data15a64_rn %>%
   dplyr::mutate(rate_resp=(hosp_resp/cons_resp)*1000) %>% 
   dplyr::mutate(ratio_resp=hosp_resp/cons_resp)
 
-attr(data15a64_rn_ratio$ratio,"variable.labels") <- "Ratio Between Trauma Hospitalizations and Trauma Consultations"
-attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Consultations per 1,000 population"
-attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Consultations per 1,000 population"
+attr(data15a64_rn_ratio$ratio,"variable.labels") <- "Ratio Between Trauma Hosp. and Trauma Cons."
+attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Cons. per 1,000 population"
+attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Cons. per 1,000 population"
 attr(data15a64_rn_ratio$year_week, "label") <- "Year-Week (ISO 8601) (chr)"
 attr(data15a64_rn_ratio$isoweek, "label") <- "Week Number (ISO 8601) (num)"
-attr(data15a64_rn_ratio$isoyear, "label") <- "Week Number (ISO 8601) (num)"
+attr(data15a64_rn_ratio$isoyear, "label") <- "Year Number (ISO 8601) (num)"
 attr(data15a64_rn_ratio$year, "label") <- "Year"
 attr(data15a64_rn_ratio$month, "label") <- "Month"
 attr(data15a64_rn_ratio$day, "label") <- "Day"
@@ -1854,25 +1886,30 @@ attr(data15a64_rn_ratio$did, "label") <- "Post-Treatment Period * Treatment"
 #attr(data15a64_wk$time, "label") <- "August 1st to December 31th, by Year"
 attr(data15a64_rn_ratio$txtime2, "label") <- "Post-intervention Period (After but incluiding 2019-10-18 W42)"
 attr(data15a64_rn_ratio$txtime, "label") <- "Post-intervention Period (After 2019-10-18 W42)"
+attr(data15a64_rn_ratio$tx, "label") <- "Post-intervention Period (After 2019-10-18 W42)"
 attr(data15a64_rn_ratio$yearday, "label") <- "Day of the year (numeric)"
 attr(data15a64_rn_ratio$weekday, "label") <- "Weekday"
 attr(data15a64_rn_ratio$week, "label") <- "Week number by Year (Lubridate criteria)"  #no está presente
 
 attr(data15a64_rn_ratio$sig, "label") <- "October 6th; October 18th; October 25th"
+attr(data15a64_rn_ratio$n_days, "label") <- "Number of Days by Week"
+
+attr(data15a64_rn_ratio$date, "label") <- "1st day of the grouped week"
 
 #attr(data15a64_rn_ratio$prevtrc, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Consultations"
 #attr(data15a64_rn_ratio$prevrec, "label") <-  "Dependent Variable of Choice Prior Day Value of the Total Respiratory Consultations"
 #attr(data15a64_rn_ratio$prevtrh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Hospitalizations"
 #attr(data15a64_rn_ratio$prevreh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Respiratory Hospitalizations"
 
-attr(data15a64_rn_ratio$difftrc, "label") <- "Difference Between Total Consultations and the Total Trauma Consultations"
-attr(data15a64_rn_ratio$difftrh, "label") <- "Difference Between Total Hospitalizations and the Total Trauma Hospitalizations"
-attr(data15a64_rn_ratio$diffrec, "label") <-  "Difference Between Total Consultations and the Total Respiratory Consultations"
-attr(data15a64_rn_ratio$diffreh, "label") <- "Difference Between Total Hospitalizations and the Total Respiratory Hospitalizations"
-attr(data15a64_rn_ratio$offset, "label") <- "Sum of the total consultations and total hospitalizations"
+attr(data15a64_rn_ratio$difftrc, "label") <- "Difference Between Total Cons. and the Total Trauma Cons."
+attr(data15a64_rn_ratio$difftrh, "label") <- "Difference Between Total Hospitalizations and the Total Trauma Hosp."
+attr(data15a64_rn_ratio$diffrec, "label") <-  "Difference Between Total Cons. and the Total Respiratory Cons."
+attr(data15a64_rn_ratio$diffreh, "label") <- "Difference Between Total Hosp. and the Total Respiratory Hosp."
+attr(data15a64_rn_ratio$offset, "label") <- "Sum of the Total Cons. and Total Hosp."
 
 attr(data15a64_rn_ratio$rate,"label") <- "Rate of Trauma Hospitalizations per Trauma Consultations (x1,000 population)"
 attr(data15a64_rn_ratio$rate_resp,"label") <- "Respiratory Hospitalizations per Respiratory Consultations (x1,000 population)"
+attr(data15a64_rn_ratio$rate_circ,"label") <- "Circulatory Hospitalizations per Circulatory Consultations (x1,000 population)"
 
 library(compareGroups)
 #pvals <- compareGroups::getResults(table, "p.overall")
