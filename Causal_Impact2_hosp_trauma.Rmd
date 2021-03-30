@@ -294,9 +294,9 @@ data15a64_rn%>%
 #in this case we take all the columns from 2 to 10
 df <- zoo(data15a64_rn2[c("hosp_trauma","hosp_circ","hosp_resp","difftrc")], as.Date(data15a64_rn2$date)) #prevtrh had a missing value due to the absence of previous value
 #set the period before intervention
-pre.period <- as.Date(c("2015-01-01", "2019-10-17"))
+pre.period <- as.Date(c("2015-01-05", "2019-10-14"))
 #set the period after intervention
-post.period <- as.Date(c("2019-10-18", "2019-12-31"))
+post.period <- as.Date(c("2019-10-21", "2019-12-23"))
 #compute CausalImpact, look at the documentation to change niter and nseasons
 set.seed(2125)
 impact <- CausalImpact(df, pre.period,post.period, model.args=list(niter=clus_iter, nseasons=7))

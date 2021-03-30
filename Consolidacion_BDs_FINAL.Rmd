@@ -70,7 +70,7 @@ p.comment {
 ```
 ```{r setup0, include=T, message=F, warning=F}
 rm(list=ls());gc()
-unlink('Consolidacion_BDs_cache', recursive = TRUE)
+unlink('*_cache', recursive = TRUE)
 unlink('Consolidacion_BDs_FINAL_cache', recursive = TRUE)
 #load(url("https://drive.google.com/uc?export=download&id=1zLfLpJjGCfMSfwrtTnaOdBSgGg2ZCqjR"))
 load(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
@@ -337,7 +337,7 @@ protests","During social protests"),format="html",position="center",caption= "Ta
 
 <br>
 
-A total of `r format(as.numeric(sum_cons_hosp[1]),big.mark=",")` ED consultations and `r format(as.numeric(sum_cons_hosp[2]),big.mark=",")` hospitalizations  were observed from October 21 of 2019 to December 31, 2019. Overall, during 2015-2019 trauma cases represent the `r as.character(ratio_cons_hosp["cons_trauma_perc"])` of total consultation and `r as.character(ratio_cons_hosp["hosp_trauma_perc"])` of total hospitalizations, and respiratory represents the `r as.character(ratio_cons_hosp["cons_resp_perc"])` and `r as.character(ratio_cons_hosp["hosp_resp_perc"])`, respectively . 
+A total of `r format(as.numeric(sum_cons_hosp[1]),big.mark=",")` ED consultations and `r format(as.numeric(sum_cons_hosp[2]),big.mark=",")` hospitalizations  were observed from October 21 of 2019 to December 29, 2019. Overall, during 2015-2019 trauma cases represent the `r as.character(ratio_cons_hosp["cons_trauma_perc"])` of total consultation and `r as.character(ratio_cons_hosp["hosp_trauma_perc"])` of total hospitalizations, and respiratory represents the `r as.character(ratio_cons_hosp["cons_resp_perc"])` and `r as.character(ratio_cons_hosp["hosp_resp_perc"])`, respectively . 
 
 <br>
 
@@ -420,8 +420,8 @@ model2d1_cons_trauma_resp_traj<-(ComputeResponseTrajectories(model2d1_cons_traum
 plot(impact3d1_cons_trauma)+
   xlab("Date")+
   ylab("Consultations")+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),"date"])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
@@ -529,8 +529,8 @@ model2d_trauma_hosp_resp_traj<-(ComputeResponseTrajectories(model2d_trauma_hosp)
 plot(impact3d_hosp_trauma)+
   xlab("Date")+
   ylab("Hospitalizations")+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),"date"])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
@@ -586,8 +586,8 @@ burn2d1 <- SuggestBurn(0.1, model2d1_hosp_resp)
 plot(impact3d1_hosp_resp)+
   xlab("Date")+
   ylab("Hospitalizations")+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),"date"])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
@@ -597,8 +597,8 @@ plot(impact3d1_hosp_resp)+
 plot(impact3d_cons_resp)+
   xlab("Date")+
   ylab("Consultations")+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),12),262)),
-                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),12),262),"date"])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
@@ -697,8 +697,8 @@ burn2d <- SuggestBurn(0.1, model2d_ratio)
 plot(impact3d_ratio)+
   xlab("Date")+
   ylab("Ratio")+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
-                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"date"])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   #scale_y_continuous(labels=scales::percent)+
@@ -861,8 +861,8 @@ burn2d <- SuggestBurn(0.1, model2d_ratio_resp)
 plot(impact3d_ratio_resp)+
   xlab("Date")+
   ylab("Ratio")+
-  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),12),262)),
-                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),12),262),"date"])))+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
         plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   #scale_y_continuous(labels=scales::percent)+

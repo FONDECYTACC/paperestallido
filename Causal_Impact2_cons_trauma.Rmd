@@ -211,8 +211,6 @@ post.period <- c(as.numeric(rn_summ_data15a64["min"]), as.numeric(rn_summ_data15
 
 # Bayesian Structural Time-Series
 
-<br>
-
 In order to reproduce adequately what was solicited, we looked over the models Thomas did. The independent variables we selected were: - Circulatory Consultations (`cons_circ`) - Respiratory Consultations (`cons_resp`) - Year, month, day, weekday, yearday - Difference Between Total Hospitalizations and Trauma Hospitalizations (`difftrh`)
 
 <br>
@@ -267,9 +265,9 @@ data15a64_rn%>%
 #in this case we take all the columns from 2 to 10
 df <- zoo(data15a64_rn2[c("cons_trauma","cons_circ","cons_resp","difftrh")], as.Date(data15a64_rn2$date)) #prevtrh had a missing value due to the absence of previous value
 #set the period before intervention
-pre.period <- as.Date(c("2015-01-01", "2019-10-17"))
+pre.period <- as.Date(c("2015-01-05", "2019-10-14"))
 #set the period after intervention
-post.period <- as.Date(c("2019-10-18", "2019-12-31"))
+post.period <- as.Date(c("2019-10-21", "2019-12-23"))
 #compute CausalImpact, look at the documentation to change niter and nseasons
 set.seed(2125)
 impact <- CausalImpact(df, pre.period,post.period, model.args=list(niter=clus_iter, nseasons=7))
@@ -713,8 +711,6 @@ plot(impact3c3)
 
 #### Prior Local SD=.1 (more restrictive) w/ Local Linear Trends & AR
 
-<br>
-
 We also introduced an a sparse AR(1) process to the state distribution.
 
 <br>
@@ -791,8 +787,6 @@ plot(impact3c3ar)
 ```
 
 ### Studentized Distributed Noise (more restrictive)
-
-<br>
 
 The default model assumes a Gaussian noise and a Gaussian random walk. In order to handle outliers, we assumed studentized distributed noise.
 
@@ -1456,13 +1450,13 @@ summary<-cbind(Models=c("No control variables(a)",
 
 ```{r comparison_of_errors, echo=T, cache= T, paged.print=TRUE, warning=T,eval=T}
 comp_mod_df_sum<-
-  comp_mod_df  _sum %>% 
+  comp_mod_df_sum %>% 
     dplyr::filter(grepl("^a,", Models)|grepl("\\(a,", Models)) %>% 
     dplyr::left_join(summary[,c("Models","name")],by="Models")
 
 comp_mod_df_sum %>% 
   dplyr::filter(grepl("^a,", Models)) %>% 
-  dplyr::select( Models, mean, median, p25, p75, mean_tot, max) %>% sr
+  dplyr::select( Models, mean, median, p25, p75, mean_tot, max) %>% 
     dplyr::mutate_at(2:(ncol(.)-1),~round(as.numeric(.),2)) %>% 
       dplyr::mutate_at(ncol(.),~round(as.numeric(.),0)) %>% 
     #dplyr::arrange(Models,rn) %>% 

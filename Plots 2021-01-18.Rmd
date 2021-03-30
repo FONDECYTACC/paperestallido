@@ -12,6 +12,36 @@ output:
     number_sections: yes
 ---
 
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+    // onClick function for all plots (img's)
+
+    $('img:not(.zoomImg)').click(function() {
+
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+
+    });
+
+    // onClick function for zoomImg
+
+    $('img.zoomImg').click(function() {
+
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+
+    });
+
+  });
+```
+
 ```{=html}
 <style type="text/css">
 .tablelines table, .tablelines td, .tablelines th {
@@ -1150,4 +1180,385 @@ dev.off()
        fallback_resolution = 600,
        limitsize = F)
 
+```
+
+## Consolidated Plot
+
+```{r cons_plot, echo=T, cache= T, paged.print=TRUE, warning=F,eval=F}
+# dejar una sola figura que contenga 6 líneas (una para cada outcome) con el cambio porcentual (para que todos los outcomes estén en la misma unidad de medida).
+
+#_#_#_#_#_# CONS TRAUMA #_#_#_#_#_#
+
+releff_cons_trauma<-
+cbind(plot(impact3d1_cons_trauma, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d1_cons_trauma, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,time,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d1_cons_trauma
+#  Relative effect (s.d.)   -15% (14%)    -15% (14%)   
+#  95% CI                   [-43%, 12%]   [-43%, 12%]    
+
+#_#_#_#_#_# CONS RESP #_#_#_#_#_#
+
+releff_cons_resp<-
+cbind(plot(impact3d_cons_resp, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_cons_resp, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Absolute effect (s.d.)   -78 (42)       -776 (425)     
+#  Relative effect (s.d.)   -46% (25%)     -46% (25%)   
+
+
+#_#_#_#_#_# HOSP TRAUMA #_#_#_#_#_#
+
+releff_hosp_trauma<-
+cbind(plot(impact3d_hosp_trauma, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_hosp_trauma, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   17% (6.1%)    17% (6.1%) 
+#  95% CI                   [4.9%, 29%]   [4.9%, 29%] 
+
+
+#_#_#_#_#_# HOSP RESP #_#_#_#_#_#
+
+releff_hosp_resp<-
+cbind(plot(impact3d1_hosp_resp, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d1_hosp_resp, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   -16% (20%)    -16% (20%)  
+#  95% CI                   [-56%, 23%]   [-56%, 23%]    
+
+
+#_#_#_#_#_# RATIO TRAUMA #_#_#_#_#_#
+
+releff_ratio_trauma<-
+cbind(plot(impact3d_ratio, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_ratio, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   41% (14%)    41% (14%) 
+#  95% CI                   [11%, 69%]   [11%, 69%]
+
+
+#_#_#_#_#_# RATIO RESP #_#_#_#_#_#
+
+releff_ratio_resp<-
+cbind(plot(impact3d_ratio_resp, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_ratio_resp, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   71% (18%)     71% (18%)  
+#  95% CI                   [36%, 107%]   [36%, 107%]
+```
+
+```{r cons_plot_corrected, echo=T, cache= T, paged.print=TRUE, warning=F,eval=F}
+# dejar una sola figura que contenga 6 líneas (una para cada outcome) con el cambio porcentual (para que todos los outcomes estén en la misma unidad de medida).
+
+#_#_#_#_#_# CONS TRAUMA #_#_#_#_#_#
+
+releff_cons_trauma<-
+cbind(plot(impact3d1_cons_trauma, "original")$data,
+      data15a64_rn[,c("date","did")])%>%
+      dplyr::mutate_at(.vars=vars(response,mean,lower,upper), 
+                   .funs = funs(`zw`=scale(.))) %>% 
+      dplyr::mutate(diff=response-mean) %>% 
+      dplyr::mutate(rel_diff=diff/mean) %>%   
+      dplyr::mutate(diff_zw=response_zw-mean_zw) %>% 
+      ggplot(aes(y=rel_diff, x=time))+
+     #   geom_line()+
+     # geom_vline(xintercept = 253, color="red")+
+     # theme_bw()
+      dplyr::left_join(plot(impact3d1_cons_trauma, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::select(date,time,rel_diff,diff_zw) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d1_cons_trauma
+#  Relative effect (s.d.)   -15% (14%)    -15% (14%)   
+#  95% CI                   [-43%, 12%]   [-43%, 12%]    
+
+#_#_#_#_#_# CONS RESP #_#_#_#_#_#
+
+releff_cons_resp<-
+cbind(plot(impact3d_cons_resp, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_cons_resp, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Absolute effect (s.d.)   -78 (42)       -776 (425)     
+#  Relative effect (s.d.)   -46% (25%)     -46% (25%)   
+
+
+#_#_#_#_#_# HOSP TRAUMA #_#_#_#_#_#
+
+releff_hosp_trauma<-
+cbind(plot(impact3d_hosp_trauma, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_hosp_trauma, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   17% (6.1%)    17% (6.1%) 
+#  95% CI                   [4.9%, 29%]   [4.9%, 29%] 
+
+
+#_#_#_#_#_# HOSP RESP #_#_#_#_#_#
+
+releff_hosp_resp<-
+cbind(plot(impact3d1_hosp_resp, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d1_hosp_resp, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   -16% (20%)    -16% (20%)  
+#  95% CI                   [-56%, 23%]   [-56%, 23%]    
+
+
+#_#_#_#_#_# RATIO TRAUMA #_#_#_#_#_#
+
+releff_ratio_trauma<-
+cbind(plot(impact3d_ratio, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_ratio, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   41% (14%)    41% (14%) 
+#  95% CI                   [11%, 69%]   [11%, 69%]
+
+
+#_#_#_#_#_# RATIO RESP #_#_#_#_#_#
+
+releff_ratio_resp<-
+cbind(plot(impact3d_ratio_resp, "original")$data,
+      data15a64_rn[,c("date","did")])%>% 
+      dplyr::mutate(response_mean_pre=mean(response[did==0],na.rm=T)) %>% 
+      dplyr::mutate(response_median_pre=median(response[did==0],na.rm=T)) %>% 
+      #dplyr::mutate(cumsum_response_raw=dplyr::case_when(cumsum(response[did==1])) %>% 
+      dplyr::mutate(cumsum_response_raw=dplyr::case_when(did==1~ mean,T~0)) %>% 
+      dplyr::mutate(cumsum_response_raw=cumsum(cumsum_response_raw)) %>% 
+      #dplyr::mutate(delta=response-response_mean_pre) %>% 
+        
+      #mean.y es la resta de response y mean, pero todavía no sé cómo sacar el relative difference  
+      dplyr::left_join(plot(impact3d_ratio_resp, "cumulative")$data[,c("time","mean","lower","upper")],by="time") %>% 
+      dplyr::mutate(rel_diff= mean.y/cumsum_response_raw,
+                    rel_diff= ifelse(did==0,0,rel_diff)) %>% 
+      dplyr::select(date,rel_diff) #%>% 
+      #tail(20)
+  #ggplot(aes(y=rel_diff, x=date))+
+  #geom_line()
+# impact3d_cons_resp
+#  Relative effect (s.d.)   71% (18%)     71% (18%)  
+#  95% CI                   [36%, 107%]   [36%, 107%]
+```
+
+```{r plot_bsts_ratio, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align= "center", fig.cap="Figure 14. Relative Effects", dpi= 320}
+Sys.setlocale(category = "LC_ALL", locale = "english")
+
+releff<-
+releff_cons_trauma %>% 
+  dplyr::left_join(releff_cons_resp,by="date") %>%
+  dplyr::left_join(releff_hosp_trauma,by="date") %>%
+  dplyr::left_join(releff_hosp_resp,by="date") %>%
+  dplyr::left_join(releff_ratio_trauma,by="date") %>%
+  dplyr::left_join(releff_ratio_resp,by="date") %>% 
+  dplyr::filter(date>="2019-08-05") %>% 
+  dplyr::mutate(date=format(date,"%b %d"))
+
+manualcolors<-c('indianred1','cornflowerblue', 'gray50', 'darkolivegreen4', 'slateblue2', 
+                'firebrick4', 'goldenrod4')
+
+colnames(releff)<-c("date","date_num","Cons_Trauma","Cons_Resp","Hosp_Trauma","Hosp_Resp","Ratio_Trauma","Ratio_Resp")
+
+relleff_plot<-
+releff %>% 
+  melt(id.vars=c("date","date_num")) %>% 
+  dplyr::mutate(variable=
+          dplyr::case_when(variable=="Cons_Trauma"~"Trauma Consultations",
+                           variable=="Cons_Resp"~"Respiratory Consultations",
+                           variable=="Hosp_Trauma"~"Trauma Hospitalizations",
+                           variable=="Hosp_Resp"~"Respiratory Hospitalizations",
+                           variable=="Ratio_Trauma"~"Trauma Hospitalizations per 1,000 consultations",
+                           variable=="Ratio_Resp"~"Respiratory Hospitalizations per 1,000 consultations")) %>% 
+  dplyr::mutate(variable=factor(variable)) %>% 
+  
+  ggplot(aes(x=date_num, y=value, linetype=variable, color=variable))+ #, shape=variable
+  geom_line(size=1.2)+
+  #scale_shape_manual(name= "Outcome", values=c(1:6))+
+  scale_linetype_manual(name= "Outcome",
+                        values= c("twodash","solid","dotted","dashed","twodash","solid"))+
+  #scale_color_manual(name= "Outcome", values=c(seq(.1,.9,.2),"black"))+
+  scale_color_grey(name= "Outcome", start = .1, end = .9)+
+  theme_sjplot()+
+  theme(legend.position = "bottom",
+  axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=10))+
+  labs(y="Percent", x="Date")+
+  #2019-08-05 fecha de inicio
+  #, date_labels = "%b %d"
+  scale_x_continuous(limits = c(242, 262),
+                    breaks=seq(242,262,2),
+                    labels=as.character(unlist(releff[which(releff$date_num %in% c(seq(242,262,2))),"date"]))
+                    )+
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1),limits=c(-1,1))+
+  geom_vline(xintercept = 252.6, col = "darkred", lty = 2, size=1)+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)
+
+
+relleff_plot
+#head(releff,25)  
+
+cairo_ps("_Fig1_final_AJPH.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      relleff_plot+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_Fig1_final_AJPH.ps", plot =
+          relleff_plot+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
 ```
