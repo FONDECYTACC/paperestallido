@@ -2159,6 +2159,7 @@ The resulting model suggested a box-cox transformation of lambda=`r sprintf("%1.
 
 One disadvantage of this model is that does not allow to include covariates as control time-series. Additionally, despite that some outcomes did not show any seasonal trends, we decided to incorporate them anyways because of grounded in backgrounds that add support for their inclusion.
 
+<br>
 
 # Session Info
 
