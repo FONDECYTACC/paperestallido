@@ -2,7 +2,7 @@
       name:  <unnamed>
        log:  G:\Mi unidad\paperestallido\log.txt
   log type:  text
- opened on:  30 Mar 2021, 13:44:11
+ opened on:  31 Mar 2021, 00:25:11
 
 . di "`=scalar(beti_TH_SinCos)' [`=scalar(CI95_lo_TH_SinCos)',`=scalar(CI95_up_
 > TH_SinCos)']" 
@@ -32,5 +32,5 @@
       name:  <unnamed>
        log:  G:\Mi unidad\paperestallido\log.txt
   log type:  text
- closed on:  30 Mar 2021, 13:44:11
+ closed on:  31 Mar 2021, 00:25:11
 -------------------------------------------------------------------------------
