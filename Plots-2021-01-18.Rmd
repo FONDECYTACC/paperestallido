@@ -566,6 +566,7 @@ angle_x <- 45
 hosp_trauma_plot3_red<-
 plot(impact3d_hosp_trauma, "cumulative")$data %>%
   dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+    dplyr::filter(date>="2019-08-12") %>% 
       ggplot(aes(x=date))+
       geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
       geom_line(aes(y=response), size=line_size, color="black")+
@@ -581,7 +582,7 @@ plot(impact3d_hosp_trauma, "cumulative")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   ggtitle("c) Trauma Hospitalizations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 hosp_resp_plot3_red<-
 plot(impact3d1_hosp_resp, "cumulative")$data %>%
@@ -601,7 +602,7 @@ plot(impact3d1_hosp_resp, "cumulative")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   ggtitle("d) Respiratory Hospitalizations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 cons_trauma_plot3_red<-
 plot(impact3d1_cons_trauma, "cumulative")$data %>%
@@ -621,7 +622,7 @@ plot(impact3d1_cons_trauma, "cumulative")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   ggtitle("a) Trauma Consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 cons_resp_plot3_red<-
 plot(impact3d_cons_resp, "cumulative")$data %>%
@@ -641,7 +642,7 @@ plot(impact3d_cons_resp, "cumulative")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("b) Respiratory Consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 rate_trauma_plot3_red<-
 plot(impact3d_ratio, "cumulative")$data %>%
@@ -661,7 +662,7 @@ plot(impact3d_ratio, "cumulative")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("e) Trauma Hospitalizations per 1,000 consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 rate_resp_plot3_red<-
 plot(impact3d_ratio_resp, "cumulative")$data %>%
@@ -681,11 +682,9 @@ plot(impact3d_ratio_resp, "cumulative")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
-vector_breaks_plot3b_red<- seq(238,nrow(data15a64_rn),3)
 Sys.setlocale(category = "LC_ALL", locale = "english")
-vector_dates_plot3b_red<-as.character(format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"))
 
 plot3b_red<-
 plot_grid(
@@ -693,8 +692,8 @@ plot_grid(
   cons_resp_plot3_red+scale_y_continuous(breaks=seq(-4000,1500,1000), limits = c(-4000,1500)),
   hosp_trauma_plot3_red+scale_y_continuous(breaks=seq(-200,200,100), limits = c(-200,200)),
   hosp_resp_plot3_red+scale_y_continuous(breaks=seq(-200,200,100), limits = c(-200,200)),
-  rate_trauma_plot3_red+scale_y_continuous(breaks=seq(-100,1250,250), limits = c(-100,1250)),
-  rate_resp_plot3_red+scale_y_continuous(breaks=seq(-100,1250,250), limits = c(-100,1250)),
+  rate_trauma_plot3_red+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
+  rate_resp_plot3_red+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
   #get_legend(t14_trend_leg + theme(legend.position="right",
   #                                 legend.text = element_text(size = 15))),
     nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25), scale = c(.95, .95, .95,.95,.95,.95))+
@@ -707,7 +706,7 @@ plot_grid(
 ggdraw(plot3b_red)+
    theme(plot.background = element_rect(fill=NA, color = NA))
 
-  jpeg("_Fig2_final.jpg", height = 14, width = 23, units = 'in', res = 600)
+  jpeg("_FigS2_final.jpg", height = 14, width = 23, units = 'in', res = 600)
   ggdraw(plot3b_red)+
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
@@ -724,7 +723,7 @@ cairo_ps("_Fig2_final.eps",
          theme(plot.background = element_rect(fill=NA, color = NA))
 dev.off()
 
- ggsave("_Fig2_final.ps", plot =
+ ggsave("_FigS2_final.ps", plot =
           ggdraw(plot3b_red)+
              theme(plot.background = element_rect(fill=NA, color = NA)),
       path = NULL,
@@ -862,7 +861,7 @@ cbind(plot(impact3d_ratio_resp, "original")$data,
 height_y<-18
 height_x<-18
 size_title<-18
-line_size<-.8
+line_size<-1.3
 angle_x <- 45
 
 Sys.setlocale(category = "LC_ALL", locale = "english")
@@ -901,8 +900,12 @@ releff_melt%>%
   #                      values= c("twodash","solid","dotted","dashed","twodash","solid"))+
   scale_color_manual(name= "", values=manualcolors)+
   theme_sjplot()+
-  theme(legend.position = "bottom",
+  theme(legend.position = c(.2,.8),
         legend.text= element_text(size=18),
+        legend.key.width = unit(4,"cm"),
+        legend.key.height = unit(1.4,"cm"),
+        legend.background = element_rect(fill = "white", color = "black"),
+        legend.title=element_blank(),
         axis.text.y= element_text(size=height_y),
         axis.title.y= element_text(size=height_y),
         axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x))+
@@ -910,7 +913,8 @@ releff_melt%>%
   scale_x_date(breaks = scales::date_breaks("4 weeks"), labels = scales::date_format("%d-%b"))+
   scale_y_continuous(labels = scales::percent_format(accuracy = 1))+
   geom_vline(xintercept = as.Date("2019-10-21"), col = "darkred", lty = 2, size=1)+
-  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  guides(color = guide_legend(override.aes = list(size = 3) ) )
 
 releff_plot
 
