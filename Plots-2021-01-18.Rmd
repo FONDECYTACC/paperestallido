@@ -221,8 +221,9 @@ plot(impact3d_hosp_trauma, "original")$data %>%
   theme_sjplot()+
   scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,125))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+        theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = ggtext::element_markdown(size=height_y),
           axis.title.y = element_blank(),
@@ -241,7 +242,8 @@ plot(impact3d1_hosp_resp, "original")$data %>%
   theme_sjplot()+
   scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,125))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = ggtext::element_markdown(size=height_y),
           axis.title.y = element_blank(),
@@ -260,7 +262,8 @@ plot(impact3d1_cons_trauma, "original")$data %>%
   theme_sjplot()+
   scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,1600))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_blank(),
@@ -279,7 +282,8 @@ plot(impact3d_cons_resp, "original")$data %>%
   theme_sjplot()+
   scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,1600))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_blank(),
@@ -298,7 +302,8 @@ plot(impact3d_ratio, "original")$data %>%
   theme_sjplot()+
   scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,400))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_blank(),
@@ -317,7 +322,8 @@ plot(impact3d_ratio_resp, "original")$data %>%
   theme_sjplot()+
   scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,400))+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -392,8 +398,9 @@ plot(impact3d_hosp_trauma, "pointwise")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
-      theme(axis.text.x = element_blank(),
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+  theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
           axis.title.y = element_blank(),
@@ -401,7 +408,8 @@ plot(impact3d_hosp_trauma, "pointwise")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   ggtitle("c) Trauma Hospitalizations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 hosp_resp_plot2_red<-
 plot(impact3d1_hosp_resp, "pointwise")$data %>%
@@ -412,7 +420,8 @@ plot(impact3d1_hosp_resp, "pointwise")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -421,7 +430,8 @@ plot(impact3d1_hosp_resp, "pointwise")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   ggtitle("d) Respiratory Hospitalizations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 cons_trauma_plot2_red<-
 plot(impact3d1_cons_trauma, "pointwise")$data %>%
@@ -432,7 +442,8 @@ plot(impact3d1_cons_trauma, "pointwise")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0]), col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -441,7 +452,8 @@ plot(impact3d1_cons_trauma, "pointwise")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
   ggtitle("a) Trauma Consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 cons_resp_plot2_red<-
 plot(impact3d_cons_resp, "pointwise")$data %>%
@@ -452,7 +464,8 @@ plot(impact3d_cons_resp, "pointwise")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -461,7 +474,7 @@ plot(impact3d_cons_resp, "pointwise")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("b) Respiratory Consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 rate_trauma_plot2_red<-
 plot(impact3d_ratio, "pointwise")$data %>%
@@ -472,7 +485,8 @@ plot(impact3d_ratio, "pointwise")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -481,7 +495,8 @@ plot(impact3d_ratio, "pointwise")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("e) Trauma Hospitalizations per 1,000 consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 rate_resp_plot2_red<-
 plot(impact3d_ratio_resp, "pointwise")$data %>%
@@ -492,7 +507,9 @@ plot(impact3d_ratio_resp, "pointwise")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  #añadí el 2021-05-11
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -501,7 +518,8 @@ plot(impact3d_ratio_resp, "pointwise")$data %>%
           plot.title = element_text(size=size_title),
           plot.caption = element_text(hjust = 0, face= "italic",size=9))+
     ggtitle("f) Respiratory Hospitalizations per 1,000 consultations")+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))
+  #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
 
 vector_breaks_plot2b_red<- seq(238,nrow(data15a64_rn),3)
 Sys.setlocale(category = "LC_ALL", locale = "english")
@@ -573,7 +591,7 @@ plot(impact3d_hosp_trauma, "cumulative")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -593,7 +611,7 @@ plot(impact3d1_hosp_resp, "cumulative")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -613,7 +631,7 @@ plot(impact3d1_cons_trauma, "cumulative")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -633,7 +651,7 @@ plot(impact3d_cons_resp, "cumulative")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_blank(),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -653,7 +671,7 @@ plot(impact3d_ratio, "cumulative")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
@@ -673,7 +691,7 @@ plot(impact3d_ratio_resp, "cumulative")$data %>%
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
   geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
-  geom_vline(xintercept = length(data15a64_rn$did[data15a64_rn$did==0])+1, col = "gray50", lty = 2, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
       theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
      # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
           axis.text.y = element_text(size=height_y),
