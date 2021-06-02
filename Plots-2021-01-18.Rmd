@@ -1,5 +1,7 @@
 ---
 title: "Plots"
+author: "ags"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document: 
     code_folding: hide
@@ -200,7 +202,12 @@ Sys.setlocale(category = "LC_ALL", locale = "english")
 
 ## Final Plots
 
-```{r original_plots, fig.height = 14, fig.width = 23, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 1. Estimated Trends of the Outcomes"}
+
+Black lines are the observed trend for each outcome, red lines are the estimated trends through Bayesis structural times-series model, blue areas are the 95% credible interval from estimates, and vertical line is the onset of social protests on October 18th, 2019
+
+<br>
+
+```{r original_plots, fig.height = 14, fig.width = 23, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Appendix Figure 1. Trends of emergency department consultations and hospitalizations (2015-2019)"}
 library(cowplot)
 
 #horizontal
@@ -349,7 +356,7 @@ plot_grid(
 ggdraw(plot1b_red)+
    theme(plot.background = element_rect(fill=NA, color = NA))
 
-  jpeg("_FigS1_final.jpg", height = 14, width = 23, units = 'in', res = 600)
+  jpeg("_figs/_FigS1_final.jpg", height = 14, width = 23, units = 'in', res = 600)
   ggdraw(plot1b_red)+
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
@@ -359,7 +366,7 @@ ggdraw(plot1b_red)+
   # same plot.background should be in the theme of p1 and p2 as mentioned above
 #  theme(plot.background = element_rect(fill=NA, color = NA))
 
-cairo_ps("_FigS1_final.eps", 
+cairo_ps("_figs/_FigS1_final.eps", 
            height = 14, width = 23,
            fallback_resolution = 600,
            family= "Times")
@@ -370,7 +377,7 @@ cairo_ps("_FigS1_final.eps",
          theme(plot.background = element_rect(fill=NA, color = NA))
 dev.off()
 
- ggsave("_FigS1_final.ps", plot =
+ ggsave("_figs/_FigS1_final.ps", plot =
           ggdraw(plot1b_red)+
              theme(plot.background = element_rect(fill=NA, color = NA)),
       path = NULL,
@@ -380,7 +387,13 @@ dev.off()
        limitsize = F)
 ```
 
-```{r pointwise_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 2. Estimated Trends of the Outcomes"}
+<br>
+
+Blue dashed lines are the estimated difference between predicted (the counterfactual) and observed trend in the ten-weeks before and after the onset of the social protests. Blue areas are the 95% credible intervals. Vertical dashed line signals the onset of social protests on October 18th, 2019.
+
+<br>
+
+```{r pointwise_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 1. Weekly differences between predicted and observed outcomes in the 10 weeks pre and post-exposure periods"}
 
 #horizontal
 height_y<-16
@@ -546,12 +559,12 @@ plot_grid(
     ggdraw(plot2b_red)+
      theme(plot.background = element_rect(fill=NA, color = NA))
 
-  jpeg("_Fig1_final.jpg", height = 14, width = 23, units = 'in', res = 600)
+  jpeg("_figs/_Fig1_final.jpg", height = 14, width = 23, units = 'in', res = 600)
   ggdraw(plot2b_red)+
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
 
-cairo_ps("_Fig1_final.eps", 
+cairo_ps("_figs/_Fig1_final.eps", 
            height = 14, width = 23,
            fallback_resolution = 600,
            family= "Times")
@@ -562,7 +575,7 @@ cairo_ps("_Fig1_final.eps",
          theme(plot.background = element_rect(fill=NA, color = NA))
 dev.off()
 
- ggsave("_Fig1_final.ps", plot =
+ ggsave("_figs/_Fig1_final.ps", plot =
           ggdraw(plot2b_red)+
              theme(plot.background = element_rect(fill=NA, color = NA)),
       path = NULL,
@@ -572,7 +585,14 @@ dev.off()
        limitsize = F)
 ```
 
-```{r cumulative_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 3. Estimated Trends of the Outcomes"}
+<br>
+
+Blue dashed lines are the estimated cumulative difference between predicted (the counterfactual) and observed trend in the ten-weeks before and after the onset of the social protests. Blue areas are the 95% credible intervals. Vertical dashed line signals the onset of social protests on October 18th, 2019.
+
+<br>
+
+
+```{r cumulative_plots, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figure 3. Cumulative difference between predicted and observed outcomes in the 10 weeks pre and post-exposure period"}
 
 #horizontal
 height_y<-16
@@ -724,13 +744,13 @@ plot_grid(
 ggdraw(plot3b_red)+
    theme(plot.background = element_rect(fill=NA, color = NA))
 
-  jpeg("_FigS2_final.jpg", height = 14, width = 23, units = 'in', res = 600)
+  jpeg("_figs/_FigS2_final.jpg", height = 14, width = 23, units = 'in', res = 600)
   ggdraw(plot3b_red)+
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
 
   
-cairo_ps("_Fig2_final.eps", 
+cairo_ps("_figs/_Fig2_final.eps", 
            height = 14, width = 23,
            fallback_resolution = 600,
            family= "Times")
@@ -741,7 +761,7 @@ cairo_ps("_Fig2_final.eps",
          theme(plot.background = element_rect(fill=NA, color = NA))
 dev.off()
 
- ggsave("_FigS2_final.ps", plot =
+ ggsave("_figs/_FigS2_final.ps", plot =
           ggdraw(plot3b_red)+
              theme(plot.background = element_rect(fill=NA, color = NA)),
       path = NULL,
@@ -936,7 +956,7 @@ releff_melt%>%
 
 releff_plot
 
-cairo_ps("_Fig1_final_AJPH.eps", 
+cairo_ps("_figs/_Fig1_final_AJPH.eps", 
            height = 14, width = 23,
            fallback_resolution = 600,
            family= "Times")
@@ -947,7 +967,7 @@ cairo_ps("_Fig1_final_AJPH.eps",
          theme(plot.background = element_rect(fill=NA, color = NA))
 dev.off()
 
- ggsave("_Fig1_final_AJPH.ps", plot =
+ ggsave("_figs/_Fig1_final_AJPH.ps", plot =
           releff_plot+
              theme(plot.background = element_rect(fill=NA, color = NA)),
       path = NULL,
@@ -956,8 +976,604 @@ dev.off()
        fallback_resolution = 600,
        limitsize = F)
  
-jpeg("_Fig1_AJPH.jpg", height = 14, width = 23, units = 'in', res = 600)
+jpeg("_figs/_Fig1_AJPH.jpg", height = 14, width = 23, units = 'in', res = 600)
   releff_plot+
      theme(plot.background = element_rect(fill=NA, color = NA))
   dev.off()
+```
+
+## ESP
+
+
+```{r original_plots_esp, fig.height = 14, fig.width = 23, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figura Suplementaria 1. Tendencias de consultas y hospitalizaciones por emergencias (2015-2019)"}
+library(cowplot)
+
+#horizontal
+height_y<-16
+height_x<-16
+size_title<-18
+line_size<-1.2 #.8
+angle_x<-45
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+
+hosp_trauma_plot_red_sp<-
+plot(impact3d_hosp_trauma, "original")$data %>% 
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+    ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  ylim(c(0,125))+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+        theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = ggtext::element_markdown(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = ggtext::element_markdown(size=size_title),
+          plot.caption = ggtext::element_markdown(hjust = 0, face= "italic",size=9))+
+  ggtitle("c) Hospitalizaciones por Causa: Traumatismos")
+
+hosp_resp_plot_red_sp<-
+plot(impact3d1_hosp_resp, "original")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  ylim(c(0,125))+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+          axis.text.y = ggtext::element_markdown(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = ggtext::element_markdown(size=size_title),
+          plot.caption = ggtext::element_markdown(hjust = 0, face= "italic",size=9))+
+  ggtitle("d) Hospitalizaciones por Causa: Sistema Respiratorio")
+
+cons_trauma_plot_red_sp<-
+plot(impact3d1_cons_trauma, "original")$data %>% 
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  ylim(c(0,1600))+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("a) Consultas por Causa: Traumatismos")
+
+cons_resp_plot_red_sp<-
+plot(impact3d_cons_resp, "original")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  ylim(c(0,1600))+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("b) Consultas por Causa: Sistema Respiratorio")
+
+rate_trauma_plot_red_sp<-
+plot(impact3d_ratio, "original")$data %>% 
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  ylim(c(0,400))+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("e) Hospitalizaciones por Causa: Traumatismos, cada 1.000 consultas")
+
+rate_resp_plot_red_sp<-
+plot(impact3d_ratio_resp, "original")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="red") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  ylim(c(0,400))+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("f) Hospitalizaciones por Causa: Sistema Respiratorio, cada 1.000 consultas")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+
+plot1b_red_sp<-
+plot_grid(
+  cons_trauma_plot_red_sp+theme(axis.text.x = element_blank()),
+  cons_resp_plot_red_sp+theme(axis.text.x = element_blank()),
+  hosp_trauma_plot_red_sp+theme(axis.text.x = element_blank()),
+  hosp_resp_plot_red_sp+theme(axis.text.x = element_blank()),
+  rate_trauma_plot_red_sp,
+  rate_resp_plot_red_sp,#,
+  nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25)
+)
+
+ggdraw(plot1b_red_sp)+
+   theme(plot.background = element_rect(fill=NA, color = NA))
+
+  jpeg("_figs/_FigS1_final_ESP.jpg", height = 14, width = 23, units = 'in', res = 600)
+  ggdraw(plot1b_red_sp)+
+     theme(plot.background = element_rect(fill=NA, color = NA))
+  dev.off()
+
+  #add_sub(, "Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nBlue area= Prediction intervals.", vpadding=grid::unit(0, "lines"), y = .55, x = 0.03, hjust = 0,size=9)
+#plot2 <- cowplot::ggdraw(grid.arrange(p14, p21,p212,p32,p42,p52,p57, ncol = 2, nrow = 4)) + 
+  # same plot.background should be in the theme of p1 and p2 as mentioned above
+#  theme(plot.background = element_rect(fill=NA, color = NA))
+
+cairo_ps("_figs/_FigS1_final_ESP.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot1b_red_sp)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_figs/_FigS1_final_ESP.ps", plot =
+          ggdraw(plot1b_red_sp)+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
+```
+
+```{r pointwise_plots_esp, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figura 1. Diferencias semanales entre resultados predichos y observados en las 10 semanas anteriores y posteriores a la exposición"}
+
+#horizontal
+height_y<-16
+height_x<-16
+size_title<-18
+line_size<-.8
+angle_x<-45
+
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+
+hosp_trauma_plot2_red<-
+plot(impact3d_hosp_trauma, "pointwise")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+  theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("c) Hospitalizaciones por Causa: Traumatismos")+
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+hosp_resp_plot2_red<-
+plot(impact3d1_hosp_resp, "pointwise")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("d) Hospitalizaciones por Causa: Sistema Respiratorio")+
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+cons_trauma_plot2_red<-
+plot(impact3d1_cons_trauma, "pointwise")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("a) Consultas por Causa: Traumatismos")+
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+cons_resp_plot2_red<-
+plot(impact3d_cons_resp, "pointwise")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("b) Consultas por Causa: Sistema Respiratorio")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+rate_trauma_plot2_red<-
+plot(impact3d_ratio, "pointwise")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("e) Hospitalizaciones por Causa: Traumatismos, cada 1.000 consultas")+
+    #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+rate_resp_plot2_red<-
+plot(impact3d_ratio_resp, "pointwise")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  #añadí el 2021-05-11
+  #2021-05-11
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("f) Hospitalizaciones por Causa: Sistema Respiratorio, cada 1.000 consultas")+
+  #Change in 2021-05-11
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+vector_breaks_plot2b_red<- seq(238,nrow(data15a64_rn),3)
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+vector_dates_plot2b_red<-as.character(format(as.Date(unlist(data15a64_rn[c(seq(238,nrow(data15a64_rn),3)),"date"])),"%b %d"))
+
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+
+plot2b_red<-
+plot_grid(
+  cons_trauma_plot2_red+scale_y_continuous(breaks=seq(-800,250,200), limits = c(-800,250)),
+  cons_resp_plot2_red+scale_y_continuous(breaks=seq(-800,250,200), limits = c(-800,250)),
+  hosp_trauma_plot2_red+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
+  hosp_resp_plot2_red+scale_y_continuous(breaks=seq(-75,75,25), limits = c(-75,75)),
+  rate_trauma_plot2_red+scale_y_continuous(breaks=seq(-200,400,200), limits = c(-200,400)),
+  rate_resp_plot2_red+scale_y_continuous(breaks=seq(-200,400,200), limits = c(-200,400)),
+  #get_legend(t14_trend_leg + theme(legend.position="right",
+  #                                 legend.text = element_text(size = 15))),
+    nrow = 3, rel_widths = c(.95, .95), rel_heights = c(rep(1,2),1.3), scale = c(.95, .95, .95,.95,.95,.95)
+)+
+  draw_label("Diferencias semanales en consultas/hospitalizaciones",x=0.005, y=.5, angle=90, size = 17)
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+    ggdraw(plot2b_red)+
+     theme(plot.background = element_rect(fill=NA, color = NA))
+
+  jpeg("_figs/_Fig1_final_ESP.jpg", height = 14, width = 23, units = 'in', res = 600)
+  ggdraw(plot2b_red)+
+     theme(plot.background = element_rect(fill=NA, color = NA))
+  dev.off()
+
+cairo_ps("_figs/_Fig1_final_ESP.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot2b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_figs/_Fig1_final_ESP.ps", plot =
+          ggdraw(plot2b_red)+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
+```
+
+```{r cumulative_plots_esp, echo=T, fig.height = 14, fig.width = 23, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= "Figura 2. Diferencias acumuladas entre resultados predichos y observados, en las 10 semanas anteriores y posteriores a la exposición"}
+
+#horizontal
+height_y<-16
+height_x<-16
+size_title<-18
+line_size<-.8
+angle_x <- 45
+
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+
+hosp_trauma_plot3_red<-
+plot(impact3d_hosp_trauma, "cumulative")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+    dplyr::filter(date>="2019-08-12") %>% 
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("c) Hospitalizaciones por Causa: Traumatismos")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+hosp_resp_plot3_red<-
+plot(impact3d1_hosp_resp, "cumulative")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("d) Hospitalizaciones por Causa: Sistema Respiratorio")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+cons_trauma_plot3_red<-
+plot(impact3d1_cons_trauma, "cumulative")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  ggtitle("a) Consultas por Causa: Traumatismos")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+cons_resp_plot3_red<-
+plot(impact3d_cons_resp, "cumulative")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_blank(),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("b) Consultas por Causa: Sistema Respiratorio")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+rate_trauma_plot3_red<-
+plot(impact3d_ratio, "cumulative")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("e) Hospitalizaciones por Causa: Traumatismos, cada 1.000 consultas")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+rate_resp_plot3_red<-
+plot(impact3d_ratio_resp, "cumulative")$data %>%
+  dplyr::left_join(data15a64_rn[,c("date","rn")], by=c("time"="rn")) %>%
+      ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=line_size, linetype="longdash", color="darkblue") +
+      geom_line(aes(y=response), size=line_size, color="black")+
+  geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  geom_hline(yintercept = 0, col = "black", lty = 3, size=1)+
+  geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
+      theme(axis.text.x = element_text(angle = angle_x, vjust = 0.5, hjust=.5,size=height_x),
+     # theme(axis.text.x = element_blank(),#element_text(angle = 90, vjust = 0.5, hjust=.5,size=9),
+          axis.text.y = element_text(size=height_y),
+          axis.title.y = element_blank(),
+          axis.title.x = element_blank(),
+          plot.title = element_text(size=size_title),
+          plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+    ggtitle("f) Hospitalizaciones por Causa: Sistema Respiratorio, cada 1.000 consultas")+
+  scale_x_date(date_breaks = "2 weeks",date_labels="%b %d",limits=c(as.Date("2019-08-05"),as.Date("2019-12-23")))
+
+Sys.setlocale(category = "LC_ALL", locale = "spanish")
+
+plot3b_red<-
+plot_grid(
+  cons_trauma_plot3_red+scale_y_continuous(breaks=seq(-4000,1500,1000), limits = c(-4000,1500)),
+  cons_resp_plot3_red+scale_y_continuous(breaks=seq(-4000,1500,1000), limits = c(-4000,1500)),
+  hosp_trauma_plot3_red+scale_y_continuous(breaks=seq(-200,200,100), limits = c(-200,200)),
+  hosp_resp_plot3_red+scale_y_continuous(breaks=seq(-200,200,100), limits = c(-200,200)),
+  rate_trauma_plot3_red+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
+  rate_resp_plot3_red+scale_y_continuous(breaks=seq(-100,1500,250), limits = c(-100,1500)),
+  #get_legend(t14_trend_leg + theme(legend.position="right",
+  #                                 legend.text = element_text(size = 15))),
+    nrow = 3, rel_widths = c(1, 1), rel_heights = c(rep(1,2),1.25), scale = c(.95, .95, .95,.95,.95,.95))+
+ draw_label("Diferencias semanales acumuladas en consultas/hospitalizaciones",x=0.005, y=.5, angle=90, size = 17)
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+ggdraw(plot3b_red)+
+   theme(plot.background = element_rect(fill=NA, color = NA))
+
+  jpeg("_figs/_Fig2_final_ESP.jpg", height = 14, width = 23, units = 'in', res = 600)
+  ggdraw(plot3b_red)+
+     theme(plot.background = element_rect(fill=NA, color = NA))
+  dev.off()
+
+  
+cairo_ps("_figs/_Fig2_final_ESP.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot3b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+ ggsave("_figs/_FigS2_final_ESP.ps", plot =
+          ggdraw(plot3b_red)+
+             theme(plot.background = element_rect(fill=NA, color = NA)),
+      path = NULL,
+       scale = 1, width = 23, height = 14, units = "in",
+       device=cairo_ps, 
+       fallback_resolution = 600,
+       limitsize = F)
+```
+
+
+```{r BSTS_table, messages=T, eval=F, warnings=T}
+vector_bsts_models<-c("impact3d1_cons_trauma", "impact3d_cons_resp","impact3d_hosp_trauma", "impact3d1_hosp_resp", "impact3d_ratio", "impact3d_ratio_resp")
+names_outcomes<-c("Consultas por Causa: Traumatismos","Consultas por Causa: Sistema Respiratorio","Hospitalizaciones por Causa: Traumatismos","Hospitalizaciones por Causa: Sistema Respiratorio","Hospitalizaciones por Causa: Traumatismos, cada 1.000 consultas","Hospitalizaciones por Causa: Sistema Respiratorio, cada 1.000 consultas")
+df_results_bsts_esp<-data.frame()
+for (i in 1:6) {
+  x<-vector_bsts_models[i]
+dt_bsts<-cbind(
+  outcome=names_outcomes[i],
+  AE=sprintf("%4.1f",round(get(x)$summary$AbsEffect[1],2)),
+  IC95_AE=paste0(sprintf("%4.1f",round(get(x)$summary$AbsEffect.lower[1],2)),", ",sprintf("%4.1f",round(get(x)$summary$AbsEffect.upper[1],2))),
+  p=sprintf("%5.3f",round(get(x)$summary$p[1],5)),
+  RE=sprintf("%4.1f",round(get(x)$summary$RelEffect[1]*100,2)),
+  IC95_RE=paste0(sprintf("%4.1f",round(get(x)$summary$RelEffect.lower[1]*100,2)),", ",sprintf("%4.1f",round(get(x)$summary$RelEffect.upper[1]*100,2)))
+  )
+  df_results_bsts_esp<-rbind.data.frame(df_results_bsts_esp,dt_bsts)
+}
+df_results_bsts_esp[which(df_results_bsts_esp$p=="0.000"),"p"]<-"<0.001"
+
+df_results_bsts_esp %>% 
+  dplyr::select(-p) %>% 
+      knitr::kable(.,format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
+               caption = paste0("Table 2. Impacto estimado del estallido social de Octubre de 2019 en consultas y hospitalizaciones por causas Traumatismos y Sistema Respiratorio en servicio de Urgencias"),
+               col.names = c("","Impacto Absoluto<sup>a</sup>","Intervalo de Credibilidad (95%)", "Impacto Relativo(%)","Intervalo de Credibilidad (95%)"),
+               align =c('l',rep('c', 101)),
+               escape = F) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size= 11) %>% 
+  kableExtra::add_footnote(c("Estimado como el promedio de la diferencia entre las consultas u hospitalizaciones esperadas y las observadas en el tiempo de exposición"),
+                             notation = "alphabet")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
 ```
