@@ -226,7 +226,7 @@ plot(impact3d_hosp_trauma, "original")$data %>%
       geom_line(aes(y=response), size=line_size, color="black")+
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  scale_x_date(date_breaks = "6 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,125))+
   #2021-05-11
   geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
@@ -247,7 +247,7 @@ plot(impact3d1_hosp_resp, "original")$data %>%
       geom_line(aes(y=response), size=line_size, color="black")+
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  scale_x_date(date_breaks = "6 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,125))+
   #2021-05-11
   geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
@@ -267,7 +267,7 @@ plot(impact3d1_cons_trauma, "original")$data %>%
       geom_line(aes(y=response), size=line_size, color="black")+
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  scale_x_date(date_breaks = "6 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,1600))+
   #2021-05-11
   geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
@@ -287,7 +287,7 @@ plot(impact3d_cons_resp, "original")$data %>%
       geom_line(aes(y=response), size=line_size, color="black")+
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  scale_x_date(date_breaks = "6 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,1600))+
   #2021-05-11
   geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
@@ -307,7 +307,7 @@ plot(impact3d_ratio, "original")$data %>%
       geom_line(aes(y=response), size=line_size, color="black")+
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  scale_x_date(date_breaks = "6 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
   ylim(c(0,400))+
   #2021-05-11
   geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
@@ -327,7 +327,7 @@ plot(impact3d_ratio_resp, "original")$data %>%
       geom_line(aes(y=response), size=line_size, color="black")+
   geom_ribbon(aes(ymin=lower,ymax=upper),fill="steelblue", alpha = 0.35)+
   theme_sjplot()+
-  scale_x_date(date_breaks = "3 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-23")))+
+  scale_x_date(date_breaks = "6 months",date_labels="%b %y",limits=c(as.Date("2015-01-05"),as.Date("2019-12-31")))+
   ylim(c(0,400))+
   #2021-05-11
   geom_vline(xintercept = as.numeric(as.Date("2019-10-18")), col = "gray50", lty = 2, size=1)+
@@ -367,6 +367,28 @@ ggdraw(plot1b_red)+
 #  theme(plot.background = element_rect(fill=NA, color = NA))
 
 cairo_ps("_figs/_FigS1_final.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot1b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+cairo_ps("_figs/_FigS1_final.ps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot1b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+cairo_pdf("_figs/_FigS1_final.pdf", 
            height = 14, width = 23,
            fallback_resolution = 600,
            family= "Times")
@@ -575,6 +597,18 @@ cairo_ps("_figs/_Fig1_final.eps",
          theme(plot.background = element_rect(fill=NA, color = NA))
 dev.off()
 
+cairo_pdf("_figs/_Fig1_final.pdf", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot2b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+
  ggsave("_figs/_Fig1_final.ps", plot =
           ggdraw(plot2b_red)+
              theme(plot.background = element_rect(fill=NA, color = NA)),
@@ -751,6 +785,17 @@ ggdraw(plot3b_red)+
 
   
 cairo_ps("_figs/_Fig2_final.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      ggdraw(plot3b_red)+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+cairo_pdf("_figs/_Fig2_final.pdf", 
            height = 14, width = 23,
            fallback_resolution = 600,
            family= "Times")
