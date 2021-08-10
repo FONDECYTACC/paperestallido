@@ -1,0 +1,1103 @@
+---
+title: "BSTS Selected Models"
+author: "ags"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 6
+    fig_width: 8
+    theme: spacelab
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+    number_sections: yes
+---
+
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+    // onClick function for all plots (img's)
+
+    $('img:not(.zoomImg)').click(function() {
+
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+
+    });
+
+    // onClick function for zoomImg
+
+    $('img.zoomImg').click(function() {
+
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+
+    });
+
+  });
+```
+
+```{=html}
+<style type="text/css">
+.tablelines table, .tablelines td, .tablelines th {
+  border: 1px solid black;
+  }
+.centrado {
+  text-align: center;
+}
+.table.center {
+  margin-left:auto; 
+  margin-right:auto;
+}
+.table_wrapper{
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+code.r{
+  font-size: 8px;
+}
+body{ /* Normal  */
+    text-align: justify;
+}
+.superbigimage{
+  overflow-y:scroll;
+  white-space: nowrap;
+}
+.superbigimage img{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+p.comment {
+  background-color: #FF7F79;
+    padding: 10px;
+  border: 1px solid black;
+  margin-left: 25px;
+  border-radius: 5px;
+  font-style: italic;
+}
+</style>
+```
+```{=html}
+<style>
+  p.comment {
+    background-color: #ff9a9a;
+      padding: 10px;
+    border: 1px solid red;
+    margin-left: 25px;
+    border-radius: 5px;
+    font-style: italic;
+  }
+
+</style>
+```
+```{r setup0, include=T, message=F, warning=F}
+rm(list=ls());gc()
+unlink('*_cache', recursive = TRUE)
+unlink('Consolidacion_BDs_FINAL_cache', recursive = TRUE)
+#load(url("https://drive.google.com/uc?export=download&id=1zLfLpJjGCfMSfwrtTnaOdBSgGg2ZCqjR"))
+load(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
+
+#xaringan::inf_mr()
+
+if(isTRUE(getOption('knitr.in.progress'))==T){
+    clus_iter=40000
+} else {
+  input <- readline('¿Are you gonna run the dataset with the whole iterations? (Si/No): ')
+  if(input=="Si"){
+    clus_iter=40000
+  } else {
+    clus_iter=1000
+  }
+}
+```
+
+```{r setup, include=T, message=F, warning=F}
+#arriba puse algunas opciones para que por defecto escondiera el código
+#también cargue algunos estilo .css para que el texto me apareciera justificado, entre otras cosas.
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+
+`%>%` <- magrittr::`%>%`
+copy_names <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(ungroup(x))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+unlink('Consolidacion_BDs_cache', recursive = TRUE)
+if(!require(pacman)){install.packages("pacman")}
+
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+#dejo los paquetes estadísticos que voy a utilizar
+
+if(!require(plotly)){install.packages("plotly")}
+if(!require(lubridate)){install.packages("lubridate")}
+if(!require(htmlwidgets)){install.packages("htmlwidgets")}
+if(!require(tidyverse)){install.packages("tidyverse")}
+if(!require(gganimate)){install.packages("gganimate")}
+if(!require(readr)){install.packages("readr")}
+if(!require(stringr)){install.packages("stringr")}
+if(!require(data.table)){install.packages("data.table")}
+if(!require(DT)){install.packages("DT")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(lattice)){install.packages("lattice")}
+if(!require(forecast)){install.packages("forecast")}
+if(!require(zoo)){install.packages("zoo")}
+if(!require(panelView)){install.packages("panelView")}
+if(!require(janitor)){install.packages("janitor")}
+if(!require(rjson)){install.packages("rjson")}
+if(!require(estimatr)){install.packages("estimatr")} 
+if(!require(CausalImpact)){install.packages("CausalImpact")}
+if(!require(textreg)){install.packages("textreg")}
+if(!require(sjPlot)){install.packages("sjPlot")}
+if(!require(foreign)){install.packages("foreign")}
+if(!require(tsModel)){install.packages("tsModel")}
+if(!require(lmtest)){install.packages("lmtest")}
+if(!require(Epi)){install.packages("Epi")}
+if(!require(splines)){install.packages("splines")}
+if(!require(vcd)){install.packages("vcd")}
+if(!require(astsa)){install.packages("astsa")}
+if(!require(forecast)){install.packages("forecast")}
+if(!require(MASS)){install.packages("MASS")}
+if(!require(ggsci)){install.packages("ggsci")}
+if(!require(Hmisc)){install.packages("Hmisc")}
+if(!require(compareGroups)){install.packages("compareGroups")}
+if(!require(dplyr)){install.packages("dplyr")}
+if(!require(ggforce)){install.packages("ggforce")}
+if(!require(imputeTS)){install.packages("imputeTS")}
+if(!require(doParallel)){install.packages("doParallel")}
+if(!require(SCtools)){install.packages("SCtools")}
+if(!require(MSCMT)){install.packages("MSCMT")}
+if(!require(ISOweek)){install.packages("ISOweek")}
+if(!require(gridExtra)){install.packages("gridExtra")}
+if(!require(cowplot)){install.packages("cowplot")}
+if(!require(grid)){install.packages("grid")}
+if(!require(plm)){install.packages("plm")}
+if(!require(Statamarkdown)){devtools::install_github("hemken/Statamarkdown", quiet=T,  upgrade="never")}
+
+# Calculate the number of cores
+no_cores <- detectCores() - 1
+cl<-makeCluster(no_cores)
+registerDoParallel(cl)
+
+Sys.setlocale(category = "LC_ALL", locale = "english")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:PARA GENERAR MATRICES DE PREDICCION BSTS#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+GetPosteriorStateSamples <- function(bsts.model) {
+  # Returns a matrix of simulated values from the marginal posterior
+  # distribution for the sum of all state variables.
+  #
+  # Args:
+  #   bsts.model: A fitted model returned by \code{bsts()}.
+  #
+  # Returns:
+  #   matrix [number of post-burn-in MCMC samples] x [time points]
+  
+  # Get state contributions (e.g., 1000 samples x 2 states x 365 time pts),
+  # discarding burn-in samples (=> 900 x 2 x 365)
+  burn <- SuggestBurn(0.1, bsts.model)
+  #assert_that(burn > 0)
+  state.contributions <- bsts.model$state.contributions[-seq_len(burn), , ,
+                                                        drop = FALSE]
+  
+  # Sum across states, call it 'state.samples' (=> 900 x 365)
+  state.samples <- rowSums(aperm(state.contributions, c(1, 3, 2)), dims = 2)
+  return(state.samples)
+}
+ComputeResponseTrajectories <- function(bsts.model) {
+  # Generates trajectories of the response variable. A trajectory is a simulated
+  # time series drawn from the posterior predictive distribution over the data.
+  # This function differs from GetPosteriorStateSamples(). The latter returns
+  # the posterior mean of the response. This function returns the actual value
+  # (posterior mean + observation noise).
+  #
+  # Args:
+  #   bsts.model: A model object as returned by \code{bsts()}.
+  #
+  # Returns:
+  #   matrix [number of post-burn-in MCMC samples] x [time points]
+  
+  # Get posterior state samples
+  state.samples <- GetPosteriorStateSamples(bsts.model)
+  
+  # Get observation noise standard deviation samples
+  burn <- SuggestBurn(0.1, bsts.model)
+  #assert_that(burn > 0)
+  sigma.obs <- bsts.model$sigma.obs[-seq_len(burn)]  # e.g., 900
+  
+  # Sample from the posterior predictive density over data
+  n.samples <- dim(state.samples)[1]  # e.g., 900 x 365
+  obs.noise.samples <- matrix(rnorm(prod(dim(state.samples)), 0, sigma.obs),
+                              nrow = n.samples)
+  y.samples <- state.samples + obs.noise.samples
+  return(y.samples)
+}
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+aicbic_plm <- function(object, criterion) {
+  
+  
+  # object is "plm", "panelmodel" 
+  # Lets panel data has index :index = c("Country", "Time")
+  
+  sp = summary(object)
+  
+  if(class(object)[1]=="plm"){
+    u.hat <- residuals(sp) # extract residuals
+    df <- cbind(as.vector(u.hat), attr(u.hat, "index"))
+    names(df) <- c("resid", "Country", "Time")
+    c = length(levels(df$Country)) # extract country dimension 
+    t = length(levels(df$Time)) # extract time dimension 
+    np = length(sp$coefficients[,1]) # number of parameters
+    n.N = nrow(sp$model) # number of data
+    s.sq  <- log( (sum(u.hat^2)/(n.N))) # log sum of squares
+    
+    # effect = c("individual", "time", "twoways", "nested"),
+    # model = c("within", "random", "ht", "between", "pooling", "fd")
+    
+    # I am making example only with some of the versions:
+    
+    if (sp$args$model == "within" & sp$args$effect == "individual"){
+      n = c
+      np = np+n+1 # update number of parameters
+    }
+    
+    if (sp$args$model == "within" & sp$args$effect == "time"){
+      T = t
+      np = np+T+1 # update number of parameters
+    }
+    
+    if (sp$args$model == "within" & sp$args$effect == "twoways"){
+      n = c
+      T = t
+      np = np+n+T # update number of parameters
+    }
+    aic <- round(       2*np  +  n.N * (  log(2*pi) + s.sq  + 1 ),1)
+    bic <- round(log(n.N)*np  +  n.N * (  log(2*pi) + s.sq  + 1 ),1)
+    
+    if(criterion=="AIC"){
+      names(aic) = "AIC"
+      return(aic)
+    }
+    if(criterion=="BIC"){
+      names(bic) = "BIC"
+      return(bic)
+    }
+  }
+}
+```
+
+# Dataset Compile
+
+```{r datasets_cons0, echo=T, cache= T, paged.print=TRUE, warning=F}
+
+sum_cons_hosp<-
+data15a64_rn_ratio %>% 
+  dplyr::filter(did==1) %>% 
+  dplyr::summarise(cons_total_sum=sum(cons_total,na.rm=T),
+                   hosp_total_sum=sum(hosp_total,na.rm=T))
+
+ratio_cons_hosp<-
+data15a64_rn_ratio %>% 
+  dplyr::summarise(cons_resp_perc=scales::percent(sum(cons_resp,na.rm=T)/sum(cons_total,na.rm=T)),
+                   cons_trauma_perc=scales::percent(sum(cons_trauma,na.rm=T)/sum(cons_total,na.rm=T)),
+                   hosp_resp_perc=scales::percent(sum(hosp_resp,na.rm=T)/sum(hosp_total,na.rm=T)),
+                   hosp_trauma_perc=scales::percent(sum(hosp_trauma,na.rm=T)/sum(hosp_total,na.rm=T)))
+
+library(compareGroups)
+#pvals <- compareGroups::getResults(table, "p.overall")
+table2 <- compareGroups::compareGroups(did ~ cons_total+ cons_trauma+ cons_resp+ cons_circ+ hosp_total+ hosp_trauma+ hosp_resp+ hosp_circ+ rate+ rate_resp, #27
+                       method = c(cons_total=2, cons_trauma=2, cons_resp=2, cons_circ=2,  hosp_total=2,
+                                  hosp_resp=2, hosp_circ=2, hosp_trauma=2,rate=2, rate_resp=2),
+                      data = data15a64_rn_ratio,
+                      include.miss = T,
+                      var.equal=T)
+                      #,
+                      #subset = age == "15-64")
+#p.adjust(pvals, method = "BH")
+restab <- createTable(table2, show.n = F, show.p.overall = F)
+ compareGroups::export2md(restab, first.strip = T, show.all = T,hide.no = "no",header.labels = c(`0`= "Pre- Oct 18, 2020", `1`="Post Oct 18, 2020"), size=12,col.names= c("", "Previous to social
+protests","During social protests"),format="html",position="center",caption= "Table 1. Median descriptive table of emergency department consultations and hospitalizations, pre and post Ocober’s 2019 social protests in Chile")%>%#,p.overall = "p-value"
+  kableExtra::add_footnote(paste0("Note. Percentiles 25 and 75 in brackets."), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+A total of `r format(as.numeric(sum_cons_hosp[1]),big.mark=",")` ED consultations and `r format(as.numeric(sum_cons_hosp[2]),big.mark=",")` hospitalizations  were observed from October 21 of 2019 to December 29, 2019. Overall, during 2015-2019 trauma cases represent the `r as.character(ratio_cons_hosp["cons_trauma_perc"])` of total consultation and `r as.character(ratio_cons_hosp["hosp_trauma_perc"])` of total hospitalizations, and respiratory represents the `r as.character(ratio_cons_hosp["cons_resp_perc"])` and `r as.character(ratio_cons_hosp["hosp_resp_perc"])`, respectively. 
+
+<br>
+
+# Bayesian Structural Time Series Models
+
+The model of Bayesian Structural Time Series (BSTS) with Causal Impact Analysis contains a local level component (observation equation linking observed data to a state vector) and a seasonal component (state equation that describes how the state vector evolves over time). Also it can contain other predictor series. The method uses a Markov chain Monte Carlo (MCMC) sampling of the structural time series given the observed data and the priors. We run MCMC simulations with `r format(as.numeric(clus_iter), big.marks=",")`  draws.
+
+<br>
+
+Previously, we selected those specifications on time series that showed less cumulative errors for each outcome. We discarded covariates, because we suspected that respiratory hospitalizations or consultations, trauma hospitalizations or consultations, and total consultations or total hospitalizations (composed by respiratory and trauma) may also be affected by social protests, as well as circulatory system hospitalizations and consultations. 
+
+<br>
+
+For all the models, we used the term `prior.level.sd` to .1 instead of the default .01, assuming an unstable dataset with high residual volatility, although may give rise to wide prediction intervals. 
+
+<br>
+
+```{r borrar_impact_model_anteriores, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+rm(list=ls()[startsWith(ls(),"impact")])
+rm(list=ls()[startsWith(ls(),"model")])
+#We did not include time-varying regression coefficients, because this may leads to overspecification when used in combination with a time-varying local trend or level, in which case a static regression is safer.
+```
+
+
+## Trauma Consultations
+
+<br>
+
+The model that had lower cumulative errors assumed a Random-Walk model and a Studentized Distribution with control variables.
+
+<br>
+
+```{r bsts3d_trauma_cons, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+cons_trauma_no_counterf<-
+c(as.numeric(unlist(data15a64_rn_ratio[1:249,"cons_trauma"])), rep(NA,11))
+cons_trauma_post_resp_vac<-
+c((as.numeric(table(data15a64_rn_ratio$did)[1])):length(data15a64_rn_ratio$did))
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+#c(unlist(data15a64_rn_ratio[1:249,c("cons_trauma")]),rep(NA,11))
+ss2d <- AddLocalLevel(ss2d, 
+                      cons_trauma_no_counterf
+                      ) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, 
+                    cons_trauma_no_counterf,
+                    nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, 
+                    cons_trauma_no_counterf, 
+                    nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d1_cons_trauma <-  bsts(cons_trauma_no_counterf,
+                   state.specification = ss2d,#A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+
+#,
+#               dynamic.regression=T)
+#plot(model2d1_cons_trauma, main = "Model of Trauma Consultations (Circulatory System Hospitalizations as Control Var)")
+#plot(model2d1_cons_trauma, "components")
+
+impact3d1_cons_trauma <- CausalImpact(bsts.model = model2d1_cons_trauma,model.args = list(prior.level.sd=.1, dynamic.regression=T),
+                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[cons_trauma_post_resp_vac,"cons_trauma"])))
+#plot(impact3d1_cons_trauma, "original") 
+
+burn2d1 <- SuggestBurn(0.1, model2d1_cons_trauma)
+
+#summary(impact3d1_cons_trauma)
+#summary(impact3d1) 
+##summary(impact3d1,"report")
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+model2d1_cons_trauma_resp_traj<-(ComputeResponseTrajectories(model2d1_cons_trauma))
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+```
+
+
+```{r bsts3d_trauma_cons_plot, echo=T, cache= T, paged.print=TRUE, warning=F, eval= F, fig.align="center", fig.cap="Figure 3. Estimated  Trends of Trauma Consultations", fig.height=10}
+plot(impact3d1_cons_trauma)+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
+        plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
+```
+
+## Respiratory Consultations
+
+<br>
+
+The model that had lower cumulative errors assumed a Random-Walk model and a Studentized Distribution with control variables.
+
+<br>
+
+```{r bsts3d2_cons_resp, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+cons_resp_no_counterf<-
+c(as.numeric(unlist(data15a64_rn_ratio[1:249,"cons_resp"])), rep(NA,11))
+cons_resp_post_resp_vac<-
+c((as.numeric(table(data15a64_rn_ratio$did)[1])):length(data15a64_rn_ratio$did))
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d,cons_resp_no_counterf
+                      ) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, 
+                    cons_resp_no_counterf, 
+                    nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, 
+                    cons_resp_no_counterf, 
+                    nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+
+model2d_cons_resp <- bsts(cons_resp_no_counterf, 
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               model.options = BstsOptions(save.prediction.errors = TRUE),
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+#plot(model2d_cons_resp, main = "Model 2")
+#plot(model2d_cons_resp, "components")
+
+impact3d_cons_resp <- CausalImpact(bsts.model = model2d_cons_resp,model.args = list(prior.level.sd=.1, dynamic.regression=T),
+                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[cons_trauma_post_resp_vac,"cons_resp"])))
+#plot(impact3d, "original") 
+
+burn2d <- SuggestBurn(0.1, model2d_cons_resp)
+
+#summary(impact3d_cons_resp)
+```
+
+
+## Trauma Hospitalizations
+
+<br>
+
+The model that had lower cumulative errors assumed a Random-Walk model and a Studentized Distribution with control variables.
+
+<br>
+
+```{r bsts3d2_trauma_hosp, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+hosp_trauma_no_counterf<-
+c(as.numeric(unlist(data15a64_rn_ratio[1:249,"hosp_trauma"])), rep(NA,11))
+hosp_trauma_post_resp_vac<-
+c((as.numeric(table(data15a64_rn_ratio$did)[1])):length(data15a64_rn_ratio$did))
+#                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[hosp_trauma_post_resp_vac,"hosp_trauma"])))
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d,hosp_trauma_no_counterf) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, hosp_trauma_no_counterf, nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, hosp_trauma_no_counterf, 
+                     nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$log_hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d_trauma_hosp <- bsts(hosp_trauma_no_counterf,
+                state.specification = ss2d,             
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+#plot(model2d_trauma_hosp, main = "Model 2")
+#plot(model2d_trauma_hosp, "components")
+
+impact3d_hosp_trauma <- CausalImpact(bsts.model = model2d_trauma_hosp,model.args = list(prior.level.sd=.1, dynamic.regression=T), 
+                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[hosp_trauma_post_resp_vac,"hosp_trauma"])))
+              
+#plot(impact3d_hosp_trauma, "original") 
+
+burn2d <- SuggestBurn(0.1, model2d_trauma_hosp)
+
+#plot(impact3d)
+#summary(impact3d_hosp_trauma) 
+##summary(impact3d,"report")
+#dynamic.regression Whether to include time-varying regression coefficients. In combination with a time-varying local trend or even a time-varying local level, this often leads to overspecification, in which case a static regression is safer. Defaults to FALSE.
+#
+#Prior standard deviation of the Gaussian random walk of the local level. Expressed in terms of data standard deviations. Defaults to 0.01, a typical choice for well-behaved and stable datasets with low residual volatility after regressing out known predictors (e.g., web searches or sales in high quantities). When in doubt, a safer option is to use 0.1, as validated on synthetic data, although this may sometimes give rise to unrealistically wide prediction intervals.
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+model2d_trauma_hosp_resp_traj<-(ComputeResponseTrajectories(model2d_trauma_hosp))
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+```
+
+```{r bsts3d2_trauma_hosp_plot, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align="center", fig.cap="Figure 1. Estimated  Trends of Trauma Hospitalizations", fig.height=10}
+plot(impact3d_hosp_trauma)+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
+        plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
+```
+
+## Respiratory Hospitalizations
+
+<br>
+
+The model that had lower cumulative errors assumed a Random-Walk model and a Studentized Distribution, but without control variables. We decided to include control variables in order to reflect most adequately the uniqueness of the impact of the social protests in respiratory hospitalizations.
+
+<br>
+
+```{r bsts3d_resp_hosp, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#The response variable (i.e., the first column in data) may contain missing values (NA), but covariates (all other columns in data) may not. If one of your covariates contains missing values, consider imputing (i.e., estimating) the missing values; if this is not feasible, leave the regressor out.
+
+
+hosp_resp_no_counterf<-
+c(as.numeric(unlist(data15a64_rn_ratio[1:249,"hosp_resp"])), rep(NA,11))
+hosp_resp_post_resp_vac<-
+c((as.numeric(table(data15a64_rn_ratio$did)[1])):length(data15a64_rn_ratio$did))
+#                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[hosp_resp_post_resp_vac,"hosp_resp"])))
+
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d, hosp_resp_no_counterf
+                      ) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, hosp_resp_no_counterf,
+                    nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, hosp_resp_no_counterf, 
+                    nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+model2d1_hosp_resp <- 
+  bsts(hosp_resp_no_counterf,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter,
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#               dynamic.regression=T)
+#plot(model2d1_hosp_resp, main = "Model of Respiratory Hospitalizations (Circulatory System Hospitalizations as Control Var)")
+#plot(model2d1_hosp_resp, "components")
+
+impact3d1_hosp_resp <- CausalImpact(bsts.model = model2d1_hosp_resp,model.args = list(prior.level.sd=.1, dynamic.regression=T),
+                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[hosp_resp_post_resp_vac,"hosp_resp"])))
+
+#plot(impact3d1_hosp_resp, "original") 
+
+burn2d1 <- SuggestBurn(0.1, model2d1_hosp_resp)
+
+#summary(impact3d1_hosp_resp) 
+##summary(impact3d1,"report")
+```
+
+```{r bsts3d_resp_hosp_plot, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align="center", fig.cap="Figure 2. Estimated  Trends of Respiratory Hospitalizations", fig.height=10}
+plot(impact3d1_hosp_resp)+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
+        plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
+```
+
+```{r bsts3d2_cons_resp_plot, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align="center", fig.cap="Figure 4. Estimated Trends of Respiratory Consultations", fig.height=10}
+plot(impact3d_cons_resp)+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
+        plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
+```
+
+## Trauma Hospitalizations per 1,000 consultations
+
+```{r fig1_plot_ratio_cnts, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align="center", fig.cap="Figure 1. Yearly Rate of Trauma Hospitalizations", fig.height=12}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+<br>
+
+We generated a plot of the series of the rate of hospitalizations per trauma consultations per 1,000 consultations in each year.
+
+<br>
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+ratio_plot<-
+data15a64_rn_ratio %>% 
+  dplyr::select(1:4,isoweek,rate,rate_resp,rate_circ) %>% 
+  pivot_longer(cols=c("rate","rate_resp","rate_circ"), names_to = "variable", values_to = "rate") %>% 
+  dplyr::arrange(year_week) %>% 
+  dplyr::mutate(variable=dplyr::case_when(variable=="rate"~"Trauma",
+                                          variable=="rate_resp"~"Respiratory",
+                                          variable=="rate_circ"~"Circulatory")) %>% 
+  dplyr::mutate(label_text=paste0("<br>Date: ",year_week,"<br>Rate: ",round(rate,0),"<br>Outcome: ",variable)) %>% 
+   ggplot() + #median
+  facet_wrap(.~year, ncol = 1,strip.position="right") + 
+  geom_line(aes(x=isoweek, y =rate, group=variable, color=variable, label= label_text)) + 
+  #geom_point(aes(x=fech_week, y =count, group=variable, color=variable,shape=variable),size=1) + 
+  #geom_jitter(aes(y = hosp_trauma,x = isoweek, color = year),width = 0.5, alpha = 0.3)+
+  guides(color=F)+
+  theme_bw() + 
+  theme(strip.background  = element_blank(),
+        strip.text = element_text(face="bold", size=7))+
+  ylab("") + 
+  theme(strip.text.x = element_text(size = 8, face = "bold"),
+        legend.position = "bottom",
+        plot.caption=element_text(hjust = 0),
+        strip.background  = element_blank())+
+  xlab("Week")+
+  scale_x_continuous(
+    breaks = seq(from = 1, to = 52, by =4),
+    labels = seq(from = 1, to = 52, by =4),#,
+    #  label = c("two", "four", "six")
+  )
+#+
+#  scale_y_continuous(limits=c(0,.25),labels = scales::percent)
+ggplotly(ratio_plot, tooltip="label_text") %>% 
+  layout(showlegend = F)
+```
+
+<br>
+
+The model chosen assumed a Random-Walk model and a Studentized Distribution with control variables. We selected this model because both outcomes showed less cumulative errors assuming this structure.
+
+<br>
+
+```{r bsts_ratio, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#https://github.com/google/CausalImpact/tree/master/R
+
+rate_no_counterf<-
+c(as.numeric(unlist(data15a64_rn_ratio[1:249,"rate"])), rep(NA,11))
+rate_post_resp_vac<-
+c((as.numeric(table(data15a64_rn_ratio$did)[1])):length(data15a64_rn_ratio$did))
+#                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[rate_post_resp_vac,"rate"])))
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d,rate_no_counterf
+                      ) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, 
+                    rate_no_counterf, 
+                    nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, 
+                    rate_no_counterf, 
+                    nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+
+model2d_ratio <- bsts(rate_no_counterf,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#              
+#plot(model2d_cons_resp, main = "Model 2")
+#plot(model2d_cons_resp, "components")
+
+impact3d_ratio <- CausalImpact(bsts.model = model2d_ratio,model.args = list(prior.level.sd=.1, dynamic.regression=T),
+                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[rate_post_resp_vac,"rate"])))
+
+#plot(impact3d, "original") 
+
+burn2d <- SuggestBurn(0.1, model2d_ratio)
+
+#summary(impact3d_ratio)
+```
+
+```{r plot_bsts_ratio, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align="center", fig.cap="Figure 7. Estimated Trends of the Rate of Trauma Hospitalizations per Trauma Consultations per 1,000 population", fig.height=10}
+plot(impact3d_ratio)+
+  xlab("Date")+
+  ylab("Ratio")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
+        plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  #scale_y_continuous(labels=scales::percent)+
+  labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
+```
+
+
+```{r plot_fitted_vs_actual_mcmc, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align='center', fig.cap= "Figure 8. Actual linear trend vs. Fitted Line, Rate of Trauma Hospitalizations",fig.height=12}
+<br>
+
+We additionally looked over the matrix of MCMC draws and compared the trajectories generated in the trauma consultations and trauma hospitalizations.
+
+<br>
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#RESPONSE TRAJECTORIES EJE- X (time), EJE-Y (mcmc.iteration)
+
+#c(as.character(unlist(data15a64_rn[which(data15a64_rn$did==0),"date"])), rep(NA,10))
+#c(as.character(unlist(data15a64_rn[,"date"])))
+model2d_cons_trauma_resp_traj<-ComputeResponseTrajectories(model2d1_cons_trauma)
+model2d_trauma_hosp_resp_traj<-ComputeResponseTrajectories(model2d_trauma_hosp)
+model2d_prop_trauma_resp_traj<- (model2d_trauma_hosp_resp_traj/model2d_cons_trauma_resp_traj)*1000
+
+model2d_cons_trauma_resp_traj_df<-data.frame(model2d_cons_trauma_resp_traj)
+model2d_trauma_hosp_resp_traj_df<-data.frame(model2d_trauma_hosp_resp_traj)
+model2d_prop_trauma_resp_traj_df<-data.frame(model2d_prop_trauma_resp_traj)
+
+colnames(model2d_cons_trauma_resp_traj_df) <- as.character(unlist(data15a64_rn[,"date"]))
+colnames(model2d_trauma_hosp_resp_traj_df) <- as.character(unlist(data15a64_rn[,"date"]))
+colnames(model2d_prop_trauma_resp_traj_df) <- as.character(unlist(data15a64_rn[,"date"]))
+
+model2d_trauma_hosp_resp_traj_df_melt<-
+  model2d_trauma_hosp_resp_traj_df %>% 
+      dplyr::mutate(mcmc_sample=row_number()) %>% 
+      dplyr::select(mcmc_sample,everything()) %>% 
+      melt(id.vars ="mcmc_sample") %>% 
+      rename("date"="variable")
+model2d_trauma_cons_resp_resp_traj_df_melt<-
+  model2d_cons_trauma_resp_traj_df %>% 
+      dplyr::mutate(mcmc_sample=row_number()) %>% 
+      dplyr::select(mcmc_sample,everything()) %>% 
+      melt(id.vars ="mcmc_sample") %>% 
+      rename("date"="variable")
+model2d_prop_trauma_resp_traj_df_melt<-
+  model2d_prop_trauma_resp_traj_df %>% 
+      dplyr::mutate(mcmc_sample=row_number()) %>% 
+      dplyr::select(mcmc_sample,everything()) %>% 
+      melt(id.vars ="mcmc_sample") %>% 
+      rename("date"="variable")
+
+model2d_rate_trauma_hosp_cons_resp_traj_df_melt<-
+  model2d_trauma_hosp_resp_traj_df_melt %>% 
+  dplyr::rename("trauma_hosp"="value") %>% 
+  dplyr::left_join(model2d_trauma_cons_resp_resp_traj_df_melt,by = c("mcmc_sample", "date")) %>% 
+  dplyr::rename("trauma_cons"="value") %>% 
+  dplyr::mutate(rate_trauma=(trauma_hosp/trauma_cons)*1000)
+
+model2d_rate_trauma_resp_traj_df_melt_final<-
+model2d_rate_trauma_hosp_cons_resp_traj_df_melt %>% 
+     dplyr::mutate(date=as.Date(date)) %>% 
+     # dplyr::filter(date>="2019-10-21") %>% 
+     dplyr::group_by(date) %>% 
+    dplyr::summarise(mean = mean(rate_trauma),
+                      q025 = quantile(rate_trauma, .025),
+                      q975 = quantile(rate_trauma, .975),
+                      n=n()) %>%
+     ungroup()
+#model2d_prop_trauma_resp_traj_df_melt_post<-
+#    model2d_prop_trauma_hosp_cons_resp_traj_df_melt %>% 
+#      dplyr::mutate(date=as.Date(date)) %>% 
+#     # dplyr::filter(date>="2019-10-21") %>% 
+#  dplyr::group_by(date) %>% 
+#  dplyr::summarise(mean = mean(value, na.rm = TRUE),
+#            sd = sd(value, na.rm = TRUE),
+#            n = n()) %>%
+#  dplyr::mutate(se = sd / sqrt(n),
+#         lo_ci = mean - qt(1 - (0.05 / 2), n - 1) * se,
+#         up_ci = mean +  (1 - (0.05 / 2), n - 1) * se) %>% 
+#  ungroup()
+
+#:#:#:#::#:PLOT#:#:#:#:#:#:
+plot_comp_fit_actual_ratio<-
+cbind.data.frame(model2d_rate_trauma_resp_traj_df_melt_final,
+                 actual=as.numeric(unlist(data15a64_rn_ratio[,"rate"]))) %>% 
+    ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=1, color="darkblue") +
+      geom_line(aes(y=actual), size=1, color="black")+
+  #geom_ribbon(aes(x=date, y=mean, ymin = lo_ci, ymax = up_ci), fill = "grey70")+
+  geom_ribbon(aes(ymin=q025,ymax=q975),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  ylab("Rate of Hospitalizations per Consultations per 1,000 population")+
+  xlab("Date")+
+   theme(strip.text.x = element_text(size = 8, face = "bold"),
+        legend.position = "bottom",
+        plot.caption=element_text(hjust = 0),
+        strip.background  = element_blank(),
+        axis.text.x=element_text(angle = -90, hjust = 0),
+        legend.title = element_blank())
+  #scale_y_continuous(labels = scales::percent)
+   # scale_x_date(labels = scales::date_format("%Y-%m"),
+  #             limits = c(as.Date("2015-01-01"),as.Date("2019-12-31")),
+  #               breaks = "3 months")
+  #facet_zoom(xlim = c(253, nrow(actual_vs_fitted_and_forecast_arima)))
+plot_comp_fit_actual_ratio+
+    ggforce::facet_zoom(x = date>=as.Date("2019-10-01") & date<=as.Date("2019-12-23"),shrink=F,zoom.size = .5)+
+    geom_vline(xintercept = as.Date("2019-10-21"), col = 2, lty = 2, size=1)+
+  labs(caption="Note. Vertical Line, Social Protests;\nBlack Line= Actual Trend; Blue Line= Average Estimations")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+```
+
+## Respiratory Hospitalizations per 1,000 consultations
+
+<br>
+
+The model chosen assumed a Random-Walk model and a Studentized Distribution with control variables. We selected this model because both outcomes showed less cumulative errors assuming this structure.
+
+<br>
+
+```{r bsts_ratio_resp, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+#https://github.com/google/CausalImpact/tree/master/R
+
+rate_resp_no_counterf<-
+c(as.numeric(unlist(data15a64_rn_ratio[1:249,"rate_resp"])), rep(NA,11))
+rate_resp_post_resp_vac<-
+c((as.numeric(table(data15a64_rn_ratio$did)[1])):length(data15a64_rn_ratio$did))
+#                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[rate_resp_post_resp_vac,"rate_resp"])))
+
+# Model 2
+ss2d <- list()
+# Local trend, weekly-seasonal #https://qastack.mx/stats/209426/predictions-from-bsts-model-in-r-are-failing-completely - PUSE UN GENERALIZED LOCAL TREND
+ss2d <- AddLocalLevel(ss2d,rate_resp_no_counterf
+                      ) #
+# Add weekly seasonal
+ss2d <- AddSeasonal(ss2d, 
+                    rate_resp_no_counterf, 
+                    nseasons=5, season.duration = 52) #weeks OJO, ESTOS NO SON WEEKS VERDADEROS. PORQUE TENGO MAS DE EUN AÑO
+ss2d <- AddSeasonal(ss2d, 
+                    rate_resp_no_counterf, 
+                    nseasons = 12, season.duration =4) #years
+#ss2 <- AddAutoAr(ss2, y = data15a64_rn_causal$hosp_trauma, lags = 1) #NO PUEDO AREGAR AR1 CON POISSON
+# For example, to add a day-of-week component to data with daily granularity, use model.args = list(nseasons = 7, season.duration = 1). To add a day-of-week component to data with hourly granularity, set model.args = list(nseasons = 7, season.duration = 24).
+
+model2d_ratio_resp <- bsts(rate_resp_no_counterf,
+               state.specification = ss2d, #A list with elements created by AddLocalLinearTrend, AddSeasonal, and similar functions for adding components of state. See the help page for state.specification.
+               family ="student", #A Bayesian Analysis of Time-Series Event Count Data
+               niter = clus_iter, 
+              # burn = 500, #http://finzi.psych.upenn.edu/library/bsts/html/SuggestBurn.html Suggest the size of an MCMC burn in sample as a proportion of the total run.
+               seed= 2125)
+#,
+#              
+#plot(model2d_cons_resp, main = "Model 2")
+#plot(model2d_cons_resp, "components")
+
+impact3d_ratio_resp <- CausalImpact(bsts.model = model2d_ratio_resp,model.args = list(prior.level.sd=.1, dynamic.regression=T),
+                       post.period.response = as.numeric(unlist(data15a64_rn_ratio[rate_resp_post_resp_vac,"rate_resp"])))
+#plot(impact3d, "original") 
+
+burn2d <- SuggestBurn(0.1, model2d_ratio_resp)
+
+#summary(model2d_ratio_resp)
+```
+
+```{r plot_bsts_ratio_resp, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align="center", fig.cap="Figure 9. Estimated Trends of the Rate of Respiratory Hospitalizations per Respiratory Consultations per 1,000 population", fig.height=10}
+plot(impact3d_ratio_resp)+
+  xlab("Date")+
+  ylab("Ratio")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn_ratio),13),260)),
+                     labels=as.character(unlist(data15a64_rn_ratio[c(seq(1,nrow(data15a64_rn_ratio),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11),
+        plot.caption = element_text(hjust = 0, face= "italic",size=9))+
+  #scale_y_continuous(labels=scales::percent)+
+  labs(caption="Note. The first panel shows the data and a counterfactual prediction for the post-treatment period (Blue dashed line);\nThe second panel shows the difference between observed data and counterfactual predictions;\nThe third panel adds up the pointwise contributions from the second panel;\nBlue area= Prediction intervals.")
+```
+
+
+
+
+```{r plot_fitted_vs_actual_mcmc_resp, echo=T, cache= T, paged.print=TRUE, warning=F, eval=F, fig.align='center', fig.cap= "Figure 10. Actual linear trend vs. Fitted Line, Rate of Respiratory Hospitalizations",fig.height=12}
+
+<br>
+
+We additionally looked over the matrix of MCMC draws and compared the trajectories generated in the trauma consultations and trauma hospitalizations.
+
+<br>
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#RESPONSE TRAJECTORIES EJE- X (time), EJE-Y (mcmc.iteration)
+
+#c(as.character(unlist(data15a64_rn[which(data15a64_rn$did==0),"date"])), rep(NA,10))
+#c(as.character(unlist(data15a64_rn[,"date"])))
+model2d_resp_cons_resp_traj<-ComputeResponseTrajectories(model2d_cons_resp)
+model2d_resp_hosp_resp_traj<-ComputeResponseTrajectories(model2d1_hosp_resp)
+model2d_prop_resp_resp_traj<- (model2d_resp_hosp_resp_traj/model2d_resp_cons_resp_traj)*1000
+
+model2d_resp_cons_resp_traj_df<-data.frame(model2d_resp_cons_resp_traj)
+model2d_resp_hosp_resp_traj_df<-data.frame(model2d_resp_hosp_resp_traj)
+model2d_prop_resp_resp_traj_df<-data.frame(model2d_prop_resp_resp_traj)
+
+colnames(model2d_resp_cons_resp_traj_df) <- as.character(unlist(data15a64_rn[,"date"]))
+colnames(model2d_resp_hosp_resp_traj_df) <- as.character(unlist(data15a64_rn[,"date"]))
+colnames(model2d_prop_resp_resp_traj_df) <- as.character(unlist(data15a64_rn[,"date"]))
+
+model2d_resp_hosp_resp_traj_df_melt<-
+  model2d_resp_hosp_resp_traj_df %>% 
+      dplyr::mutate(mcmc_sample=row_number()) %>% 
+      dplyr::select(mcmc_sample,everything()) %>% 
+      melt(id.vars ="mcmc_sample") %>% 
+      rename("date"="variable")
+model2d_resp_cons_resp_traj_df_melt<-
+  model2d_resp_cons_resp_traj_df %>% 
+      dplyr::mutate(mcmc_sample=row_number()) %>% 
+      dplyr::select(mcmc_sample,everything()) %>% 
+      melt(id.vars ="mcmc_sample") %>% 
+      rename("date"="variable")
+model2d_prop_resp_resp_traj_df_melt<-
+  model2d_prop_resp_resp_traj_df %>% 
+      dplyr::mutate(mcmc_sample=row_number()) %>% 
+      dplyr::select(mcmc_sample,everything()) %>% 
+      melt(id.vars ="mcmc_sample") %>% 
+      rename("date"="variable")
+
+model2d_rate_resp_hosp_resp_traj_df_melt<-
+  model2d_resp_hosp_resp_traj_df_melt %>% 
+  dplyr::rename("resp_hosp"="value") %>% 
+  dplyr::left_join(model2d_resp_cons_resp_traj_df_melt,by = c("mcmc_sample", "date")) %>% 
+  dplyr::rename("resp_cons"="value") %>% 
+  dplyr::mutate(rate_resp=(resp_hosp/resp_cons)*1000)
+
+model2d_rate_resp_traj_df_melt_final<-
+model2d_rate_resp_hosp_resp_traj_df_melt %>% 
+     dplyr::mutate(date=as.Date(date)) %>% 
+     # dplyr::filter(date>="2019-10-21") %>% 
+     dplyr::group_by(date) %>% 
+    dplyr::summarise(mean = mean(rate_resp),
+                      q025 = quantile(rate_resp, .025),
+                      q975 = quantile(rate_resp, .975),
+                      n=n()) %>%
+     ungroup()
+#model2d_prop_trauma_resp_traj_df_melt_post<-
+#    model2d_prop_trauma_hosp_cons_resp_traj_df_melt %>% 
+#      dplyr::mutate(date=as.Date(date)) %>% 
+#     # dplyr::filter(date>="2019-10-21") %>% 
+#  dplyr::group_by(date) %>% 
+#  dplyr::summarise(mean = mean(value, na.rm = TRUE),
+#            sd = sd(value, na.rm = TRUE),
+#            n = n()) %>%
+#  dplyr::mutate(se = sd / sqrt(n),
+#         lo_ci = mean - qt(1 - (0.05 / 2), n - 1) * se,
+#         up_ci = mean +  (1 - (0.05 / 2), n - 1) * se) %>% 
+#  ungroup()
+
+#:#:#:#::#:PLOT#:#:#:#:#:#:
+plot_comp_fit_actual_ratio<-
+cbind.data.frame(model2d_rate_resp_traj_df_melt_final,
+                 actual=as.numeric(unlist(data15a64_rn_ratio[,"rate_resp"]))) %>% 
+    ggplot(aes(x=date))+
+      geom_line(aes(y=mean), size=1, color="darkblue") +
+      geom_line(aes(y=actual), size=1, color="black")+
+  #geom_ribbon(aes(x=date, y=mean, ymin = lo_ci, ymax = up_ci), fill = "grey70")+
+  geom_ribbon(aes(ymin=q025,ymax=q975),fill="steelblue", alpha = 0.35)+
+  theme_sjplot()+
+  ylab("Rate of Hospitalizations per Consultations per 1,000 population")+
+  xlab("Date")+
+   theme(strip.text.x = element_text(size = 8, face = "bold"),
+        legend.position = "bottom",
+        plot.caption=element_text(hjust = 0),
+        strip.background  = element_blank(),
+        axis.text.x=element_text(angle = -90, hjust = 0),
+        legend.title = element_blank())
+  #scale_y_continuous(labels = scales::percent)
+   # scale_x_date(labels = scales::date_format("%Y-%m"),
+  #             limits = c(as.Date("2015-01-01"),as.Date("2019-12-31")),
+  #               breaks = "3 months")
+  #facet_zoom(xlim = c(253, nrow(actual_vs_fitted_and_forecast_arima)))
+plot_comp_fit_actual_ratio+
+    ggforce::facet_zoom(x = date>=as.Date("2019-10-01") & date<=as.Date("2019-12-23"),shrink=F,zoom.size = .5)+
+    geom_vline(xintercept = as.Date("2019-10-21"), col = 2, lty = 2, size=1)+
+  labs(caption="Note. Vertical Line, Social Protests;\nBlack Line= Actual Trend; Blue Line= Average Estimations")
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+```
+
+```{r BSTS_table, messages=T, eval=T, warnings=T}
+vector_bsts_models<-c("impact3d1_cons_trauma", "impact3d_cons_resp","impact3d_hosp_trauma", "impact3d1_hosp_resp", "impact3d_ratio", "impact3d_ratio_resp")
+names_outcomes<-c("Trauma Consultations","Respiratory Consultations","Trauma Hospitalizations","Respiratory Hospitalizations","Trauma Hospitalizations per 1,000 consultations","Respiratory Hospitalizations per 1,000 consultations")
+df_results_bsts<-data.frame()
+for (i in 1:6) {
+  x<-vector_bsts_models[i]
+dt_bsts<-cbind(
+  outcome=names_outcomes[i],
+  AE=sprintf("%4.2f",round(get(x)$summary$AbsEffect[1],2)),
+  IC95_AE=paste0(sprintf("%4.2f",round(get(x)$summary$AbsEffect.lower[1],2)),", ",sprintf("%4.2f",round(get(x)$summary$AbsEffect.upper[1],2))),
+  p=sprintf("%5.3f",round(get(x)$summary$p[1],5)),
+  RE=sprintf("%4.2f",round(get(x)$summary$RelEffect[1]*100,2)),
+  IC95_RE=paste0(sprintf("%4.2f",round(get(x)$summary$RelEffect.lower[1]*100,2)),", ",sprintf("%4.2f",round(get(x)$summary$RelEffect.upper[1]*100,2)))
+  )
+  df_results_bsts<-rbind.data.frame(df_results_bsts,dt_bsts)
+}
+df_results_bsts[which(df_results_bsts$p=="0.000"),"p"]<-"<0.001"
+
+df_results_bsts %>% 
+      knitr::kable(.,format = "html", format.args = list(decimal.mark = ".", big.mark = ","),
+               caption = paste0("Table 2. Estimated effects of October’s 2019 social protests on the outcomes of interest"),
+               col.names = c("Outcome of Interest","Average
+Effect","95%Credible Interval", "P- Value","Relative Effect(%)","95%Credible Interval"),
+               align =rep('c', 101)) %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size= 11) %>% 
+  kableExtra::add_footnote(c("a- Each model had a structure of studentized distribution of errors, and a conservative prior standard deviation of .1"),
+                             notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+
+
+# Session Info
+
+```{r save, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
+Sys.getenv("R_LIBS_USER")
+rstudioapi::getSourceEditorContext()
+      tryCatch(
+                     {
+      save.image(paste0(getwd(),"/","Definitive_models_2021_after_revision.RData"))
+      #rio::export(codebook_data, "C:/Users/andre/Dropbox/Covid-19_2020/Article_SecondManuscript/LT Environmental analysis/Databases/merged_data_post_ago.dta")
+                     },
+                         error = function(e){
+      save.image(paste0(getwd(),"/","Definitive_models_2021_after_revision.RData"))
+      #rio::export(codebook_data, "C:/Users/CISS Fondecyt/Dropbox/Covid-19_2020/Article_SecondManuscript/LT Environmental analysis/Databases/merged_data_post_ago.dta")
+                         }
+                   )
+sessionInfo()
+
+#Use any number of times, to revert back to the last commit without deleting any files that you have recently created.
+#git reset --soft HEAD~1
+unlink('*_cache', recursive = T, force=T)
+```

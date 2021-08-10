@@ -1,0 +1,2176 @@
+---
+title: "Compilation"
+author: "ags"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 6
+    fig_width: 8
+    theme: spacelab
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+    number_sections: yes
+---
+
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+$(document).ready(function() {
+
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+
+    // onClick function for all plots (img's)
+
+    $('img:not(.zoomImg)').click(function() {
+
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+
+    });
+
+    // onClick function for zoomImg
+
+    $('img.zoomImg').click(function() {
+
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+
+    });
+
+  });
+```
+
+
+<style type="text/css">
+.tablelines table, .tablelines td, .tablelines th {
+  border: 1px solid black;
+  }
+.centrado {
+  text-align: center;
+}
+.table.center {
+  margin-left:auto; 
+  margin-right:auto;
+}
+.table_wrapper{
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+code.r{
+  font-size: 8px;
+}
+body{ /* Normal  */
+    text-align: justify;
+}
+.superbigimage{
+  overflow-y:scroll;
+  white-space: nowrap;
+}
+.superbigimage img{
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+p.comment {
+  background-color: #FF7F79;
+    padding: 10px;
+  border: 1px solid black;
+  margin-left: 25px;
+  border-radius: 5px;
+  font-style: italic;
+}
+</style>
+
+<style>
+  p.comment {
+    background-color: #ff9a9a;
+      padding: 10px;
+    border: 1px solid red;
+    margin-left: 25px;
+    border-radius: 5px;
+    font-style: italic;
+  }
+
+</style>
+
+------------------------------------------------------------------------
+
+```{r setup1, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls());gc()
+
+unlink('BD_Compilation_cache', recursive = TRUE)
+
+if(!require(here)){install.packages("here")}
+
+#if(!require(groundhog)){install.packages("groundhog")}
+answer <- "OK"
+consent <- TRUE
+#require(groundhog)
+#library(groundhog)
+#set.groundhog.folder(here::here())
+
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+try_with_time_limit <- function(expr, cpu = Inf, elapsed = Inf)
+{
+  y <- try({setTimeLimit(cpu, elapsed); expr}, silent = TRUE) 
+  if(inherits(y, "try-error")) NULL else y 
+}
+eval_fork <- function(..., timeout=60){
+
+  #this limit must always be higher than the timeout on the fork!
+  setTimeLimit(timeout+5);      
+
+  #dispatch based on method
+  ##NOTE!!!!! Due to a bug in mcparallel, we cannot use silent=TRUE for now.
+  myfork <- parallel::mcparallel({
+    eval(...)
+  }, silent=FALSE);
+
+  #wait max n seconds for a result.
+  myresult <- parallel::mccollect(myfork, wait=FALSE, timeout=timeout);
+
+  #try to avoid bug/race condition where mccollect returns null without waiting full timeout.
+  #see https://github.com/jeroenooms/opencpu/issues/131
+  #waits for max another 2 seconds if proc looks dead 
+  while(is.null(myresult) && totaltime < timeout && totaltime < 2) {
+     Sys.sleep(.1)
+     enddtime <- Sys.time();
+     totaltime <- as.numeric(enddtime - starttime, units="secs")
+     myresult <- parallel::mccollect(myfork, wait = FALSE, timeout = timeout);
+  }
+
+  #kill fork after collect has returned
+  tools::pskill(myfork$pid, tools::SIGKILL);    
+  tools::pskill(-1 * myfork$pid, tools::SIGKILL);  
+
+  #clean up:
+  parallel::mccollect(myfork, wait=FALSE);
+
+  #timeout?
+  if(is.null(myresult)){
+    stop("R call did not return within ", timeout, " seconds. Terminating process.", call.=FALSE);      
+  }
+
+  #move this to distinguish between timeout and NULL returns
+  myresult <- myresult[[1]];
+
+  #reset timer
+  setTimeLimit();     
+
+  #forks don't throw errors themselves
+  if(inherits(myresult,"try-error")){
+    #stop(myresult, call.=FALSE);
+    stop(attr(myresult, "condition"));
+  }
+
+  #send the buffered response
+  return(myresult);  
+}
+```
+```{r setup2}
+local({r <- getOption("repos")
+       r["CRAN"] <- "http://cran.r-project.org" 
+       options(repos=r)
+})
+
+`%>%` <- magrittr::`%>%`
+
+copy_names <- function(x,row.names=FALSE,col.names=TRUE,dec=",",...) {
+  if(class(ungroup(x))[1]=="tbl_df"){
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(data.frame(x)),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)    
+        }
+  } else {
+        if(options()$OutDec=="."){
+            options(OutDec = dec)
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ".")
+          return(x)
+        } else {
+            options(OutDec = ",")
+            write.table(format(x),"clipboard",sep="\t",row.names=FALSE,col.names=col.names,...)
+            options(OutDec = ",")
+          return(x)       
+  }
+ }
+}  
+
+if(!require(pacman)){install.packages("pacman")}
+
+pacman::p_unlock(lib.loc = .libPaths()) #para no tener problemas reinstalando paquetes
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#get.snowball(c("readr","RODBC","foreign","dplyr","tidyverse","lubridate"), "2020-02-01")
+#groundhog.library('nlme','2021-01-01')
+#groundhog.library('Matrix','2021-01-01')
+#groundhog.library('MASS','2021-01-01')
+#try_with_time_limit(groundhog.library("dplyr", "2020-11-01", ignore.deps = c("digest","generics", "glue", "magrittr", "pillar", "R6", "rlang", "tibble", "vctrs")))
+#try_with_time_limit(groundhog.library("foreign", "2021-01-01"))
+#try_with_time_limit(groundhog.library("readr", "2021-01-01"))
+#try_with_time_limit(groundhog.library("RODBC", "2021-01-01"))
+
+#try_with_time_limit(groundhog.library("tidyverse", "2021-01-01"))
+#try_with_time_limit(groundhog.library("lubridate", "2021-01-01"))
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+if(!require(dplyr)){install.packages("dplyr")}
+if(!require(foreign)){install.packages("foreign")}
+if(!require(readr)){install.packages("readr")}
+if(!require(RODBC)){install.packages("RODBC")}
+if(!require(tidyverse)){install.packages("tidyverse")}
+if(!require(zoo)){install.packages("zoo")}
+if(!require(tidyr)){install.packages("tidyr")}
+if(!require(sjPlot)){install.packages("sjPlot")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(compareGroups)){install.packages("compareGroups")}
+if(!require(forecast)){install.packages("forecast")}
+
+```
+
+# Compile Database
+
+## Unite Databases
+
+We merge the datasets of yearly Urgency Admissions from 2015 to 2019, selecting the following causes (`Idcausa`):
+
+a.  Total Consultations (1)
+b.  Respiratory Consultations (2)
+c.  Circulatory Consultations (12)
+d.  Diarrhea Consultations (29)
+e.  Trauma Consultations (18)
+f.  Total Hospitalizations (25)
+g.  Respiratory Hospitalizations (7)
+h.  Circulatory Hospitalizations (22)
+i.  Trauma Hospitalizations (23)
+
+We selected the following healthcare institutions (`codigo_antiguo`) within 3KM:
+
+-   Complejo Hospitalario San José (09-100)
+-   Hospital de Urgencia Asistencia Pública (11-195)
+-   Hospital del Salvador de Santiago (12-100)
+
+```{r 1 - Urg15_3 Data Creation}
+# -------- Access Data --------
+#rm(list=setdiff(ls(), "dt"))
+establecimientos <-
+  readr::read_delim("establecimientos.csv",
+             ";",
+             escape_double = FALSE,
+             trim_ws = TRUE)
+
+target <- tempfile()
+file.path(target)
+unzip(paste0(getwd(), '/',"AtencionesUrg_15.zip"), exdir = target)
+f <- list.files(target, pattern = ".mdb")
+d5 <- RODBC::odbcConnectAccess2007(file.path(target, f))
+#d5 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2015.mdb")
+urg_2015 <- sqlFetch(d5, "Atenciones Urgencia 2015")
+odbcClose(d5)
+unlink(target)
+
+# -------- Clean urg_2015 Columns --------
+urg_2015$idestablecimiento <- urg_2015$IdEstablecimiento
+urg_2015$Col01 <- urg_2015$Total
+urg_2015$Col02 <- urg_2015$`Menores de 1 año`
+urg_2015$Col03 <- urg_2015$`1-4 años`
+urg_2015$Col04 <- urg_2015$`5-14 años`
+urg_2015$Col05 <- urg_2015$`15-64 años`
+urg_2015$Col06 <- urg_2015$`65 años y más`
+urg_2015$Idcausa <- urg_2015$IdCausa
+# -------- Establish Hospital ID Codes --------
+estab_id <-
+  establecimientos[establecimientos$codigo_antiguo == "09-100" |
+                     establecimientos$codigo_antiguo == "11-195" |
+                     establecimientos$codigo_antiguo == "12-100", "codigo_antiguo", drop =
+                     TRUE]
+estab_id <- as.factor(estab_id)
+columns = c("idestablecimiento",
+            "Col01",
+            "Col02",
+            "Col03",
+            "Col04",
+            "Col05",
+            "Col06",
+            "fecha")
+
+# -------- Create Consultation Columns --------
+cons_total <-
+  urg_2015[urg_2015$Idcausa == 1 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_total) <-
+  c (
+    "id",
+    "cons_total_all",
+    "cons_total_a1",
+    "cons_total_1a4",
+    "cons_total_5a14",
+    "cons_total_15a64",
+    "cons_total_65a",
+    "date"
+  )
+cons_resp <-
+  urg_2015[urg_2015$Idcausa == 2 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_resp) <-
+  c (
+    "id",
+    "cons_resp_all",
+    "cons_resp_a1",
+    "cons_resp_1a4",
+    "cons_resp_5a14",
+    "cons_resp_15a64",
+    "cons_resp_65a",
+    "date"
+  )
+cons_circ <-
+  urg_2015[urg_2015$Idcausa == 12 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_circ) <-
+  c (
+    "id",
+    "cons_circ_all",
+    "cons_circ_a1",
+    "cons_circ_1a4",
+    "cons_circ_5a14",
+    "cons_circ_15a64",
+    "cons_circ_65a",
+    "date"
+  )
+cons_diarrea <-
+  urg_2015[urg_2015$Idcausa == 29 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_diarrea) <-
+  c (
+    "id",
+    "cons_diarrea_all",
+    "cons_diarrea_a1",
+    "cons_diarrea_1a4",
+    "cons_diarrea_5a14",
+    "cons_diarrea_15a64",
+    "cons_diarrea_65a",
+    "date"
+  )
+
+cons_trauma <-
+  urg_2015[urg_2015$Idcausa == 18  &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_trauma) <-
+  c (
+    "id",
+    "cons_trauma_all",
+    "cons_trauma_a1",
+    "cons_trauma_1a4",
+    "cons_trauma_5a14",
+    "cons_trauma_15a64",
+    "cons_trauma_65a",
+    "date"
+  )
+
+# -------- Create Hospitalization Columns --------
+hosp_total <-
+  urg_2015[urg_2015$Idcausa == 25 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_total) <-
+  c (
+    "id",
+    "hosp_total_all",
+    "hosp_total_a1",
+    "hosp_total_1a4",
+    "hosp_total_5a14",
+    "hosp_total_15a64",
+    "hosp_total_65a",
+    "date"
+  )
+hosp_resp <-
+  urg_2015[urg_2015$Idcausa == 7 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_resp) <-
+  c (
+    "id",
+    "hosp_resp_all",
+    "hosp_resp_a1",
+    "hosp_resp_1a4",
+    "hosp_resp_5a14",
+    "hosp_resp_15a64",
+    "hosp_resp_65a",
+    "date"
+  )
+hosp_circ <-
+  urg_2015[urg_2015$Idcausa == 22 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_circ) <-
+  c (
+    "id",
+    "hosp_circ_all",
+    "hosp_circ_a1",
+    "hosp_circ_1a4",
+    "hosp_circ_5a14",
+    "hosp_circ_15a64",
+    "hosp_circ_65a",
+    "date"
+  )
+hosp_trauma <-
+  urg_2015[urg_2015$Idcausa == 23 &
+             urg_2015$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_trauma) <-
+  c (
+    "id",
+    "hosp_trauma_all",
+    "hosp_trauma_a1",
+    "hosp_trauma_1a4",
+    "hosp_trauma_5a14",
+    "hosp_trauma_15a64",
+    "hosp_trauma_65a",
+    "date"
+  )
+
+# -------- Merge Columns Into One Dataset --------
+cons <- merge(cons_total, cons_resp)
+cons <- merge(cons, cons_circ)
+cons <- merge(cons, cons_diarrea)
+cons <- merge(cons, cons_trauma)
+
+hosps <- merge(hosp_total, hosp_resp)
+hosps <- merge(hosps, hosp_circ)
+hosps <- merge(hosps, hosp_trauma)
+
+urg15_3 <- merge(cons, hosps)
+
+# -------- Write CSV File --------
+#write_csv(urg15_3, "urg15_3.csv")
+```
+
+```{r 1 - Urg16_3 Data Creation}
+# -------- Access Data --------
+#rm(list=setdiff(ls(), "dt"))
+establecimientos <-
+  readr::read_delim("establecimientos.csv",
+             ";",
+             escape_double = FALSE,
+             trim_ws = TRUE)
+
+target <- tempfile()
+file.path(target)
+unzip(paste0(getwd(), '/',"AtencionesUrg_16.zip"), exdir = target)
+f <- list.files(target, pattern = ".mdb")
+d6 <- RODBC::odbcConnectAccess2007(file.path(target, f))
+#d5 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2015.mdb")
+urg_2016 <- sqlFetch(d6, "Atenciones Urgencia 2016")
+odbcClose(d6)
+unlink(target)
+
+
+# -------- Clean urg_2016 Columns --------
+urg_2016$idestablecimiento <- urg_2016$IdEstablecimiento
+urg_2016$Col01 <- urg_2016$Total
+urg_2016$Col02 <- urg_2016$`Menores de 1 año`
+urg_2016$Col03 <- urg_2016$`1-4 años`
+urg_2016$Col04 <- urg_2016$`5-14 años`
+urg_2016$Col05 <- urg_2016$`15-64 años`
+urg_2016$Col06 <- urg_2016$`65 años y más`
+urg_2016$Idcausa <- urg_2016$IdCausa
+
+
+# -------- Establish Hospital ID Codes --------
+estab_id <-
+  establecimientos[establecimientos$codigo_antiguo == "09-100" |
+                     establecimientos$codigo_antiguo == "11-195" |
+                     establecimientos$codigo_antiguo == "12-100", "codigo_antiguo", drop =
+                     TRUE]
+estab_id <- as.factor(estab_id)
+columns = c("idestablecimiento",
+            "Col01",
+            "Col02",
+            "Col03",
+            "Col04",
+            "Col05",
+            "Col06",
+            "fecha")
+
+# -------- Create Consultation Columns --------
+cons_total <-
+  urg_2016[urg_2016$Idcausa == 1 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_total) <-
+  c (
+    "id",
+    "cons_total_all",
+    "cons_total_a1",
+    "cons_total_1a4",
+    "cons_total_5a14",
+    "cons_total_15a64",
+    "cons_total_65a",
+    "date"
+  )
+cons_resp <-
+  urg_2016[urg_2016$Idcausa == 2 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_resp) <-
+  c (
+    "id",
+    "cons_resp_all",
+    "cons_resp_a1",
+    "cons_resp_1a4",
+    "cons_resp_5a14",
+    "cons_resp_15a64",
+    "cons_resp_65a",
+    "date"
+  )
+cons_circ <-
+  urg_2016[urg_2016$Idcausa == 12 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_circ) <-
+  c (
+    "id",
+    "cons_circ_all",
+    "cons_circ_a1",
+    "cons_circ_1a4",
+    "cons_circ_5a14",
+    "cons_circ_15a64",
+    "cons_circ_65a",
+    "date"
+  )
+cons_diarrea <-
+  urg_2016[urg_2016$Idcausa == 29 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_diarrea) <-
+  c (
+    "id",
+    "cons_diarrea_all",
+    "cons_diarrea_a1",
+    "cons_diarrea_1a4",
+    "cons_diarrea_5a14",
+    "cons_diarrea_15a64",
+    "cons_diarrea_65a",
+    "date"
+  )
+
+cons_trauma <-
+  urg_2016[urg_2016$Idcausa == 18  &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_trauma) <-
+  c (
+    "id",
+    "cons_trauma_all",
+    "cons_trauma_a1",
+    "cons_trauma_1a4",
+    "cons_trauma_5a14",
+    "cons_trauma_15a64",
+    "cons_trauma_65a",
+    "date"
+  )
+
+# -------- Create Hospitalization Columns --------
+hosp_total <-
+  urg_2016[urg_2016$Idcausa == 25 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_total) <-
+  c (
+    "id",
+    "hosp_total_all",
+    "hosp_total_a1",
+    "hosp_total_1a4",
+    "hosp_total_5a14",
+    "hosp_total_15a64",
+    "hosp_total_65a",
+    "date"
+  )
+hosp_resp <-
+  urg_2016[urg_2016$Idcausa == 7 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_resp) <-
+  c (
+    "id",
+    "hosp_resp_all",
+    "hosp_resp_a1",
+    "hosp_resp_1a4",
+    "hosp_resp_5a14",
+    "hosp_resp_15a64",
+    "hosp_resp_65a",
+    "date"
+  )
+hosp_circ <-
+  urg_2016[urg_2016$Idcausa == 22 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_circ) <-
+  c (
+    "id",
+    "hosp_circ_all",
+    "hosp_circ_a1",
+    "hosp_circ_1a4",
+    "hosp_circ_5a14",
+    "hosp_circ_15a64",
+    "hosp_circ_65a",
+    "date"
+  )
+hosp_trauma <-
+  urg_2016[urg_2016$Idcausa == 23 &
+             urg_2016$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_trauma) <-
+  c (
+    "id",
+    "hosp_trauma_all",
+    "hosp_trauma_a1",
+    "hosp_trauma_1a4",
+    "hosp_trauma_5a14",
+    "hosp_trauma_15a64",
+    "hosp_trauma_65a",
+    "date"
+  )
+
+# -------- Merge Columns Into One Dataset --------
+cons <- merge(cons_total, cons_resp)
+cons <- merge(cons, cons_circ)
+cons <- merge(cons, cons_diarrea)
+cons <- merge(cons, cons_trauma)
+
+hosps <- merge(hosp_total, hosp_resp)
+hosps <- merge(hosps, hosp_circ)
+hosps <- merge(hosps, hosp_trauma)
+
+urg16_3 <- merge(cons, hosps)
+
+# -------- Write CSV File --------
+#write_csv(urg16_3, "urg16_3.csv")
+```
+
+```{r 1 - Urg17_3 Data Creation}
+# -------- Access Data --------
+#rm(list=setdiff(ls(), "dt"))
+establecimientos <-
+  readr::read_delim("establecimientos.csv",
+             ";",
+             escape_double = FALSE,
+             trim_ws = TRUE)
+
+#d7 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2017.mdb")
+#urg_2017 <- sqlFetch(d7, "Atenciones Urgencia 2017")
+#odbcClose(d7)
+
+target <- tempfile()
+file.path(target)
+unzip(paste0(getwd(), '/',"AtencionesUrg_17.zip"), exdir = target)
+f <- list.files(target, pattern = ".mdb")
+d7 <- RODBC::odbcConnectAccess2007(file.path(target, f))
+#d5 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2015.mdb")
+urg_2017 <- sqlFetch(d7, "Atenciones Urgencia 2017")
+odbcClose(d7)
+unlink(target)
+
+
+# -------- Establish Hospital ID Codes --------
+estab_id <-
+  establecimientos[establecimientos$codigo_antiguo == "09-100" |
+                     establecimientos$codigo_antiguo == "11-195" |
+                     establecimientos$codigo_antiguo == "12-100", "codigo_antiguo", drop =
+                     TRUE]
+estab_id <- as.factor(estab_id)
+columns = c("idestablecimiento",
+            "Col01",
+            "Col02",
+            "Col03",
+            "Col04",
+            "Col05",
+            "Col06",
+            "fecha")
+
+# -------- Create Consultation Columns --------
+cons_total <-
+  urg_2017[urg_2017$Idcausa == 1 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_total) <-
+  c (
+    "id",
+    "cons_total_all",
+    "cons_total_a1",
+    "cons_total_1a4",
+    "cons_total_5a14",
+    "cons_total_15a64",
+    "cons_total_65a",
+    "date"
+  )
+cons_resp <-
+  urg_2017[urg_2017$Idcausa == 2 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_resp) <-
+  c (
+    "id",
+    "cons_resp_all",
+    "cons_resp_a1",
+    "cons_resp_1a4",
+    "cons_resp_5a14",
+    "cons_resp_15a64",
+    "cons_resp_65a",
+    "date"
+  )
+cons_circ <-
+  urg_2017[urg_2017$Idcausa == 12 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_circ) <-
+  c (
+    "id",
+    "cons_circ_all",
+    "cons_circ_a1",
+    "cons_circ_1a4",
+    "cons_circ_5a14",
+    "cons_circ_15a64",
+    "cons_circ_65a",
+    "date"
+  )
+cons_diarrea <-
+  urg_2017[urg_2017$Idcausa == 29 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_diarrea) <-
+  c (
+    "id",
+    "cons_diarrea_all",
+    "cons_diarrea_a1",
+    "cons_diarrea_1a4",
+    "cons_diarrea_5a14",
+    "cons_diarrea_15a64",
+    "cons_diarrea_65a",
+    "date"
+  )
+cons_trauma <-
+  urg_2017[urg_2017$Idcausa == 18 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_trauma) <-
+  c (
+    "id",
+    "cons_trauma_all",
+    "cons_trauma_a1",
+    "cons_trauma_1a4",
+    "cons_trauma_5a14",
+    "cons_trauma_15a64",
+    "cons_trauma_65a",
+    "date"
+  )
+
+# -------- Create Hospitalization Columns --------
+hosp_total <-
+  urg_2017[urg_2017$Idcausa == 25 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_total) <-
+  c (
+    "id",
+    "hosp_total_all",
+    "hosp_total_a1",
+    "hosp_total_1a4",
+    "hosp_total_5a14",
+    "hosp_total_15a64",
+    "hosp_total_65a",
+    "date"
+  )
+hosp_resp <-
+  urg_2017[urg_2017$Idcausa == 7 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_resp) <-
+  c (
+    "id",
+    "hosp_resp_all",
+    "hosp_resp_a1",
+    "hosp_resp_1a4",
+    "hosp_resp_5a14",
+    "hosp_resp_15a64",
+    "hosp_resp_65a",
+    "date"
+  )
+hosp_circ <-
+  urg_2017[urg_2017$Idcausa == 22 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_circ) <-
+  c (
+    "id",
+    "hosp_circ_all",
+    "hosp_circ_a1",
+    "hosp_circ_1a4",
+    "hosp_circ_5a14",
+    "hosp_circ_15a64",
+    "hosp_circ_65a",
+    "date"
+  )
+hosp_trauma <-
+  urg_2017[urg_2017$Idcausa == 23 &
+             urg_2017$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_trauma) <-
+  c (
+    "id",
+    "hosp_trauma_all",
+    "hosp_trauma_a1",
+    "hosp_trauma_1a4",
+    "hosp_trauma_5a14",
+    "hosp_trauma_15a64",
+    "hosp_trauma_65a",
+    "date"
+  )
+
+# -------- Merge Columns Into One Dataset --------
+cons <- merge(cons_total, cons_resp)
+cons <- merge(cons, cons_circ)
+cons <- merge(cons, cons_diarrea)
+cons <- merge(cons, cons_trauma)
+
+hosps <- merge(hosp_total, hosp_resp)
+hosps <- merge(hosps, hosp_circ)
+hosps <- merge(hosps, hosp_trauma)
+
+urg17_3 <- merge(cons, hosps)
+
+# -------- Write CSV File --------
+#write_csv(urg17_3, "urg17_3.csv")
+```
+
+```{r 1 - Urg18_3 Data Creation}
+# -------- Access Data --------
+#rm(list=setdiff(ls(), "dt"))
+establecimientos <-
+  readr::read_delim("establecimientos.csv",
+             ";",
+             escape_double = FALSE,
+             trim_ws = TRUE)
+
+#d8 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2018.mdb")
+#urg_2018 <- sqlFetch(d8, "AtencionesUrgencia2018")
+#odbcClose(d8)
+
+target <- tempfile()
+file.path(target)
+unzip(paste0(getwd(), '/',"AtencionesUrg_18.zip"), exdir = target)
+f <- list.files(target, pattern = ".mdb")
+d8 <- RODBC::odbcConnectAccess2007(file.path(target, f))
+#d5 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2015.mdb")
+urg_2018 <- sqlFetch(d8, "AtencionesUrgencia2018")
+odbcClose(d8)
+unlink(target)
+
+# -------- Establish Hospital ID Codes --------
+estab_id <-
+  establecimientos[establecimientos$codigo_antiguo == "09-100" |
+                     establecimientos$codigo_antiguo == "11-195" |
+                     establecimientos$codigo_antiguo == "12-100", "codigo_antiguo", drop =
+                     TRUE]
+estab_id <- as.factor(estab_id)
+columns = c("idestablecimiento",
+            "Col01",
+            "Col02",
+            "Col03",
+            "Col04",
+            "Col05",
+            "Col06",
+            "fecha")
+
+# -------- Create Consultation Columns --------
+cons_total <-
+  urg_2018[urg_2018$Idcausa == 1 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_total) <-
+  c (
+    "id",
+    "cons_total_all",
+    "cons_total_a1",
+    "cons_total_1a4",
+    "cons_total_5a14",
+    "cons_total_15a64",
+    "cons_total_65a",
+    "date"
+  )
+cons_resp <-
+  urg_2018[urg_2018$Idcausa == 2 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_resp) <-
+  c (
+    "id",
+    "cons_resp_all",
+    "cons_resp_a1",
+    "cons_resp_1a4",
+    "cons_resp_5a14",
+    "cons_resp_15a64",
+    "cons_resp_65a",
+    "date"
+  )
+cons_circ <-
+  urg_2018[urg_2018$Idcausa == 12 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_circ) <-
+  c (
+    "id",
+    "cons_circ_all",
+    "cons_circ_a1",
+    "cons_circ_1a4",
+    "cons_circ_5a14",
+    "cons_circ_15a64",
+    "cons_circ_65a",
+    "date"
+  )
+cons_diarrea <-
+  urg_2018[urg_2018$Idcausa == 29 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_diarrea) <-
+  c (
+    "id",
+    "cons_diarrea_all",
+    "cons_diarrea_a1",
+    "cons_diarrea_1a4",
+    "cons_diarrea_5a14",
+    "cons_diarrea_15a64",
+    "cons_diarrea_65a",
+    "date"
+  )
+cons_trauma <-
+  urg_2018[urg_2018$Idcausa == 18 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_trauma) <-
+  c (
+    "id",
+    "cons_trauma_all",
+    "cons_trauma_a1",
+    "cons_trauma_1a4",
+    "cons_trauma_5a14",
+    "cons_trauma_15a64",
+    "cons_trauma_65a",
+    "date"
+  )
+
+# -------- Create Hospitalization Columns --------
+hosp_total <-
+  urg_2018[urg_2018$Idcausa == 25 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_total) <-
+  c (
+    "id",
+    "hosp_total_all",
+    "hosp_total_a1",
+    "hosp_total_1a4",
+    "hosp_total_5a14",
+    "hosp_total_15a64",
+    "hosp_total_65a",
+    "date"
+  )
+hosp_resp <-
+  urg_2018[urg_2018$Idcausa == 7 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_resp) <-
+  c (
+    "id",
+    "hosp_resp_all",
+    "hosp_resp_a1",
+    "hosp_resp_1a4",
+    "hosp_resp_5a14",
+    "hosp_resp_15a64",
+    "hosp_resp_65a",
+    "date"
+  )
+hosp_circ <-
+  urg_2018[urg_2018$Idcausa == 22 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_circ) <-
+  c (
+    "id",
+    "hosp_circ_all",
+    "hosp_circ_a1",
+    "hosp_circ_1a4",
+    "hosp_circ_5a14",
+    "hosp_circ_15a64",
+    "hosp_circ_65a",
+    "date"
+  )
+hosp_trauma <-
+  urg_2018[urg_2018$Idcausa == 23 &
+             urg_2018$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_trauma) <-
+  c (
+    "id",
+    "hosp_trauma_all",
+    "hosp_trauma_a1",
+    "hosp_trauma_1a4",
+    "hosp_trauma_5a14",
+    "hosp_trauma_15a64",
+    "hosp_trauma_65a",
+    "date"
+  )
+
+# -------- Merge Columns Into One Dataset --------
+cons <- merge(cons_total, cons_resp)
+cons <- merge(cons, cons_circ)
+cons <- merge(cons, cons_diarrea)
+cons <- merge(cons, cons_trauma)
+
+hosps <- merge(hosp_total, hosp_resp)
+hosps <- merge(hosps, hosp_circ)
+hosps <- merge(hosps, hosp_trauma)
+
+urg18_3 <- merge(cons, hosps)
+
+# -------- Write CSV File --------
+#write_csv(urg18_3, "urg18_3.csv")
+```
+
+```{r 1 - Urg19_3 Data Creation}
+# -------- Access Data --------
+#rm(list=setdiff(ls(), "dt"))
+establecimientos <-
+  readr::read_delim("establecimientos.csv",
+             ";",
+             escape_double = FALSE,
+             trim_ws = TRUE)
+
+#d9 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2019.mdb")
+#urg_2019 <- sqlFetch(d9, "AtencionesUrgencia2019")
+#odbcClose(d9)
+
+target <- tempfile()
+file.path(target)
+unzip(paste0(getwd(), '/',"AtencionesUrg_19.zip"), exdir = target)
+f <- list.files(target, pattern = ".mdb")
+d9 <- RODBC::odbcConnectAccess2007(file.path(target, f))
+#d5 <- RODBC::odbcConnectAccess2007("AtencionesUrgencia2015.mdb")
+urg_2019 <- sqlFetch(d9, "AtencionesUrgencia2019")
+odbcClose(d9)
+urg_2019$idestablecimiento <- urg_2019$`?idestablecimiento`
+unlink(target)
+
+# -------- Establish Hospital ID Codes --------
+estab_id <-
+  establecimientos[establecimientos$codigo_antiguo == "09-100" |
+                     establecimientos$codigo_antiguo == "11-195" |
+                     establecimientos$codigo_antiguo == "12-100", "codigo_antiguo", drop =
+                     TRUE]
+estab_id <- as.factor(estab_id)
+columns = c("idestablecimiento",
+            "Col01",
+            "Col02",
+            "Col03",
+            "Col04",
+            "Col05",
+            "Col06",
+            "fecha")
+
+# -------- Create Consultation Columns --------
+cons_total <-
+  urg_2019[urg_2019$Idcausa == 1 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_total) <-
+  c (
+    "id",
+    "cons_total_all",
+    "cons_total_a1",
+    "cons_total_1a4",
+    "cons_total_5a14",
+    "cons_total_15a64",
+    "cons_total_65a",
+    "date"
+  )
+cons_resp <-
+  urg_2019[urg_2019$Idcausa == 2 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_resp) <-
+  c (
+    "id",
+    "cons_resp_all",
+    "cons_resp_a1",
+    "cons_resp_1a4",
+    "cons_resp_5a14",
+    "cons_resp_15a64",
+    "cons_resp_65a",
+    "date"
+  )
+cons_circ <-
+  urg_2019[urg_2019$Idcausa == 12 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_circ) <-
+  c (
+    "id",
+    "cons_circ_all",
+    "cons_circ_a1",
+    "cons_circ_1a4",
+    "cons_circ_5a14",
+    "cons_circ_15a64",
+    "cons_circ_65a",
+    "date"
+  )
+cons_diarrea <-
+  urg_2019[urg_2019$Idcausa == 29 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_diarrea) <-
+  c (
+    "id",
+    "cons_diarrea_all",
+    "cons_diarrea_a1",
+    "cons_diarrea_1a4",
+    "cons_diarrea_5a14",
+    "cons_diarrea_15a64",
+    "cons_diarrea_65a",
+    "date"
+  )
+cons_trauma <-
+  urg_2019[urg_2019$Idcausa == 18 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(cons_trauma) <-
+  c (
+    "id",
+    "cons_trauma_all",
+    "cons_trauma_a1",
+    "cons_trauma_1a4",
+    "cons_trauma_5a14",
+    "cons_trauma_15a64",
+    "cons_trauma_65a",
+    "date"
+  )
+
+# -------- Create Hospitalization Columns --------
+hosp_total <-
+  urg_2019[urg_2019$Idcausa == 25 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_total) <-
+  c (
+    "id",
+    "hosp_total_all",
+    "hosp_total_a1",
+    "hosp_total_1a4",
+    "hosp_total_5a14",
+    "hosp_total_15a64",
+    "hosp_total_65a",
+    "date"
+  )
+hosp_resp <-
+  urg_2019[urg_2019$Idcausa == 7 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_resp) <-
+  c (
+    "id",
+    "hosp_resp_all",
+    "hosp_resp_a1",
+    "hosp_resp_1a4",
+    "hosp_resp_5a14",
+    "hosp_resp_15a64",
+    "hosp_resp_65a",
+    "date"
+  )
+hosp_circ <-
+  urg_2019[urg_2019$Idcausa == 22 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_circ) <-
+  c (
+    "id",
+    "hosp_circ_all",
+    "hosp_circ_a1",
+    "hosp_circ_1a4",
+    "hosp_circ_5a14",
+    "hosp_circ_15a64",
+    "hosp_circ_65a",
+    "date"
+  )
+hosp_trauma <-
+  urg_2019[urg_2019$Idcausa == 23 &
+             urg_2019$idestablecimiento %in% estab_id, columns, drop = FALSE]
+names(hosp_trauma) <-
+  c (
+    "id",
+    "hosp_trauma_all",
+    "hosp_trauma_a1",
+    "hosp_trauma_1a4",
+    "hosp_trauma_5a14",
+    "hosp_trauma_15a64",
+    "hosp_trauma_65a",
+    "date"
+  )
+
+# -------- Merge Columns Into One Dataset --------
+cons <- merge(cons_total, cons_resp)
+cons <- merge(cons, cons_circ)
+cons <- merge(cons, cons_diarrea)
+cons <- merge(cons, cons_trauma)
+
+hosps <- merge(hosp_total, hosp_resp)
+hosps <- merge(hosps, hosp_circ)
+hosps <- merge(hosps, hosp_trauma)
+
+urg19_3 <- merge(cons, hosps)
+
+# -------- Write CSV File --------
+#write_csv(urg19_3, "urg19_3.csv")
+```
+
+### Format Dates
+
+We generated three variables regarding year, month and day of the date.
+
+```{r 2 - Urg Data Cleaning}
+Sys.setlocale(category = "LC_ALL", locale = "english")
+`%>%`<- magrittr::`%>%`
+# -------- Separate Date into YMD Columns - Urg15 within 3KM --------
+urg15_3$date <- as.Date(urg15_3$date, "%d/%m/%Y")
+urg15_3 <- urg15_3 %>%
+  tidyr::separate(date, sep = "-", into = c("year", "month", "day"))
+urg15_3$date <- as.Date(with(urg15_3, paste(year, month, day, sep = "-")))
+urg15_3 <- urg15_3[, c(1, 59, 2:4, 5:58)]
+
+# -------- Separate Date into YMD Columns - Urg16 within 3KM --------
+urg16_3$date <- as.Date(urg16_3$date, "%d/%m/%Y")
+urg16_3 <- urg16_3 %>%
+  tidyr::separate(date, sep = "-", into = c("year", "month", "day"))
+urg16_3$date <- as.Date(with(urg16_3, paste(year, month, day, sep = "-")))
+urg16_3 <- urg16_3[, c(1, 59, 2:4, 5:58)]
+
+# -------- Separate Date into YMD Columns - Urg17 within 3KM --------
+urg17_3$date <- as.Date(urg17_3$date, "%d/%m/%Y")
+urg17_3 <- urg17_3 %>%
+  tidyr::separate(date, sep = "-", into = c("year", "month", "day"))
+urg17_3$date <- as.Date(with(urg17_3, paste(year, month, day, sep = "-")))
+urg17_3 <- urg17_3[, c(1, 59, 2:4, 5:58)]
+
+# -------- Separate Date into YMD Columns - Urg18 within 3KM --------
+urg18_3$date <- as.Date(urg18_3$date, "%d/%m/%Y")
+urg18_3 <- urg18_3 %>%
+  tidyr::separate(date, sep = "-", into = c("year", "month", "day"))
+urg18_3$date <- as.Date(with(urg18_3, paste(year, month, day, sep = "-")))
+urg18_3 <- urg18_3[, c(1, 59, 2:4, 5:58)]
+
+# -------- Separate Date into YMD Columns - Urg19 within 3KM --------
+urg19_3$date <- as.Date(urg19_3$date, "%d/%m/%Y")
+urg19_3 <- urg19_3 %>%
+  tidyr::separate(date, sep = "-", into = c("year", "month", "day"))
+urg19_3$date <- as.Date(with(urg19_3, paste(year, month, day, sep = "-")))
+urg19_3 <- urg19_3[, c(1, 59, 2:4, 5:58)]
+```
+
+### Single daily time-series per hospital
+
+We constructed three single time-series databases containing information related to each hospital.
+
+```{r 3 - Time Series (tsdata) Data Creation}
+# -------- Isolate urg19_3 Hospital IDs 11-195 & 12-100 --------
+# Isolate Hospital ID 09-100
+urg19_3$date <- as.Date(urg19_3$date)
+urg19_3_09100 <- urg19_3[urg19_3$id == "09-100", ]
+urg19_3_09100$year <- as.character(urg19_3_09100$year)
+urg19_3_09100 <- urg19_3_09100 %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    id = id,
+    year = year,
+    month = month,
+    day = day,
+    cons_total_all = cons_total_all,
+    cons_total_15a64 = cons_total_15a64,
+    cons_total_65a = cons_total_65a,
+    cons_resp_all = cons_resp_all,
+    cons_resp_15a64 = cons_resp_15a64,
+    cons_resp_65a = cons_resp_65a,
+    cons_circ_all = cons_circ_all,
+    cons_circ_15a64 = cons_circ_15a64,
+    cons_circ_65a = cons_circ_65a,
+    cons_diarrea_all = cons_diarrea_all,
+    cons_diarrea_15a64 = cons_diarrea_15a64,
+    cons_diarrea_65a = cons_diarrea_65a,
+    cons_trauma_all = cons_trauma_all,
+    cons_trauma_15a64 = cons_trauma_15a64,
+    cons_trauma_65a = cons_trauma_65a,
+    hosp_total_all = hosp_total_all,
+    hosp_total_15a64 = hosp_total_15a64,
+    hosp_total_65a = hosp_total_65a,
+    hosp_resp_all = hosp_resp_all,
+    hosp_resp_15a64 = hosp_resp_15a64,
+    hosp_resp_65a = hosp_resp_65a,
+    hosp_circ_all = hosp_circ_all,
+    hosp_circ_15a64 = hosp_circ_15a64,
+    hosp_circ_65a = hosp_circ_65a,
+    hosp_trauma_all = hosp_trauma_all,
+    hosp_trauma_15a64 = hosp_trauma_15a64,
+    hosp_trauma_65a = hosp_trauma_65a
+  )
+urg19_3_09100 <- urg19_3_09100[, c(2, 1, 3:32)]
+
+# Isolate Hospital ID 11-195
+urg19_3_11195 <- urg19_3[urg19_3$id == "11-195", ]
+urg19_3_11195$year <- as.character(urg19_3_11195$year)
+urg19_3_11195 <- urg19_3_11195 %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    id = id,
+    year = year,
+    month = month,
+    day = day,
+    cons_total_all = cons_total_all,
+    cons_total_15a64 = cons_total_15a64,
+    cons_total_65a = cons_total_65a,
+    cons_resp_all = cons_resp_all,
+    cons_resp_15a64 = cons_resp_15a64,
+    cons_resp_65a = cons_resp_65a,
+    cons_circ_all = cons_circ_all,
+    cons_circ_15a64 = cons_circ_15a64,
+    cons_circ_65a = cons_circ_65a,
+    cons_diarrea_all = cons_diarrea_all,
+    cons_diarrea_15a64 = cons_diarrea_15a64,
+    cons_diarrea_65a = cons_diarrea_65a,
+    cons_trauma_all = cons_trauma_all,
+    cons_trauma_15a64 = cons_trauma_15a64,
+    cons_trauma_65a = cons_trauma_65a,
+    hosp_total_all = hosp_total_all,
+    hosp_total_15a64 = hosp_total_15a64,
+    hosp_total_65a = hosp_total_65a,
+    hosp_resp_all = hosp_resp_all,
+    hosp_resp_15a64 = hosp_resp_15a64,
+    hosp_resp_65a = hosp_resp_65a,
+    hosp_circ_all = hosp_circ_all,
+    hosp_circ_15a64 = hosp_circ_15a64,
+    hosp_circ_65a = hosp_circ_65a,
+    hosp_trauma_all = hosp_trauma_all,
+    hosp_trauma_15a64 = hosp_trauma_15a64,
+    hosp_trauma_65a = hosp_trauma_65a
+  )
+urg19_3_11195 <- urg19_3_11195[, c(2, 1, 3:32)]
+
+# Isolate Hospital ID 12-100
+urg19_3_12100 <- urg19_3[urg19_3$id == "12-100", ]
+urg19_3_12100$year <- as.character(urg19_3_12100$year)
+urg19_3_12100 <- urg19_3_12100 %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    id = id,
+    year = year,
+    month = month,
+    day = day,
+    cons_total_all = cons_total_all,
+    cons_total_15a64 = cons_total_15a64,
+    cons_total_65a = cons_total_65a,
+    cons_resp_all = cons_resp_all,
+    cons_resp_15a64 = cons_resp_15a64,
+    cons_resp_65a = cons_resp_65a,
+    cons_circ_all = cons_circ_all,
+    cons_circ_15a64 = cons_circ_15a64,
+    cons_circ_65a = cons_circ_65a,
+    cons_diarrea_all = cons_diarrea_all,
+    cons_diarrea_15a64 = cons_diarrea_15a64,
+    cons_diarrea_65a = cons_diarrea_65a,
+    cons_trauma_all = cons_trauma_all,
+    cons_trauma_15a64 = cons_trauma_15a64,
+    cons_trauma_65a = cons_trauma_65a,
+    hosp_total_all = hosp_total_all,
+    hosp_total_15a64 = hosp_total_15a64,
+    hosp_total_65a = hosp_total_65a,
+    hosp_resp_all = hosp_resp_all,
+    hosp_resp_15a64 = hosp_resp_15a64,
+    hosp_resp_65a = hosp_resp_65a,
+    hosp_circ_all = hosp_circ_all,
+    hosp_circ_15a64 = hosp_circ_15a64,
+    hosp_circ_65a = hosp_circ_65a,
+    hosp_trauma_all = hosp_trauma_all,
+    hosp_trauma_15a64 = hosp_trauma_15a64,
+    hosp_trauma_65a = hosp_trauma_65a
+  )
+urg19_3_12100 <- urg19_3_12100[, c(2, 1, 3:32)]
+
+# Re-Bind Data with only ID 09-100, 11-195 & 12-100
+urg19_3_clean <- rbind(urg19_3_09100, urg19_3_11195, urg19_3_12100)
+
+# -------- Control Dataset - 3KM --------
+urg_control_3 <- rbind(urg15_3, urg16_3, urg17_3, urg18_3)
+```
+
+### Sum of daily counts of hospitalizations and consultations
+
+We generated an aggregated database containing the sum of daily counts of each type of consultation and hospitalization.
+
+```{r 4 - Time Series (tsdata) Data Cleaning}
+# -------- Sum Hospital ID Cases - urg19_3_clean --------
+urg19_3_clean$date <- as.Date(urg19_3_clean$date)
+
+urg19_3_clean_cons <- urg19_3_clean %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    year = unique(year),
+    month = unique(month),
+    day = unique(day),
+    cons_total_all = sum(cons_total_all),
+    cons_total_15a64 = sum(cons_total_15a64),
+    cons_total_65a = sum(cons_total_65a),
+    cons_resp_all = sum(cons_resp_all),
+    cons_resp_15a64 = sum(cons_resp_15a64),
+    cons_resp_65a = sum(cons_resp_65a),
+    cons_circ_all = sum(cons_circ_all),
+    cons_circ_15a64 = sum(cons_circ_15a64),
+    cons_circ_65a = sum(cons_circ_65a),
+    cons_diarrea_all = sum(cons_diarrea_all),
+    cons_diarrea_15a64 = sum(cons_diarrea_15a64),
+    cons_diarrea_65a = sum(cons_diarrea_65a),
+    cons_trauma_all = sum(cons_trauma_all),
+    cons_trauma_15a64 = sum(cons_trauma_15a64),
+    cons_trauma_65a = sum(cons_trauma_65a),
+    hosp_total_all = sum(hosp_total_all),
+    hosp_total_15a64 = sum(hosp_total_15a64),
+    hosp_total_65a = sum(hosp_total_65a),
+    hosp_resp_all = sum(hosp_resp_all),
+    hosp_resp_15a64 = sum(hosp_resp_15a64),
+    hosp_resp_65a = sum(hosp_resp_65a),
+    hosp_circ_all = sum(hosp_circ_all),
+    hosp_circ_15a64 = sum(hosp_circ_15a64),
+    hosp_circ_65a = sum(hosp_circ_65a),
+    hosp_trauma_all = sum(hosp_trauma_all),
+    hosp_trauma_15a64 = sum(hosp_trauma_15a64),
+    hosp_trauma_65a = sum(hosp_trauma_65a)
+  )
+# -------- Sum Hospital ID Cases - tsdata3 --------
+urg_control_3$date <- as.Date(urg_control_3$date)
+#tsdata3=urg_control_3
+tsdata3 <- urg_control_3 %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    year = unique(year),
+    month = unique(month),
+    day = unique(day),
+    cons_total_all = sum(cons_total_all),
+    cons_total_15a64 = sum(cons_total_15a64),
+    cons_total_65a = sum(cons_total_65a),
+    cons_resp_all = sum(cons_resp_all),
+    cons_resp_15a64 = sum(cons_resp_15a64),
+    cons_resp_65a = sum(cons_resp_65a),
+    cons_circ_all = sum(cons_circ_all),
+    cons_circ_15a64 = sum(cons_circ_15a64),
+    cons_circ_65a = sum(cons_circ_65a),
+    cons_diarrea_all = sum(cons_diarrea_all),
+    cons_diarrea_15a64 = sum(cons_diarrea_15a64),
+    cons_diarrea_65a = sum(cons_diarrea_65a),
+    cons_trauma_all = sum(cons_trauma_all),
+    cons_trauma_15a64 = sum(cons_trauma_15a64),
+    cons_trauma_65a = sum(cons_trauma_65a),
+    hosp_total_all = sum(hosp_total_all),
+    hosp_total_15a64 = sum(hosp_total_15a64),
+    hosp_total_65a = sum(hosp_total_65a),
+    hosp_resp_all = sum(hosp_resp_all),
+    hosp_resp_15a64 = sum(hosp_resp_15a64),
+    hosp_resp_65a = sum(hosp_resp_65a),
+    hosp_circ_all = sum(hosp_circ_all),
+    hosp_circ_15a64 = sum(hosp_circ_15a64),
+    hosp_circ_65a = sum(hosp_circ_65a),
+    hosp_trauma_all = sum(hosp_trauma_all),
+    hosp_trauma_15a64 = sum(hosp_trauma_15a64),
+    hosp_trauma_65a = sum(hosp_trauma_65a)
+  )
+
+```
+
+### Analyse shocks
+
+```{r exp_shocks0, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 1. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution"}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
+
+ urg_control_3 %>% 
+   dplyr::filter(year==2018) %>% 
+  dplyr::mutate(date2=readr::parse_datetime(as.character(date), "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+    dplyr::mutate(id=factor(id, labels= c("Complejo Hospitalario San Jose (09-100)", 
+                                          "Hospital de Urgencia Asistencia Publica (11-195)", 
+                                          "Hospital Del Salvador de Santiago (12-100)"))) %>% 
+     pivot_longer(cols=cons_total_all:hosp_trauma_65a, names_to = "variable", values_to = "count") %>% 
+    dplyr::filter(variable  %in% c("hosp_total_15a64","hosp_resp_15a64","hosp_circ_15a64","hosp_trauma_15a64")) %>% 
+    dplyr::filter(count==0) %>%
+    dplyr::group_by(id,fech_week,variable) %>% 
+    dplyr::summarise(n = as.numeric(n()), start=min(date2)) %>% 
+   dplyr::ungroup() %>% 
+    ggplot2::ggplot(aes(x = fech_week, y = n, color=variable,group=variable)) +
+    geom_point(size=1.5) +
+    geom_line(alpha=.5) +
+    facet_wrap(id~.,ncol=1)+
+    #ylim()+
+    scale_color_manual("Hospitalizations", values=c("red", "blue", "green", "violet"), labels = c("Circulatory", "Respiratory","Total","Trauma")) +
+    sjPlot::theme_sjplot2() +
+    scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
+    labs(y="No. of Days in the week with 0 counts",
+         x="Years & Weeks") + 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60), 
+          legend.position="bottom",
+          plot.caption=element_text(hjust=0)) 
+
+```
+
+<br>
+
+Aa seen in Figure 1, HUAP(11-195) had 2 important periods with weeks of 0 hospitlizations. These shocks may confound the posterior results, so we decided to interpolate these numbers with the median of 2018 of every institution.
+
+<br>
+
+```{r datasets_cons0, echo=T, cache= T, paged.print=TRUE, warning=F}
+#tsdata3 <- read.csv("tsdata3.csv")
+
+#tsdata3 %>% glimpse()  # hosp_resp_ hosp_circ_ hosp_trauma_ hosp_total_
+tsdata3_corr<-
+urg_control_3 %>% 
+  dplyr::mutate(date2=readr::parse_datetime(as.character(date), "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+  dplyr::arrange(id,fech_week)%>%
+  
+  dplyr::mutate(hosp_resp_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_all))%>%
+  dplyr::mutate(hosp_resp_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_15a64))%>% 
+  dplyr::mutate(hosp_resp_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_resp_65a))%>%
+  
+  dplyr::mutate(hosp_circ_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_all))%>%  
+  dplyr::mutate(hosp_circ_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_15a64))%>% 
+  dplyr::mutate(hosp_circ_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_circ_65a))%>%
+  
+  dplyr::mutate(hosp_trauma_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_all))%>%   
+    dplyr::mutate(hosp_trauma_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_15a64))%>%
+  dplyr::mutate(hosp_trauma_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_trauma_65a))%>%
+  
+  dplyr::mutate(hosp_total_all= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_all))%>%   dplyr::mutate(hosp_total_15a64= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_15a64))%>%   
+  dplyr::mutate(hosp_total_65a= dplyr::case_when(id=="11-195" & year==2018 & fech_week %in% c(10,11,25,26)~NA_integer_, TRUE~hosp_total_65a))%>%
+  
+  dplyr::group_by(id,year) %>% 
+ ### REPLACE WITH THE MEAN 
+    dplyr::mutate(hosp_resp_all= zoo::na.aggregate(hosp_resp_all,FUN=median))%>% 
+  dplyr::mutate(hosp_resp_15a64= zoo::na.aggregate(hosp_resp_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_resp_65a= zoo::na.aggregate(hosp_resp_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_circ_all= zoo::na.aggregate(hosp_circ_all,FUN=median))%>% 
+  dplyr::mutate(hosp_circ_15a64= zoo::na.aggregate(hosp_circ_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_circ_65a= zoo::na.aggregate(hosp_circ_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_trauma_all= zoo::na.aggregate(hosp_trauma_all,FUN=median))%>% 
+  dplyr::mutate(hosp_trauma_15a64= zoo::na.aggregate(hosp_trauma_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_trauma_65a= zoo::na.aggregate(hosp_trauma_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  
+    dplyr::mutate(hosp_total_all= zoo::na.aggregate(hosp_total_all,FUN=median))%>% 
+  dplyr::mutate(hosp_total_15a64= zoo::na.aggregate(hosp_total_15a64,FUN=median))%>%   #na.locf(x,fromLast = FALSE) #nearest non-NA value
+  dplyr::mutate(hosp_total_65a= zoo::na.aggregate(hosp_total_65a,FUN=median))%>%   #na.aggregate(dat,FUN = mean) #linear= na.approx
+  dplyr::ungroup() %>% 
+  dplyr::select(-date2,-fech_week)
+
+tsdata3_corr_cons <- tsdata3_corr %>%
+  dplyr::group_by(date) %>%
+  dplyr::summarise(
+    year = unique(year),
+    month = unique(month),
+    day = unique(day),
+    cons_total_all = sum(cons_total_all),
+    cons_total_15a64 = sum(cons_total_15a64),
+    cons_total_65a = sum(cons_total_65a),
+    cons_resp_all = sum(cons_resp_all),
+    cons_resp_15a64 = sum(cons_resp_15a64),
+    cons_resp_65a = sum(cons_resp_65a),
+    cons_circ_all = sum(cons_circ_all),
+    cons_circ_15a64 = sum(cons_circ_15a64),
+    cons_circ_65a = sum(cons_circ_65a),
+    cons_diarrea_all = sum(cons_diarrea_all),
+    cons_diarrea_15a64 = sum(cons_diarrea_15a64),
+    cons_diarrea_65a = sum(cons_diarrea_65a),
+    cons_trauma_all = sum(cons_trauma_all),
+    cons_trauma_15a64 = sum(cons_trauma_15a64),
+    cons_trauma_65a = sum(cons_trauma_65a),
+    hosp_total_all = sum(hosp_total_all),
+    hosp_total_15a64 = sum(hosp_total_15a64),
+    hosp_total_65a = sum(hosp_total_65a),
+    hosp_resp_all = sum(hosp_resp_all),
+    hosp_resp_15a64 = sum(hosp_resp_15a64),
+    hosp_resp_65a = sum(hosp_resp_65a),
+    hosp_circ_all = sum(hosp_circ_all),
+    hosp_circ_15a64 = sum(hosp_circ_15a64),
+    hosp_circ_65a = sum(hosp_circ_65a),
+    hosp_trauma_all = sum(hosp_trauma_all),
+    hosp_trauma_15a64 = sum(hosp_trauma_15a64),
+    hosp_trauma_65a = sum(hosp_trauma_65a)
+  )
+```
+
+```{r exp_shocks1, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 2. No. of Days with 0 hospitalizations in 2018 (from 15 to 64 years)\nby Cause and Institution, After Interpolaiton"}
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#PLOT TO SHOW HOW WE STABILIZED SHOCKS ON 2018
+
+ tsdata3_corr %>% 
+   dplyr::filter(year==2018) %>% 
+  dplyr::mutate(date2=readr::parse_datetime(as.character(date), "%Y-%m-%d")) %>% 
+  dplyr::mutate(fech_week=format(date2,'%V')) %>%
+    dplyr::mutate(id=factor(id, labels= c("Complejo Hospitalario San Jose (09-100)", 
+                                          "Hospital de Urgencia Asistencia Publica (11-195)", 
+                                          "Hospital Del Salvador de Santiago (12-100)"))) %>% 
+     pivot_longer(cols=cons_total_all:hosp_trauma_65a, names_to = "variable", values_to = "count") %>% 
+    dplyr::filter(variable  %in% c("hosp_total_15a64","hosp_resp_15a64","hosp_circ_15a64","hosp_trauma_15a64")) %>% 
+    dplyr::filter(count==0) %>%
+    dplyr::group_by(id,fech_week,variable) %>% 
+    dplyr::summarise(n = as.numeric(n()), start=min(date2)) %>% 
+   dplyr::ungroup() %>% 
+    ggplot2::ggplot(aes(x = fech_week, y = n, color=variable,group=variable)) +
+    geom_point(size=1.5) +
+    geom_line(alpha=.5) +
+    facet_wrap(id~.,ncol=1)+
+    #ylim()+
+    scale_color_manual("Hospitalizations", values=c("red", "blue", "green", "violet"), labels = c("Circulatory", "Respiratory","Total","Trauma")) +
+    sjPlot::theme_sjplot2() +
+    scale_y_continuous(breaks = c(0,1,2,3,4,5,6,7,8),limits=c(0,8))+
+    labs(y="No. of Days in the week with 0 counts",
+         x="Years & Weeks") + 
+    theme(axis.text.x = element_text(vjust = 0.5,hjust = 0.5,angle = 60),
+          legend.position="bottom",
+          plot.caption=element_text(hjust=0)) 
+```
+<br>
+
+As seen in Figure 2, the interpolation resulted in stabilized counts of hospitaizations in 2018.
+
+<br>
+
+### Group values by week
+
+In first place, we downloaded the data and defined the databases, grouping it by weeks in ISO8601 format. We excluded incomplete weeks (first week in 2015 that started on thursday, and the last week of 2019, that had only 2 days with monday and tuesday).
+
+<br>
+
+```{r datasets_cons1, echo=T, cache= T, paged.print=TRUE, warning=F}
+########## Read Data from CSV File ########
+data.control_corr <- tsdata3_corr_cons
+data.tx <- urg19_3_clean_cons
+data <- rbind(data.control_corr, data.tx)
+
+remove(data.control_corr)
+remove(data.tx)
+
+########## Create Dummy Variables ########
+#aquí agrupó las instituciones
+## Dummy Variables for Age Group ##
+data15a64 <- data %>%
+  group_by(date) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    cons_total = cons_total_15a64,
+    cons_resp = cons_resp_15a64,
+    cons_circ = cons_circ_15a64,
+    cons_diarrea = cons_diarrea_15a64,
+    cons_trauma = cons_trauma_15a64,
+    hosp_total = hosp_total_15a64,
+    hosp_resp = hosp_resp_15a64,
+    hosp_circ = hosp_circ_15a64,
+    hosp_trauma = hosp_trauma_15a64,
+    age = "15-64"
+  )
+
+data65a <- data %>%
+  group_by(date) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    cons_total = cons_total_65a,
+    cons_resp = cons_resp_65a,
+    cons_circ = cons_circ_65a,
+    cons_diarrea = cons_diarrea_65a,
+    cons_trauma = cons_trauma_65a,
+    hosp_total = hosp_total_65a,
+    hosp_resp = hosp_resp_65a,
+    hosp_circ = hosp_circ_65a,
+    hosp_trauma = hosp_trauma_65a,
+    age = "65+"
+  )
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#Group by week
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#
+data <- rbind(data15a64, data65a)
+#data$year_week <- strftime(as.Date(data$date), format = "%Y-W%V")
+#2021- 03-29: CHANGED DATES
+data$isoweek <-lubridate::isoweek(lubridate::ymd(data$date))
+data$isoyear <- lubridate::isoyear(data$date)
+data$year_week <- paste0(data$isoyear,"-W",data$isoweek)
+data$age <- as.factor(data$age)
+remove(data15a64)
+remove(data65a)
+
+## Other Dummy Variables ##
+data$exptime <- ifelse(data$month >=8, 1, 0)
+data$txtime <- ifelse(data$month >= 10 & data$day >= 18 | data$month >= 11, 1, 0)
+data$tx <- ifelse(data$isoyear == "2019", 1, 0)
+data$did <- data$txtime * data$tx
+
+data$time <- 0
+data$time[data$exptime == 1] <- seq(by = 1, from = 1, to = 153)
+data$post <- 0
+#does not work
+#data$post[data$did == 1] <- seq(by = 1, to = 87) #no me funciona length(data$post[data$did == 1])= 150 
+Sys.setlocale(category = "LC_ALL", locale = "english")
+#por qué no me funciona: data15a64%>% dplyr::filter(date>="2019-10-18")%>% dplyr::summarise(min=min(time),max=max(time),diff=max-min)
+
+
+#:#:#::#:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:
+#:#:#::#:##:#:#:#:#:
+#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:#:#:#::#:##:#:#:#:#:
+
+invisible(c("lo tuve que sacar"))
+
+#data <- data[data$date != "2016-02-29", ]
+
+data$yearday <- strftime(as.Date(data$date), format = "%j")
+data$yearday <- as.numeric(data$yearday)
+#data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] <- data$yearday[data$year == 2016 & data$date > as.Date("2016-02-28")] - 1
+#glimpse(data)
+Sys.setlocale(category = "LC_ALL", locale = "english")
+data$weekday <- weekdays(as.Date(data$date))
+data$weekday <- ordered(data$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+
+data$sig <- ifelse(data$month == 10 & data$day == 6 | data$month == 10 & data$day == 18 | data$month == 10 & data$day == 25, 1, 0)
+data$week <-lubridate::week(data$date)
+
+#lubridate::floor_date(isoweek(data$date, "%Y-%m-%d"), unit="week")
+
+########## Create Dummy Variables ########
+#aquí agrupó las instituciones
+## Dummy Variables for Age Group ##
+data15a64_wk <- data %>%
+  dplyr::filter(as.character(age)=="15-64")%>%
+  dplyr::group_by(year_week) %>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    date= date,
+    cons_total = sum(cons_total,na.rm=T),
+    cons_resp = sum(cons_resp,na.rm=T),
+    cons_circ = sum(cons_circ,na.rm=T),
+    cons_diarrea = sum(cons_diarrea,na.rm=T),
+    cons_trauma = sum(cons_trauma,na.rm=T),
+    hosp_total = sum(hosp_total,na.rm=T),
+    hosp_resp = sum(hosp_resp,na.rm=T),
+    hosp_circ = sum(hosp_circ,na.rm=T),
+    hosp_trauma = sum(hosp_trauma,na.rm=T),
+    sig= sig,
+    weekday= weekday,
+    yearday= yearday,
+    week=week,
+    isoweek=isoweek,
+    n_days=n()
+    )%>%
+  slice(1)%>%
+  ungroup() %>% 
+  arrange(date) %>% 
+  dplyr::filter(!year_week %in% c("2020-W1","2015-W1"))
+
+data65a_wk <- data %>%
+  dplyr::filter(as.character(age)=="65+")%>%
+  dplyr::group_by(year_week)%>%
+  summarise(
+    year = year,
+    month = month,
+    day = day,
+    date= date,
+    cons_total = sum(cons_total,na.rm=T),
+    cons_resp = sum(cons_resp,na.rm=T),
+    cons_circ = sum(cons_circ,na.rm=T),
+    cons_diarrea = sum(cons_diarrea,na.rm=T),
+    cons_trauma = sum(cons_trauma,na.rm=T),
+    hosp_total = sum(hosp_total,na.rm=T),
+    hosp_resp = sum(hosp_resp,na.rm=T),
+    hosp_circ = sum(hosp_circ,na.rm=T),
+    hosp_trauma = sum(hosp_trauma,na.rm=T),
+    sig= sig,
+    weekday= weekday,
+    yearday= yearday,
+    week=week,
+    isoweek=isoweek,
+    n_days=n()
+  )%>%
+  slice(1)%>%
+  ungroup() %>% 
+  arrange(date) %>% 
+  dplyr::filter(year_week!="2020-W1") %>% 
+  dplyr::filter(!year_week %in% c("2020-W1","2015-W1"))
+
+data15a64_wk$isoyear <- substr(data15a64_wk$year_week,1,4)
+
+data15a64_wk$difftrc <- data15a64_wk$cons_total - data15a64_wk$cons_trauma
+data15a64_wk$difftrh <- data15a64_wk$hosp_total - data15a64_wk$hosp_trauma
+data15a64_wk$diffrec <- data15a64_wk$cons_total - data15a64_wk$cons_resp
+data15a64_wk$diffreh <- data15a64_wk$hosp_total - data15a64_wk$hosp_resp
+
+data15a64_wk$offset <- data15a64_wk$cons_total + data15a64_wk$hosp_total
+
+data65a_wk$isoyear <- substr(data65a_wk$year_week,1,4)
+
+data65a_wk$difftrc <- data65a_wk$cons_total - data65a_wk$cons_trauma
+data65a_wk$difftrh <- data65a_wk$hosp_total - data65a_wk$hosp_trauma
+data65a_wk$diffrec <- data65a_wk$cons_total - data65a_wk$cons_resp
+data65a_wk$diffreh <- data65a_wk$hosp_total - data65a_wk$hosp_resp
+
+data65a_wk$offset <- data65a_wk$cons_total + data65a_wk$hosp_total
+
+#:#:#:#:#:#:#:
+#2021-03-29= Defined txtime in terms of the date
+#data$tx <- ifelse(data$year == "2019", 1, 0)
+#data$did <- data$txtime * data$tx
+data15a64_wk$txtime <- ifelse(data15a64_wk$date>="2019-10-21", 1, 0)
+data15a64_wk$txtime2 <- ifelse(data15a64_wk$date>="2019-10-14", 1, 0)
+#:#:#:#:#:#:#:
+#2021-03-29= Defined tx in terms of ISO year
+data15a64_wk$tx <- ifelse(data15a64_wk$isoyear == 2019, 1, 0)
+data15a64_wk$did <- data15a64_wk$txtime * data15a64_wk$tx
+
+#:#:#:#:#:#:#:
+#2021-03-29= Defined txtime in terms of the date
+data65a_wk$txtime <- ifelse(data65a_wk$date>="2019-10-21", 1, 0)
+data65a_wk$txtime2 <- ifelse(data65a_wk$date>="2019-10-14", 1, 0)
+#:#:#:#:#:#:#:
+#2021-03-29= Defined tx in terms of ISO year
+data65a_wk$tx <- ifelse(data65a_wk$isoyear == 2019, 1, 0)
+data65a_wk$did <- data65a_wk$txtime * data65a_wk$tx
+#2019-W42
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#
+
+data15a64_rn<- data15a64_wk%>% dplyr::mutate(rn=row_number())
+
+data15a64_rn_ratio<- data15a64_rn %>% 
+  dplyr::mutate(rate=(hosp_trauma/cons_trauma)*1000) %>% 
+  dplyr::mutate(ratio=hosp_trauma/cons_trauma) %>% 
+  dplyr::mutate(ratio_circ=hosp_circ/cons_circ) %>% 
+  dplyr::mutate(rate_circ=(hosp_circ/cons_circ)*1000) %>% 
+  dplyr::mutate(rate_resp=(hosp_resp/cons_resp)*1000) %>% 
+  dplyr::mutate(ratio_resp=hosp_resp/cons_resp)
+
+attr(data15a64_rn_ratio$ratio,"variable.labels") <- "Ratio Between Trauma Hosp. and Trauma Cons."
+attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Cons. per 1,000 population"
+attr(data15a64_rn_ratio$rate,"variable.labels") <- "Rate of Trauma Hospitalizations per Trauma Cons. per 1,000 population"
+attr(data15a64_rn_ratio$year_week, "label") <- "Year-Week (ISO 8601) (chr)"
+attr(data15a64_rn_ratio$isoweek, "label") <- "Week Number (ISO 8601) (num)"
+attr(data15a64_rn_ratio$isoyear, "label") <- "Year Number (ISO 8601) (num)"
+attr(data15a64_rn_ratio$year, "label") <- "Year"
+attr(data15a64_rn_ratio$month, "label") <- "Month"
+attr(data15a64_rn_ratio$day, "label") <- "Day"
+
+attr(data15a64_rn_ratio$cons_total, "label") <- "Total Consultations"
+attr(data15a64_rn_ratio$cons_resp, "label") <- "Respiratory Consultations"
+attr(data15a64_rn_ratio$cons_circ, "label") <- "Circulatory Consultations"
+attr(data15a64_rn_ratio$cons_diarrea, "label") <- "Diarrhea Consultations"
+attr(data15a64_rn_ratio$cons_trauma, "label") <- "Trauma Consultations"
+
+attr(data15a64_rn_ratio$hosp_total, "label") <- "Total Hospitalizations"
+attr(data15a64_rn_ratio$hosp_resp, "label") <- "Respiratory Hospitalizations"
+attr(data15a64_rn_ratio$hosp_circ, "label") <- "Circulatory Hospitalizations"
+attr(data15a64_rn_ratio$hosp_trauma, "label") <- "Trauma Hospitalizations"
+
+#attr(data$age, "label") <- "Age (factor)"
+#attr(data$exptime, "label") <- "From August 8th to December 31th"
+#attr(data15a64_wk) <- "Treatment Period"
+attr(data15a64_rn_ratio$tx, "label") <- "Post-treatment Period (Only 2019)"
+attr(data15a64_rn_ratio$did, "label") <- "Post-Treatment Period * Treatment"
+#attr(data15a64_wk$time, "label") <- "August 1st to December 31th, by Year"
+attr(data15a64_rn_ratio$txtime2, "label") <- "Post-intervention Period (After but incluiding 2019-10-18 W42)"
+attr(data15a64_rn_ratio$txtime, "label") <- "Post-intervention Period (After 2019-10-18 W42)"
+attr(data15a64_rn_ratio$tx, "label") <- "Post-intervention Period (After 2019-10-18 W42)"
+attr(data15a64_rn_ratio$yearday, "label") <- "Day of the year (numeric)"
+attr(data15a64_rn_ratio$weekday, "label") <- "Weekday"
+attr(data15a64_rn_ratio$week, "label") <- "Week number by Year (Lubridate criteria)"  #no está presente
+
+attr(data15a64_rn_ratio$sig, "label") <- "October 6th; October 18th; October 25th"
+attr(data15a64_rn_ratio$n_days, "label") <- "Number of Days by Week"
+
+attr(data15a64_rn_ratio$date, "label") <- "1st day of the grouped week"
+
+#attr(data15a64_rn_ratio$prevtrc, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Consultations"
+#attr(data15a64_rn_ratio$prevrec, "label") <-  "Dependent Variable of Choice Prior Day Value of the Total Respiratory Consultations"
+#attr(data15a64_rn_ratio$prevtrh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Trauma Hospitalizations"
+#attr(data15a64_rn_ratio$prevreh, "label") <- "Dependent Variable of Choice Prior Day Value of the Total Respiratory Hospitalizations"
+
+attr(data15a64_rn_ratio$difftrc, "label") <- "Difference Between Total Cons. and the Total Trauma Cons."
+attr(data15a64_rn_ratio$difftrh, "label") <- "Difference Between Total Hospitalizations and the Total Trauma Hosp."
+attr(data15a64_rn_ratio$diffrec, "label") <-  "Difference Between Total Cons. and the Total Respiratory Cons."
+attr(data15a64_rn_ratio$diffreh, "label") <- "Difference Between Total Hosp. and the Total Respiratory Hosp."
+attr(data15a64_rn_ratio$offset, "label") <- "Sum of the Total Cons. and Total Hosp."
+
+attr(data15a64_rn_ratio$rate,"label") <- "Rate of Trauma Hospitalizations per Trauma Consultations (x1,000 population)"
+attr(data15a64_rn_ratio$rate_resp,"label") <- "Respiratory Hospitalizations per Respiratory Consultations (x1,000 population)"
+attr(data15a64_rn_ratio$rate_circ,"label") <- "Circulatory Hospitalizations per Circulatory Consultations (x1,000 population)"
+
+library(compareGroups)
+#pvals <- compareGroups::getResults(table, "p.overall")
+table2 <- compareGroups::compareGroups(did ~ cons_total+ cons_trauma+ cons_resp+ cons_circ+ hosp_total+ hosp_trauma+ hosp_resp+ hosp_circ+ rate+ rate_resp, #27
+                       method = c(cons_total=2, cons_trauma=2, cons_resp=2, cons_circ=2,  hosp_total=2,
+                                  hosp_resp=2, hosp_circ=2, hosp_trauma=2,rate=2, rate_resp=2),
+                      data = data15a64_rn_ratio,
+                      include.miss = T,
+                      var.equal=T)
+                      #,
+                      #subset = age == "15-64")
+#p.adjust(pvals, method = "BH")
+restab <- createTable(table2, show.n = F, show.p.overall = F)
+ compareGroups::export2md(restab, first.strip = T, show.all = T,hide.no = "no",header.labels = c(`0`= "Pre- Oct 18, 2020", `1`="Post Oct 18, 2020"), size=12,col.names= c("", "Previous to social
+protests","During social protests"),format="html",position="center",caption= "Table 1. Median descriptive table of emergency department consultations and hospitalizations, pre and port Ocober’s 2019 social protests in Chile")%>%#,p.overall = "p-value"
+  kableExtra::add_footnote(paste0("Note. Percentiles 25 and 75 in brackets."), notation = "none")%>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```
+
+<br>
+
+We subsetted the interval of consultations and hospitalizations of patients between 15 and 64.
+
+Then, we explored the weekly trends in each year.
+
+<br>
+
+```{r exp_plot_lines, echo=T, cache= T, paged.print=TRUE, warning=F, fig.height=14,eval=T, fig.align='center', fig.cap= "Figure 3. Linear trends of Weekly Trauma Hospitalizations by Years (Median and IQRs)"}
+data15a64_rn%>%
+#  dplyr::mutate(year_week_fmt=as.Date(year_week,"%Y-W%V"))%>%
+ # dplyr::group_by(year,yearweek)%>%
+  #dplyr::select(hosp_trauma,hosp_circ,hosp_resp) %>%  summary(min(),max())
+  #dplyr::summarise(median=median(hosp_trauma,na.rm=T))%>%
+ggplot() + #median
+  #geom_point() + 
+  #geom_line() +
+  geom_jitter(aes(y = hosp_trauma,x = isoweek, color = year),width = 0.5, alpha = 0.3)+
+  facet_wrap(~isoyear, ncol = 1) + 
+  theme_bw() + 
+  ylab("Trauma Hospitalizations") + 
+  xlab("Week") + 
+  theme(strip.text.x = element_text(size = 22, face = "bold"),
+        legend.position = "none",
+        plot.caption=element_text(hjust = 0))+
+  geom_smooth(aes(y = hosp_trauma,x = isoweek, color = year),stat = 'summary', color = 'red', fill = 'red', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = hosp_circ,x = isoweek, color = year),stat = 'summary', color = 'darkblue', fill = 'navyblue', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  geom_smooth(aes(y = hosp_resp,x = isoweek, color = year),stat = 'summary', color = 'violet', fill = 'violet', alpha = 0.2, 
+                fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  #geom_smooth(aes(y = cons_trauma,x = yearweek, color = year),stat = 'summary', color = 'darkgreen', fill = 'green', alpha = 0.2, 
+  #              fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+    #  geom_smooth(aes(y = hosp_total,x = yearweek, color = year),stat = 'summary', color = 'gray80', fill = 'gray80', alpha = 0.2, 
+   #             fun.data = median_hilow, fun.args = list(conf.int = 0.5))+
+  labs(caption="Note. Year 2015 & 2016 had a length of 53 weeks.\nRed= Trauma Hospitalizations; Blue= Circulatory System Hospitalizations; Violet= Respiratory System Hospitalizations; Gray Dots= Trauma Hospitalizations (obs)")+
+  scale_y_continuous(breaks=seq(0,1000,50))+
+  scale_x_continuous(
+  breaks = seq(from = 0, to = 52, by =2)#,
+#  label = c("two", "four", "six")
+)
+```
+
+<br>
+
+```{r datasets_cons2, echo=T, cache= T, paged.print=TRUE, warning=F}
+sum_years_dates<-
+data15a64_rn_ratio %>% 
+    group_by(isoyear) %>% 
+    summarise(n=n(),min=min(date),max=max(date), year_week_min=year_week[date==min], year_week_max=year_week[date==max],year_min=year[date==min],year_max=year[date==max]) 
+
+sum_years_dates %>% 
+  knitr::kable(format="html", format.args = list(decimal.mark = ".", big.mark = ","),
+               caption= "Table 2. Descriptive of years & dates in the database",
+               col.names=c("Year (ISO)","Number of weeks","Min date","Max date","Min ISO year-week",
+                                        "Max ISO year-week","Min (not ISO) year","Max (not ISO) year")) %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),font_size = 10) %>%
+  kableExtra::scroll_box(width = "100%", height = "375px")
+```   
+
+<br>
+    
+Must consider that years and dates may be very different if we choose different criteria to select them.
+    
+<br>
+
+
+## TBATS
+
+This models let us include multiple seasonalities. Their initials stand for T (trigonometric regressors for multiple seasonalities), B (box-cox transformations that correct for the effect of normality in data), A (inclusion of autorregresive  and moving-average errors), T (trend) y S (seasonality). This model automatically identifies the parameters that reduces. However, we pre-defined a monthly and annual seasonality, in order to capture monthly and annual seasonal patterns.
+
+<br>
+
+The test set were defined 10 weeks before the intervention period (week of October 21th, 2019). The training set had information of each outcome from 2015 to the first semester of 2019. **We expect that these models would give us information about the structure of the time series that will be used in the Bayesian Time-Series Analysis**.
+
+<br>
+
+```{r setting_prev_g_tbats_multiple_time_seasonality, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+pre_period_response_hosp_trauma <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"hosp_trauma"]))
+pre_period_response_hosp_resp <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"hosp_resp"]))
+pre_period_response_cons_resp <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"cons_resp"]))
+pre_period_response_cons_trauma <- as.numeric(unlist(data15a64_rn[which(data15a64_rn$did==0),"cons_trauma"]))
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+pre_period_response_hosp_trauma_train<-as.numeric(unlist(data15a64_rn[1:(241-1),"hosp_trauma"]))%>% 
+                        ts()
+pre_period_response_hosp_trauma_val<-as.numeric(unlist(data15a64_rn[242:251-1,"hosp_trauma"]))%>% 
+                        ts(start=241)
+
+pre_period_response_hosp_resp_train<-as.numeric(unlist(data15a64_rn[1:(241-1),"hosp_resp"]))%>% 
+                        ts()
+pre_period_response_hosp_resp_val<-as.numeric(unlist(data15a64_rn[242:251-1,"hosp_resp"]))%>% 
+                         ts(start=241)
+
+pre_period_response_cons_resp_train<-as.numeric(unlist(data15a64_rn[1:(241-1),"cons_resp"]))%>% 
+                        ts()
+pre_period_response_cons_resp_val<-as.numeric(unlist(data15a64_rn[242:251-1,"cons_resp"]))%>% 
+                         ts(start=241)
+
+pre_period_response_cons_trauma_train<-as.numeric(unlist(data15a64_rn[1:(241-1),"cons_trauma"]))%>% 
+                        ts()
+pre_period_response_cons_trauma_val<-as.numeric(unlist(data15a64_rn[242:251-1,"cons_trauma"])) %>% 
+                        ts(start=241) 
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+set.seed(2125)
+fit_trainset_tbats_hosp_trauma <- tbats(pre_period_response_hosp_trauma_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_hosp_resp <- tbats(pre_period_response_hosp_resp_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_cons_trauma <- tbats(pre_period_response_cons_trauma_train,seasonal.periods= c(52,4),biasadj=T)
+fit_trainset_tbats_cons_resp <- tbats(pre_period_response_cons_resp_train,seasonal.periods= c(52,4),biasadj=T)
+
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:#:
+
+#Trigonometric terms for seasonality
+#1	Box-Cox transformation parameter, for heterogeneity
+#{0,0}	ARMA error for short-term dynamics
+#-	Damping parameter -> Trend
+#{\<51.18,14>}	Seasonal period, Fourier terms
+
+#Las opciones tomadas: 1(no transformación), la segunda es el error ARMA (1,1),p=1, q=1, - significa que no hay damping o trend, después vienen los periodos estacionales (no hay), y no hay serialized terms seleccionados; puede que estas dos estén en 2 grupos <> <> porque haya más estacionalidad 
+#
+# The TBATS incorporates a state space model that is a generalization of those underpinning exponential smoothing. It also allows for automatic Box-Cox transformation and ARMA errors, it provides a very flexible way of accounting for seasonality and trends. The parameters include a box-cox transformation parameter, ARMA errors, damping. The seasonality and trend is easily handled in this model through the fourier transformations and smoothening parameters, which can be further tuned. Due to limited data however, the accuracy on test set in terms of Mean Absolute Percentage Error can vary from the metric given in this report, however when forecasting for longer periods, we see very smooth trends. After making the forecasting model, the expense percentage predicted for May 2016 is 3.52%.
+```
+
+<br>
+
+First, we applied the TBATS model on Trauma Hospitalizations.
+
+<br>
+
+```{r setting_tbats_hosp_trauma, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 4. TBATS Model of Truama Hospitalizations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_hosp_trauma, h=10) %>%  autoplot()+ autolayer(pre_period_response_hosp_trauma_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),13),260)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 250, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+#Sure, you can apply a Box-Cox Transformation, e.g. lambda = 0 (Log-Transform), on the time series before fitting the model. After which you need the apply the inverse Box-Cox transformation on predictions. In that way you ensure that the forecasts and confidence intervals are positive
+
+#RESIDUALS
+#forecast::ggtsdisplay(residuals(fit_trainset_tbats_hosp_trauma), lag.max=52, main='HoltWinters Exponenetial smoothing Residuals')
+```
+<br>
+
+The model suggested a box-cox transformation of lambda=`r sprintf("%1.2f",as.numeric(fit_trainset_tbats_hosp_trauma$lambda))`, that can be rounded to the squared root of Y (√(Y)).  However, it may very well be the case that the resulting transformation of the data is not appropriate to our case. Additionally, the model did not identify ARMA errors or trends (damping).
+
+<!--- 0= suggest a log transformation --->
+
+<br>
+
+Next, we applied the TBATS model on Respiratory Hospitalizations. 
+
+<br>
+
+```{r setting_tbats_hosp_resp, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T, fig.align="center", fig.cap="Figure 5. TBATS Model of Respiratory Hospitalizations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_hosp_resp, h=10) %>%  autoplot()+ autolayer(pre_period_response_hosp_resp_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Hospitalizations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),13),260)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 250, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The resulting model suggested a log transformation (Lambda= `r sprintf("%1.2f",as.numeric(fit_trainset_tbats_hosp_resp$lambda))`), but did not identify ARMA errors nor trends, but found seasonal components. 
+
+Also we applied the TBATS model on Trauma Consultations. 
+
+<br>
+
+```{r setting_tbats_cons_trauma, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T,  fig.align="center",fig.cap="Figure 6. TBATS Model of Trauma Consultations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_cons_trauma, h=10) %>%  autoplot()+ autolayer(pre_period_response_cons_trauma_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),13),260)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 250, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The model identified no box-cox transformations, and a trend (duping parameter of `r round(fit_trainset_tbats_cons_trauma$damping.parameter,2)`), but no seasonal trends.
+
+<br>
+
+```{r setting_tbats_cons_resp, echo=T, cache= T, fig.width=8, paged.print=TRUE, warning=F, eval=T,  fig.align="center",fig.cap="Figure 7. TBATS Model of Respiratory Consultations in the Pre-Intervention Period"}
+forecast(fit_trainset_tbats_cons_resp, h=10) %>%  autoplot()+ autolayer(pre_period_response_cons_resp_val, color="red",size=1)+
+  theme_bw()+
+  xlab("Date")+
+  ylab("Consultations")+
+  scale_x_continuous(breaks=(c(seq(1,nrow(data15a64_rn),13),260)),
+                     labels=as.character(unlist(data15a64_rn[c(seq(1,nrow(data15a64_rn),13),260),"year_week"])))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.5,size=10),
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+      theme(legend.position="bottom")+geom_vline(xintercept = 250, linetype="dotted", 
+                color = "darkgreen", size=1.5,
+        plot.caption = element_text(hjust = 0, face= "italic"))+
+  labs(caption="Note. Blue Line= 11 weeks forecasted; Blue area= Prediction intervals for the Forcast period;\nRed Line= Actual Trend; Vertical Green Dotted Line= Intervention Period (Social Protests).")
+```
+
+<br>
+
+The resulting model suggested a box-cox transformation of lambda=`r sprintf("%1.2f",as.numeric(fit_trainset_tbats_cons_resp$lambda))`, that can be rounded to 0 (log transformation needed). Also, it identified no ARMA errors, a dumping parameter of `r round(fit_trainset_tbats_cons_resp$damping.parameter,2)`, but confirmed the monthly and annual seasonal components.
+
+<br>
+
+One disadvantage of this model is that does not allow to include covariates as control time-series. Additionally, despite that some outcomes did not show any seasonal trends, we decided to incorporate them anyways because of grounded in backgrounds that add support for their inclusion.
+
+<br>
+
+# Session Info
+
+```{r save, echo=T, cache= T, paged.print=TRUE, warning=F, eval=T}
+Sys.getenv("R_LIBS_USER")
+
+rstudioapi::getSourceEditorContext()
+
+#paste0("Folder where packages were saved: ",get.groundhog.folder())
+
+sessionInfo()
+
+save.image(paste0(getwd(),"/","Procesos hasta 4_2.RData"))
+```
