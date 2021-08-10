@@ -11,7 +11,7 @@ Below you may find the following stages regarding the database compilation and m
  - [Choose the most adequate model for Trauma Hospitalizations](Causal_Impact2_hosp_trauma.html)
  - [Choose the most adequate model for Respiratory Hospitalizations](Causal_Impact2_hosp_resp.html)
  - [Selected Models](Consolidacion_BDs_FINAL.html)
- - [Selected Models, but defining the time point in October 13 insted of October 21, 2019](Consolidacion_BDs_FINAL_after_revision.html)
+ - [Selected Models, but defining the time point in October 13 instead of October 21, 2019](Consolidacion_BDs_FINAL_after_revision.html)
  - [Figures](Plots-2021-01-18.html)
  
 <br>
