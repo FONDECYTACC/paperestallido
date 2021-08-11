@@ -212,6 +212,9 @@ if(!require(cowplot)){install.packages("cowplot")}
 if(!require(grid)){install.packages("grid")}
 if(!require(plm)){install.packages("plm")}
 if(!require(Statamarkdown)){devtools::install_github("hemken/Statamarkdown", quiet=T,  upgrade="never")}
+if(!require(rvest)){install.packages("rvest")}
+if(!require(jsonlite)){install.packages("jsonlite")}
+
 
 # Calculate the number of cores
 no_cores <- detectCores() - 1
@@ -882,6 +885,7 @@ The model chosen assumed a Random-Walk model and a Studentized Distribution with
 
 <br>
 
+
 ```{r bsts_ratio_resp, echo=T, cache= T, paged.print=TRUE, warning=F,eval=T}
 #https://github.com/google/CausalImpact/tree/master/R
 
@@ -1078,6 +1082,259 @@ Effect","95%Credible Interval", "P- Value","Relative Effect(%)","95%Credible Int
 
 <br>
 
+# For the supplemental material
+
+
+```{r cumulative_errors, echo=T, dpi= 320, cache= T, paged.print=TRUE, warning=F, eval=T, fig.align='center', fig.cap= " Comparison of the cumulative error of the alternative models for the outcomes selected",fig.height=14}
+
+url <-
+  "https://fondecytacc.github.io/paperestallido/Causal_Impact2_cons_trauma.html"
+
+raw_html <- read_html(url)
+
+caption <-
+  "Figure 9. Comparison of BSTS models (cum. error)"
+
+figure_divs <- html_nodes(raw_html,".figure")
+
+
+figure_21_div_lgl <- grepl("*", figure_divs)
+
+widget_id <-
+  figure_divs[figure_21_div_lgl] %>%
+  html_nodes("div") %>%
+  html_attr("id")
+
+# find data for the correct widget_id
+
+data_for <-
+  html_nodes(raw_html, "script") %>%
+  html_attr("data-for")
+
+data_for_figure_21_lgl <-
+  !is.na(data_for) & data_for == widget_id
+
+data_for_figure_21 <-
+  html_nodes(raw_html, "script") %>%
+  .[data_for_figure_21_lgl] %>%
+  html_text()
+
+dff21_l <- fromJSON(data_for_figure_21)
+
+#removed 11-08-21
+#fig_data_cons_trauma<-data.frame(unlist(dff21_l$x$data$text))
+
+fig_data_cons_trauma_df<-
+#fig_data_cons_trauma %>% 
+  #mod 11-08-21
+data.frame(unlist(dff21_l$x$data)) %>% dplyr::filter(grepl("CAFE=",unlist.dff21_l.x.data.)) %>% 
+  tidyr::separate(!!1, c("CAFE", "Time","Model"), "<br />") %>% 
+  dplyr::mutate_at(1:2,~readr::parse_number(.)) %>% 
+  dplyr::mutate(type="Trauma Consultations")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+url <-
+  "https://fondecytacc.github.io/paperestallido/Causal_Impact2_cons_resp.html"
+
+raw_html <- read_html(url)
+
+caption <-
+  "Figure 9. Comparison of BSTS models (cum. error)"
+
+figure_divs <- html_nodes(raw_html,".figure")
+
+
+figure_21_div_lgl <- grepl("*", figure_divs)
+
+widget_id <-
+  figure_divs[figure_21_div_lgl] %>%
+  html_nodes("div") %>%
+  html_attr("id")
+
+# find data for the correct widget_id
+
+data_for <-
+  html_nodes(raw_html, "script") %>%
+  html_attr("data-for")
+
+data_for_figure_21_lgl <-
+  !is.na(data_for) & data_for == widget_id
+
+data_for_figure_21 <-
+  html_nodes(raw_html, "script") %>%
+  .[data_for_figure_21_lgl] %>%
+  html_text()
+
+dff21_l <- fromJSON(data_for_figure_21)
+
+#removed 11-08-21
+#fig_data_cons_resp<-data.frame(unlist(dff21_l$x$data$text))
+
+fig_data_cons_resp_df<-
+#mod 11-08-21
+  data.frame(unlist(dff21_l$x$data)) %>% dplyr::filter(grepl("CAFE=",unlist.dff21_l.x.data.)) %>% 
+  tidyr::separate(!!1, c("CAFE", "Time","Model"), "<br />") %>% 
+  #fig_data_cons_resp %>% 
+  dplyr::mutate_at(1:2,~readr::parse_number(.)) %>% 
+  dplyr::mutate(type="Respiratory Consultations")
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+url <-
+  "https://fondecytacc.github.io/paperestallido/Causal_Impact2_hosp_trauma.html"
+
+raw_html <- read_html(url)
+
+caption <-
+  "Figure 9. Comparison of BSTS models (cum. error)"
+
+figure_divs <- html_nodes(raw_html,".figure")
+
+
+figure_21_div_lgl <- grepl("*", figure_divs)
+
+widget_id <-
+  figure_divs[figure_21_div_lgl] %>%
+  html_nodes("div") %>%
+  html_attr("id")
+
+# find data for the correct widget_id
+
+data_for <-
+  html_nodes(raw_html, "script") %>%
+  html_attr("data-for")
+
+data_for_figure_21_lgl <-
+  !is.na(data_for) & data_for == widget_id
+
+data_for_figure_21 <-
+  html_nodes(raw_html, "script") %>%
+  .[data_for_figure_21_lgl] %>%
+  html_text()
+
+dff21_l <- fromJSON(data_for_figure_21)
+
+#removed 11-08-21
+#fig_data_hosp_trauma<-data.frame(unlist(dff21_l$x$data$text))
+
+fig_data_hosp_trauma_df<-
+  #mod 11-08-21
+  data.frame(unlist(dff21_l$x$data)) %>% dplyr::filter(grepl("CAFE=",unlist.dff21_l.x.data.)) %>% 
+  tidyr::separate(!!1, c("CAFE", "Time","Model"), "<br />") %>% 
+#  fig_data_hosp_trauma %>% 
+  dplyr::mutate_at(1:2,~readr::parse_number(.)) %>% 
+  dplyr::mutate(type="Trauma Hospitalizations")
+
+
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+url <-
+  "https://fondecytacc.github.io/paperestallido/Causal_Impact2_hosp_resp.html"
+
+raw_html <- read_html(url)
+
+caption <-
+  "Figure 9. Comparison of BSTS models (cum. error)"
+
+figure_divs <- html_nodes(raw_html,".figure")
+
+
+figure_21_div_lgl <- grepl("*", figure_divs)
+
+widget_id <-
+  figure_divs[figure_21_div_lgl] %>%
+  html_nodes("div") %>%
+  html_attr("id")
+
+# find data for the correct widget_id
+
+data_for <-
+  html_nodes(raw_html, "script") %>%
+  html_attr("data-for")
+
+data_for_figure_21_lgl <-
+  !is.na(data_for) & data_for == widget_id
+
+data_for_figure_21 <-
+  html_nodes(raw_html, "script") %>%
+  .[data_for_figure_21_lgl] %>%
+  html_text()
+
+dff21_l <- fromJSON(data_for_figure_21)
+
+#removed 11-08-21
+#fig_data_hosp_resp<-data.frame(unlist(dff21_l$x$data$text))
+
+fig_data_hosp_resp_df<-
+    #mod 11-08-21
+  data.frame(unlist(dff21_l$x$data)) %>% dplyr::filter(grepl("CAFE=",unlist.dff21_l.x.data.)) %>% 
+  tidyr::separate(!!1, c("CAFE", "Time","Model"), "<br />") %>% 
+# fig_data_hosp_resp  
+  dplyr::mutate_at(1:2,~readr::parse_number(.)) %>% 
+  dplyr::mutate(type="Respiratory Hospitalizations")
+#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_#_
+
+library(ggplot2)
+library(gghighlight)
+
+Sys.setlocale(category = "LC_ALL", locale = "english")
+
+plot_s_after_revision<-
+rbind.data.frame(fig_data_cons_trauma_df,
+              fig_data_cons_resp_df,
+              fig_data_hosp_trauma_df,
+              fig_data_hosp_resp_df) %>% 
+  dplyr::filter(grepl("^a",Model)) %>% 
+  dplyr::filter(Time<=250) %>% 
+  #dplyr::mutate(date=Time) %>% 
+  dplyr::left_join(data15a64_rn[,c("rn","date")],by=c("Time"="rn")) %>% 
+  dplyr::mutate(selected=ifelse(Model=="a, Student Dist, Prior sd=.1",1,0)) %>% 
+ggplot(aes(x=date, y=CAFE,group=Model))+ 
+  theme_minimal() +
+  geom_line(data = . %>% filter(selected==0),color = "gray60")+
+  geom_line(data = . %>% filter(selected==1),color = "coral", size=1)+
+  labs(x="Date")+
+  #gghighlight(selected==1)+
+  facet_wrap(.~type, scales = "free_y")+
+  scale_x_date(breaks="6 months", labels=scales::date_format("%Y %b"))+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11))
+
+plot_s_after_revision
+
+cairo_ps("_figs/_FigSX_final.ps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      plot_s_after_revision+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+cairo_pdf("_figs/_FigSX_final.pdf", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      plot_s_after_revision+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+
+cairo_ps("_figs/_FigSX_final.eps", 
+           height = 14, width = 23,
+           fallback_resolution = 600,
+           family= "Times")
+           #horizontal=T,
+           #paper= "letter", 
+           #pagecentre=F)
+      plot_s_after_revision+
+         theme(plot.background = element_rect(fill=NA, color = NA))
+dev.off()
+```  
 
 
 # Session Info
