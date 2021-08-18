@@ -211,10 +211,10 @@ if(!require(gridExtra)){install.packages("gridExtra")}
 if(!require(cowplot)){install.packages("cowplot")}
 if(!require(grid)){install.packages("grid")}
 if(!require(plm)){install.packages("plm")}
-if(!require(Statamarkdown)){devtools::install_github("hemken/Statamarkdown", quiet=T,  upgrade="never")}
 if(!require(rvest)){install.packages("rvest")}
 if(!require(jsonlite)){install.packages("jsonlite")}
-
+if(!require(gghighlight)){install.packages("gghighlight")}
+if(!require(ggtext)){install.packages("ggtext")}
 
 # Calculate the number of cores
 no_cores <- detectCores() - 1
@@ -1277,6 +1277,8 @@ fig_data_hosp_resp_df<-
 
 library(ggplot2)
 library(gghighlight)
+library(ggtext)
+library(dplyr)
 
 Sys.setlocale(category = "LC_ALL", locale = "english")
 
@@ -1291,7 +1293,7 @@ rbind.data.frame(fig_data_cons_trauma_df,
   dplyr::left_join(data15a64_rn[,c("rn","date")],by=c("Time"="rn")) %>% 
   dplyr::mutate(selected=ifelse(Model=="a, Student Dist, Prior sd=.1",1,0)) %>% 
 ggplot(aes(x=date, y=CAFE,group=Model))+ 
-  theme_minimal() +
+  theme_minimal(base_family = 'Times', base_size = 15) +
   geom_line(data = . %>% filter(selected==0),color = "gray60")+
   geom_line(data = . %>% filter(selected==1),color = "coral", size=1)+
   labs(x="Date")+
@@ -1300,8 +1302,19 @@ ggplot(aes(x=date, y=CAFE,group=Model))+
   scale_x_date(breaks="6 months", labels=scales::date_format("%Y %b"))+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5,size=11))
 
-plot_s_after_revision
+plot <- plot_s_after_revision + theme(
+  legend.text = ggtext::element_markdown(family = 'Times'),
+  axis.text.x = ggtext::element_markdown(family = 'Times'),
+  axis.text.y = ggtext::element_markdown(family = 'Times'),
+  axis.title.x = ggtext::element_markdown(family = 'Times'),
+  axis.title.y = ggtext::element_markdown(family = 'Times')
+)
 
+  jpeg("_figs/_FigSX_final.jpg", height = 7, width = 11.5, units = 'in', res = 600)
+          plot+
+             theme(plot.background = element_rect(fill=NA, color = NA))
+  dev.off()
+ 
 cairo_ps("_figs/_FigSX_final.ps", 
            height = 14, width = 23,
            fallback_resolution = 600,
